@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title>대시보드</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <!-- layout:fragment로 메인 콘텐츠 영역에 삽입 -->
+    <div layout:fragment="content">
+        
+        <!-- 페이지 헤더 -->
+        <div class="page-header">
+            <div>
+                <h2 class="page-title">관제 대시보드</h2>
+                <p class="page-description">실시간 환자 모니터링 현황</p>
+            </div>
+            <div class="header-actions">
+                <div class="time-box" id="current-time">현재 시간: --:--:--</div>
+                <div class="alert-badge">
+                    🔔 알림 <span th:text="${alertCount}">0</span>건
+                </div>
+            </div>
+        </div>
+
+        <!-- 통계 카드 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-blue"></div>
+                <div class="stat-number" th:text="${totalPatients}">0</div>
+                <div class="stat-label">전체 환자</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-green"></div>
+                <div class="stat-number" th:text="${normalCount}">0</div>
+                <div class="stat-label">정상</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-yellow"></div>
+                <div class="stat-number" th:text="${warningCount}">0</div>
+                <div class="stat-label">주의</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-red"></div>
+                <div class="stat-number" th:text="${dangerCount}">0</div>
+                <div class="stat-label">위험</div>
+            </div>
+        </div>
+
+        <!-- 병실별 현황 -->
+        <div class="card">
+            <h3 class="card-title">병실별 현황 (실시간)</h3>
+            <div class="room-grid">
+                
+                <!-- th:each로 병실 목록 반복 -->
+                <div th:each="room : ${rooms}" class="room-card">
+                    <h4 class="room-name" th:text="${room.name}">병실명</h4>
+                    <div class="bed-grid">
+                        <!-- 침상 목록 반복 -->
+                        <div th:each="bed : ${room.beds}" 
+                             th:classappend="${bed.status}"
+                             class="bed-card"
+                             th:onclick="'location.href=\'/patients/' + ${bed.id} + '\''">
+                            <div class="bed-name" th:text="'침상 ' + ${bed.label}">침상 A</div>
+                            <div class="bed-time" th:text="${bed.duration}">0분</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 데이터 없을 때 샘플 (개발용) -->
+                <th:block th:if="${#lists.isEmpty(rooms)}">
+                    <div class="room-card">
+                        <h4 class="room-name">101호</h4>
+                        <div class="bed-grid">
+                            <div class="bed-card status-normal">
+                                <div class="bed-name">침상 A</div>
+                                <div class="bed-time">45분</div>
+                            </div>
+                            <div class="bed-card status-warning">
+                                <div class="bed-name">침상 B</div>
+                                <div class="bed-time">1시간 52분</div>
+                            </div>
+                            <div class="bed-card status-normal">
+                                <div class="bed-name">침상 C</div>
+                                <div class="bed-time">23분</div>
+                            </div>
+                            <div class="bed-card status-danger blink">
+                                <div class="bed-name">침상 D</div>
+                                <div class="bed-time">2시간 15분</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="room-card">
+                        <h4 class="room-name">102호</h4>
+                        <div class="bed-grid">
+                            <div class="bed-card status-normal">
+                                <div class="bed-name">침상 A</div>
+                                <div class="bed-time">12분</div>
+                            </div>
+                            <div class="bed-card status-normal">
+                                <div class="bed-name">침상 B</div>
+                                <div class="bed-time">38분</div>
+                            </div>
+                            <div class="bed-card status-warning">
+                                <div class="bed-name">침상 C</div>
+                                <div class="bed-time">1시간 45분</div>
+                            </div>
+                            <div class="bed-card status-normal">
+                                <div class="bed-name">침상 D</div>
+                                <div class="bed-time">5분</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="room-card">
+                        <h4 class="room-name">103호</h4>
+                        <div class="bed-grid">
+                            <div class="bed-card status-warning">
+                                <div class="bed-name">침상 A</div>
+                                <div class="bed-time">1시간 30분</div>
+                            </div>
+                            <div class="bed-card status-danger blink">
+                                <div class="bed-name">침상 B</div>
+                                <div class="bed-time">2시간 30분</div>
+                            </div>
+                            <div class="bed-card status-normal">
+                                <div class="bed-name">침상 C</div>
+                                <div class="bed-time">20분</div>
+                            </div>
+                            <div class="bed-card status-normal">
+                                <div class="bed-name">침상 D</div>
+                                <div class="bed-time">55분</div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+
+        <!-- 최근 알림 -->
+        <div class="card">
+            <h3 class="card-title">최근 알림</h3>
+            <div class="alert-list">
+                
+                <!-- 알림 목록 반복 -->
+                <div th:each="alert : ${recentAlerts}" 
+                     th:classappend="${alert.level == 'DANGER'} ? 'alert-item-danger' : 'alert-item-warning'"
+                     class="alert-item">
+                    <div class="alert-content">
+                        <span class="alert-time" th:text="${alert.time}">00:00</span>
+                        <span class="alert-location" th:text="${alert.location}">위치</span>
+                        <span class="alert-message" th:text="${alert.message}">메시지</span>
+                    </div>
+                    <button class="btn btn-small" 
+                            th:onclick="'confirmAlert(' + ${alert.id} + ')'">확인</button>
+                </div>
+
+                <!-- 샘플 데이터 (개발용) -->
+                <th:block th:if="${#lists.isEmpty(recentAlerts)}">
+                    <div class="alert-item alert-item-danger">
+                        <div class="alert-content">
+                            <span class="alert-time">14:30</span>
+                            <span class="alert-location">103호 B</span>
+                            <span class="alert-message">체위 변경 필요 (2시간 초과)</span>
+                        </div>
+                        <button class="btn btn-small">확인</button>
+                    </div>
+                    <div class="alert-item alert-item-danger">
+                        <div class="alert-content">
+                            <span class="alert-time">14:25</span>
+                            <span class="alert-location">101호 D</span>
+                            <span class="alert-message">체위 변경 필요 (2시간 초과)</span>
+                        </div>
+                        <button class="btn btn-small">확인</button>
+                    </div>
+                    <div class="alert-item alert-item-warning">
+                        <div class="alert-content">
+                            <span class="alert-time">14:15</span>
+                            <span class="alert-location">101호 B</span>
+                            <span class="alert-message">자세 유지 시간 주의</span>
+                        </div>
+                        <button class="btn btn-small">확인</button>
+                    </div>
+                </th:block>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 페이지 전용 스크립트 -->
+    <script th:inline="javascript">
+        // 현재 시간 업데이트
+        function updateTime() {
+            var now = new Date();
+            var timeStr = now.toLocaleTimeString('ko-KR');
+            document.getElementById('current-time').textContent = '현재 시간: ' + timeStr;
+        }
+        
+        // 1초마다 시간 업데이트
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // 알림 확인 처리
+        function confirmAlert(alertId) {
+            // TODO: API 호출
+            // fetch('/api/alerts/' + alertId + '/confirm', { method: 'POST' })
+            alert('알림 확인 처리 (API 연동 필요)');
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 </title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<!-- ============================================== -->
+<!-- 계정 등록 페이지                                -->
+<!-- ============================================== -->
+<div class="login-page">
+    <div class="login-card">
+
+        <h2 class="login-title mb-24">계정 등록</h2>
+
+        <!-- 에러 메시지 -->
+        <div th:if="${error}" class="alert-item alert-item-danger mb-16">
+            <span class="alert-message" th:text="${error}">등록 실패</span>
+        </div>
+
+        <!-- 회원가입 폼 -->
+        <form th:action="@{/register}" method="post" class="login-form">
+
+            <!-- 아이디 -->
+            <div class="form-group">
+                <label class="input-label" for="username">사번 *</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text"
+                           id="username"
+                           name="username"
+                           class="input-field"
+                           placeholder="사번을 입력하세요"
+                           style="flex: 1;"
+                           required>
+                    <button type="button" class="btn btn-small" onclick="checkDuplicate()">중복확인</button>
+                </div>
+            </div>
+
+
+            <!-- 비밀번호 -->
+            <div class="form-group">
+                <label class="input-label" for="password">비밀번호 *</label>
+                <input type="password"
+                       id="password"
+                       name="password"
+                       class="input-field"
+                       placeholder="8자 이상"
+                       minlength="8"
+                       required>
+            </div>
+
+            <!-- 비밀번호 확인 -->
+            <div class="form-group">
+                <label class="input-label" for="passwordConfirm">비밀번호 확인 *</label>
+                <input type="password"
+                       id="passwordConfirm"
+                       name="passwordConfirm"
+                       class="input-field"
+                       placeholder="비밀번호 재입력"
+                       required>
+            </div>
+
+            <!-- 담당 병동 / 병실 입력 -->
+            <div class="form-group">
+                <label class="input-label" for="roomAuthority">담당병동/병실 *</label>
+                <input id="roomAuthority" name="roomAuthority" class="input-field" placeholder="ex) 6G, 601A" required>
+            </div>
+
+            <!-- 등록 버튼 -->
+            <button type="submit" class="btn btn-primary">등록하기</button>
+
+            <!-- 로그인으로 돌아가기 -->
+            <a th:href="@{/login}" class="btn btn-secondary">← 로그인으로</a>
+        </form>
+
+        <p class="login-footer">CarePose ver1.0.0</p>
+    </div>
+</div>
+
+<script>
+    // 아이디 중복 확인 함수
+    function checkDuplicate() {
+        var username = document.getElementById('username').value;
+        if (!username) {
+            alert('아이디를 입력해주세요.');
+            return;
+        }
+        // TODO: AJAX로 중복 확인 API 호출
+        // fetch('/api/check-username?username=' + username)
+        alert('중복 확인 기능 (API 연동 필요)');
+    }
+</script>
+
+</body>
+</html>

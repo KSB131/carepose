@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title>실시간 모니터링</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div layout:fragment="content">
+        
+        <!-- 페이지 헤더 -->
+        <div class="page-header">
+            <div>
+                <h2 class="page-title">실시간 모니터링</h2>
+                <p class="page-description">카메라 영상 및 스켈레톤 좌표</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-small" onclick="setGridSize(2)">2x2</button>
+                <button class="btn btn-primary" style="width:auto; padding:0 16px;" onclick="setGridSize(3)">3x2</button>
+                <button class="btn btn-small" onclick="setGridSize(4)">4x2</button>
+            </div>
+        </div>
+
+        <!-- 카메라 그리드 -->
+        <div id="cameraGrid" class="camera-grid">
+            
+            <!-- th:each로 카메라 목록 반복 -->
+            <div th:each="camera : ${cameras}" 
+                 th:classappend="${camera.status == 'WARNING'} ? 'camera-card-warning' : (${camera.status == 'DANGER'} ? 'camera-card-danger' : '')"
+                 class="camera-card">
+                <div class="camera-view">
+                    <!-- 실제 개발 시: 스트리밍 영상 -->
+                    <img th:src="${camera.streamUrl}" alt="카메라 영상" style="width:100%; height:100%; object-fit:cover;">
+                    <div th:classappend="${camera.status == 'NORMAL'} ? 'camera-status-normal' : (${camera.status == 'WARNING'} ? 'camera-status-warning' : 'camera-status-danger')"
+                         class="camera-status-badge"
+                         th:text="${camera.statusLabel}">상태</div>
+                </div>
+                <div class="camera-info">
+                    <div>
+                        <span class="bed-id" th:text="${camera.bedId}">ID</span>
+                        <span class="patient-name" th:text="${camera.patientName}">환자명</span>
+                    </div>
+                    <span class="current-pose" th:text="'현재: ' + ${camera.currentPose}">자세</span>
+                </div>
+            </div>
+
+            <!-- 샘플 데이터 -->
+            <th:block th:if="${#lists.isEmpty(cameras)}">
+                <div class="camera-card">
+                    <div class="camera-view">
+                        카메라 영상
+                        <div class="camera-status-badge camera-status-normal">정상</div>
+                    </div>
+                    <div class="camera-info">
+                        <div><span class="bed-id">101-A</span><span class="patient-name">김○○</span></div>
+                        <span class="current-pose">현재: 좌측위</span>
+                    </div>
+                </div>
+                <div class="camera-card camera-card-warning">
+                    <div class="camera-view">
+                        카메라 영상
+                        <div class="camera-status-badge camera-status-warning">주의</div>
+                    </div>
+                    <div class="camera-info">
+                        <div><span class="bed-id">101-B</span><span class="patient-name">이○○</span></div>
+                        <span class="current-pose">현재: 앙와위</span>
+                    </div>
+                </div>
+                <div class="camera-card camera-card-danger">
+                    <div class="camera-view">
+                        카메라 영상
+                        <div class="camera-status-badge camera-status-danger">위험</div>
+                    </div>
+                    <div class="camera-info">
+                        <div><span class="bed-id">101-D</span><span class="patient-name">최○○</span></div>
+                        <span class="current-pose">현재: 앙와위</span>
+                    </div>
+                </div>
+                <div class="camera-card">
+                    <div class="camera-view">
+                        카메라 영상
+                        <div class="camera-status-badge camera-status-normal">정상</div>
+                    </div>
+                    <div class="camera-info">
+                        <div><span class="bed-id">102-A</span><span class="patient-name">정○○</span></div>
+                        <span class="current-pose">현재: 우측위</span>
+                    </div>
+                </div>
+                <div class="camera-card camera-card-warning">
+                    <div class="camera-view">
+                        카메라 영상
+                        <div class="camera-status-badge camera-status-warning">주의</div>
+                    </div>
+                    <div class="camera-info">
+                        <div><span class="bed-id">102-C</span><span class="patient-name">홍○○</span></div>
+                        <span class="current-pose">현재: 앙와위</span>
+                    </div>
+                </div>
+                <div class="camera-card camera-card-danger">
+                    <div class="camera-view">
+                        카메라 영상
+                        <div class="camera-status-badge camera-status-danger">위험</div>
+                    </div>
+                    <div class="camera-info">
+                        <div><span class="bed-id">103-B</span><span class="patient-name">강○○</span></div>
+                        <span class="current-pose">현재: 앙와위</span>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+
+    </div>
+
+    <script>
+        // 그리드 크기 변경
+        function setGridSize(cols) {
+            var grid = document.getElementById('cameraGrid');
+            grid.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+        }
+    </script>
+
+</body>
+</html>
