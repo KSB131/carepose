@@ -66,11 +66,11 @@ public class MemberController {
     		String authority = member.getRoomAuthority();
     		
     		if ("요양보호사".equals(authority)) {
-    			return "redirect:/caremain";
+    			return "redirect:/monitoring";
     		} else if ("간호사".equals(authority)) {
-    			return "redirect:/nursmain";
+    			return "redirect:/dashboard";
     		} else {
-    			return "redirect:/nursmain";
+    			return "redirect:/dashboard";
     		}
     		
     	} else {

@@ -47,8 +47,8 @@
                        id="password"
                        name="password"
                        class="input-field"
-                       placeholder="8자 이상"
-                       minlength="8"
+                       placeholder="3자 이상"
+                       minlength="3"
                        required>
             </div>
 
@@ -83,15 +83,27 @@
 <script>
     // 아이디 중복 확인 함수
     function checkDuplicate() {
-        var username = document.getElementById('username').value;
-        if (!username) {
-            alert('아이디를 입력해주세요.');
-            return;
-        }
-        // TODO: AJAX로 중복 확인 API 호출
-        // fetch('/api/check-username?username=' + username)
-        alert('중복 확인 기능 (API 연동 필요)');
+    const username = document.getElementById('username').value;
+
+    if (!username) {
+        alert('사번을 입력해주세요.');
+        return;
     }
+
+    fetch('/api/check-username?username=' + encodeURIComponent(username))
+        .then(response => response.json())
+        .then(isDuplicate => {
+            if (isDuplicate) {
+                alert('이미 사용 중인 사번입니다.');
+            } else {
+                alert('사용 가능한 사번입니다.');
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            alert('중복 확인 중 오류가 발생했습니다.');
+        });
+}
 </script>
 
 </body>

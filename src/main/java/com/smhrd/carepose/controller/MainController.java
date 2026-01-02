@@ -1,12 +1,17 @@
 package com.smhrd.carepose.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.smhrd.carepose.entity.MemberEntity;
+import com.smhrd.carepose.entity.PatientEntity;
 import com.smhrd.carepose.repository.MemberRepository;
+import com.smhrd.carepose.repository.PatientRepository;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -16,14 +21,14 @@ public class MainController {
 	
 	@Autowired
 	MemberRepository memberRepository;
+	
+	@Autowired
+	PatientRepository patientRepository;
 
-	@GetMapping("/caremain")
-		public String nursmain() {
-	return "monitoring";
-	}
 
-	@GetMapping("/nursmain")
-	public String caremain() {
+
+	@GetMapping("/dashboard")
+	public String nursmain() {
 		return "dashboard";
 	}
 	

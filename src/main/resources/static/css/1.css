@@ -170,7 +170,7 @@
             min-height: 150px;
         }
 
-        .alert-list { width: 47%; display: flex; flex-direction: column; gap: 8px; }
+        .alert-list { width: 40%; display: flex; flex-direction: column; gap: 8px; }
 
         .alert-item {
             background: white;
