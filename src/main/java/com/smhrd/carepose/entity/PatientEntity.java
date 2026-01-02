@@ -1,9 +1,14 @@
 package com.smhrd.carepose.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,13 +23,16 @@ import lombok.NoArgsConstructor;
 public class PatientEntity {
 
     @Id
-    private Long patient_id; // 환자 고유 번호 (PK)
+    @Column(name = "patient_id", length = 50)
+    private String patientId; // 환자 고유 번호 (PK)
 
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "room_bed", nullable = false)
-    private String roomBed; // room_bed 속성
 
-    // 필요한 다른 컬럼들 (나이, 병명 등) 추가 가능
+    @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
+    private PositionEntity position;
+    
+    
+    
 }

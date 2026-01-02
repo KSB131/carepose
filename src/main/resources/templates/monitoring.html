@@ -6,8 +6,10 @@
     <title>실시간 모니터링</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
-<body>
-
+<body class="monitoring-mode">
+   
+   
+   
     <div layout:fragment="content">
         
         <!-- 페이지 헤더 -->
@@ -47,67 +49,60 @@
             </div>
 
             <!-- 샘플 데이터 -->
-            <th:block th:if="${#lists.isEmpty(cameras)}">
-                <div class="camera-card">
+            <th:block th:if="${cameras == null or #lists.isEmpty(cameras)}">
+                <div th:each="p : ${patients}" class="camera-card">
+                
                     <div class="camera-view">
-                        카메라 영상
-                        <div class="camera-status-badge camera-status-normal">정상</div>
+                    <div class="left-side">
+                        <span class="side-label">현재 체위</span>
+                        <h1 th:if="${p.position != null}" class="pose-text" th:text="${p.position.lastPosition}">좌측위</h1>
+                        <h1 th:unless="${p.position != null}" class="no-data">없음</h1>
                     </div>
-                    <div class="camera-info">
-                        <div><span class="bed-id">101-A</span><span class="patient-name">김○○</span></div>
-                        <span class="current-pose">현재: 좌측위</span>
+                    
+                    <div class="center-arrow">
+                       <i class="arrow-icon">➔</i>
+                   </div>
+            
+                    <div class="right-side">
+                        <span class="side-label">변경 예정</span>
+                        <h1 th:if="${p.position != null}" class="pose-text"
+                            th:with="pos=${p.position.lastPosition}"
+                            th:text="${pos == '좌측위' ? '앙와위' : (pos == '앙와위' ? '우측위' : (pos == '우측위' ? '좌측위' : '확인'))}">
+                            정상위
+                        </h1>
+                        <h1 th:unless="${p.position != null}" class="no-data">-</h1>
                     </div>
+            
+                    <div class="camera-status-badge camera-status-normal">정상</div>
                 </div>
-                <div class="camera-card camera-card-warning">
-                    <div class="camera-view">
-                        카메라 영상
-                        <div class="camera-status-badge camera-status-warning">주의</div>
-                    </div>
+                    
                     <div class="camera-info">
-                        <div><span class="bed-id">101-B</span><span class="patient-name">이○○</span></div>
-                        <span class="current-pose">현재: 앙와위</span>
-                    </div>
+                   <div>
+                       <span class="bed-id" th:text="${p.patientId}">101-A</span>
+                       <span class="patient-name" th:text="${p.name}">김○○</span>
+                   </div>
+                   
+                   <div th:if="${p.position != null}">
+                       <span class="current-time" style="font-size: 0.85rem; color: #555;">상태 기록 후: </span>
+                       <strong class="timer-display" 
+                             style="color: #d9534f;" 
+                             th:if="${p.position != null}"
+                             th:data-start-time="${p.position.lastPositionTime}">
+                         계산 중...
+                     </strong>
+                       <br>
+                       <small style="color: #888;" 
+                              th:text="'(' + ${#temporals.format(p.position.lastPositionTime, 'yyyy/MM/dd HH:mm')} + ' 기록)'">
+                           (10:23 기록)
+                       </small>
+                   </div>
+                   <div th:unless="${p.position != null}">
+                       <small style="color: #ccc;">기록 없음</small>
+                   </div>
+               </div>
+               
                 </div>
-                <div class="camera-card camera-card-danger">
-                    <div class="camera-view">
-                        카메라 영상
-                        <div class="camera-status-badge camera-status-danger">위험</div>
-                    </div>
-                    <div class="camera-info">
-                        <div><span class="bed-id">101-D</span><span class="patient-name">최○○</span></div>
-                        <span class="current-pose">현재: 앙와위</span>
-                    </div>
-                </div>
-                <div class="camera-card">
-                    <div class="camera-view">
-                        카메라 영상
-                        <div class="camera-status-badge camera-status-normal">정상</div>
-                    </div>
-                    <div class="camera-info">
-                        <div><span class="bed-id">102-A</span><span class="patient-name">정○○</span></div>
-                        <span class="current-pose">현재: 우측위</span>
-                    </div>
-                </div>
-                <div class="camera-card camera-card-warning">
-                    <div class="camera-view">
-                        카메라 영상
-                        <div class="camera-status-badge camera-status-warning">주의</div>
-                    </div>
-                    <div class="camera-info">
-                        <div><span class="bed-id">102-C</span><span class="patient-name">홍○○</span></div>
-                        <span class="current-pose">현재: 앙와위</span>
-                    </div>
-                </div>
-                <div class="camera-card camera-card-danger">
-                    <div class="camera-view">
-                        카메라 영상
-                        <div class="camera-status-badge camera-status-danger">위험</div>
-                    </div>
-                    <div class="camera-info">
-                        <div><span class="bed-id">103-B</span><span class="patient-name">강○○</span></div>
-                        <span class="current-pose">현재: 앙와위</span>
-                    </div>
-                </div>
+                
             </th:block>
         </div>
 
@@ -115,6 +110,46 @@
 
     <script>
         // 그리드 크기 변경
+        function setGridSize(cols) {
+            var grid = document.getElementById('cameraGrid');
+            grid.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+        }
+        
+        // 실시간 타이머
+        function updateTimers() {
+            const timerElements = document.querySelectorAll('.timer-display');
+            
+            timerElements.forEach(el => {
+                const startTimeStr = el.getAttribute('data-start-time'); // 서버에서 온 시간 (ISO 포맷)
+                if (!startTimeStr) return;
+
+                const startTime = new Date(startTimeStr);
+                const now = new Date();
+                
+                // 시간 차이 계산 (밀리초 -> 초)
+                const diffInSeconds = Math.floor((now - startTime) / 1000);
+
+                if (diffInSeconds < 0) {
+                    el.innerText = "0분 0초";
+                    return;
+                }
+
+                const minutes = Math.floor(diffInSeconds / 60);
+                const seconds = diffInSeconds % 60;
+
+                // 원하는 포맷으로 표시 (예: 100분 10초)
+                el.innerText = `${minutes}분 ${seconds}초`;
+                
+                // 만약 100:10 포맷을 원하시면 아래 코드를 사용하세요
+                // el.innerText = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+            });
+        }
+
+        // 페이지 로드 시 즉시 실행 후, 1초마다 반복
+        updateTimers();
+        setInterval(updateTimers, 1000);
+
+        // 기존 그리드 크기 변경 함수
         function setGridSize(cols) {
             var grid = document.getElementById('cameraGrid');
             grid.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';

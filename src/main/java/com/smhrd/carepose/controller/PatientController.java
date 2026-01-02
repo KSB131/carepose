@@ -16,16 +16,6 @@ public class PatientController {
 	@Autowired
 	private PatientRepository patientRepository;
 
-	@GetMapping("/monitoring")
-	public String dashboard(Model model) {
-	    // 1. 모든 환자 리스트 가져오기
-	    List<PatientEntity> patientList = patientRepository.findAll();
-	    
-	    // 2. 모델에 담아서 HTML로 전달
-	    model.addAttribute("patients", patientList);
-	    
-	    // 파일명이 monitoring.html
-	    return "monitoring";
-	}
+
 	
 }
