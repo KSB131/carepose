@@ -14,6 +14,7 @@ import com.smhrd.carepose.CareposeApplication;
 import com.smhrd.carepose.entity.PatientEntity;
 import com.smhrd.carepose.repository.PatientRepository;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 
@@ -77,7 +78,7 @@ public class PatientController {
     @GetMapping
     public String list(
             @RequestParam(required=false) String keyword,
-            Model model){
+            Model model, HttpServletRequest request){
 
         List<PatientEntity> patients;
 
@@ -91,6 +92,8 @@ public class PatientController {
         model.addAttribute("patients", patients);
         model.addAttribute("keyword", keyword);
 
+        // 사이드바 active 처리
+        model.addAttribute("requestURI", request.getRequestURI());
         return "patients";
     }
 

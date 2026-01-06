@@ -26,31 +26,35 @@
             </div>
 
             <ul class="nav flex-column">
-               <li class="nav-item">
-                  <a class="nav-link" th:href="@{/dashboard}">
-                     <i class="bi bi-speedometer2 me-2"></i>대시보드
-                  </a>
-               </li>
-               <li class="nav-item">
-                  <a class="nav-link" th:href="@{/patients}">
-                     <i class="bi bi-hospital me-2"></i>병실 현황
-                  </a>
-               </li>
-               <li class="nav-item">
-                  <a class="nav-link active" th:href="@{/rooms}">
-                     <i class="bi bi-camera-video me-2"></i>실시간 모니터링
-                  </a>
-               </li>
-               <li class="nav-item">
-                  <a class="nav-link">
-                     <i class="bi bi-bell me-2"></i>알림 센터
-                  </a>
-               </li>
-            </ul>
+	               <li class="nav-item">
+	                  <a class="nav-link" th:href="@{/dashboard}"
+	                  	th:classappend="${requestURI.contains('/dashboard')} ? 'active'">
+	                     <i class="bi bi-speedometer2 me-2"></i>대시보드
+	                  </a>
+	               </li>
+	               <li class="nav-item">
+	                  <a class="nav-link" th:href="@{/patients}"
+	                  	th:classappend="${requestURI.contains('/patients')} ? 'active'">
+	                     <i class="bi bi-hospital me-2"></i>병실 현황
+	                  </a>
+	               </li>
+	               <li class="nav-item">
+	                  <a class="nav-link" th:href="@{/rooms}"
+	                  	th:classappend="${requestURI.contains('/rooms')} ? 'active'">
+	                     <i class="bi bi-camera-video me-2"></i>실시간 모니터링
+	                  </a>
+	               </li>
+	               <li class="nav-item">
+	                  <a class="nav-link"
+	                  	th:classappend="${requestURI.contains('/alerts')} ? 'active'">
+	                     <i class="bi bi-bell me-2"></i>알림 센터
+	                  </a>
+	               </li>
+	            </ul>
 
-            <div class="mt-5">
-               <span class="small text-white-50">carepose 1.0.0</span>
-            </div>
+            <div class="mt-5 px-3">
+                  <span class="small text-muted" style="color: silver !important;">carepose 1.0.0</span>
+               </div>
          </div>
       </nav>
 
@@ -98,7 +102,7 @@
                               <th>환자명</th>
                               <th>욕창 단계</th>
                               <th>욕창 부위</th>
-                              <th>실시간 모니터링</th>
+                              <th>개인별 실시간 화면</th>
                               <th>관리</th>
                            </tr>
                         </thead>

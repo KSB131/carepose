@@ -57,27 +57,31 @@
                </h5>
             </div>
                <ul class="nav flex-column">
-                  <li class="nav-item">
-                     <a class="nav-link active" th:href="@{dashboard}">
-                        대시보드
-                     </a>
-                  </li>
-                  <li class="nav-item">
-                     <a class="nav-link" th:href="@{patients}">
-                        병실 현황
-                     </a>
-                  </li>
-                  <li class="nav-item">
-                     <a class="nav-link" th:href="@{rooms}">
-                        실시간 모니터링
-                     </a>
-                  </li>
-                  <li class="nav-item">
-                     <a class="nav-link" href="#">
-                        알림 센터
-                     </a>
-                  </li>
-               </ul>
+	               <li class="nav-item">
+	                  <a class="nav-link" th:href="@{/dashboard}"
+	                  	th:classappend="${requestURI.contains('/dashboard')} ? 'active'">
+	                     <i class="bi bi-speedometer2 me-2"></i>대시보드
+	                  </a>
+	               </li>
+	               <li class="nav-item">
+	                  <a class="nav-link" th:href="@{/patients}"
+	                  	th:classappend="${requestURI.contains('/patients')} ? 'active'">
+	                     <i class="bi bi-hospital me-2"></i>병실 현황
+	                  </a>
+	               </li>
+	               <li class="nav-item">
+	                  <a class="nav-link" th:href="@{/rooms}"
+	                  	th:classappend="${requestURI.contains('/rooms')} ? 'active'">
+	                     <i class="bi bi-camera-video me-2"></i>실시간 모니터링
+	                  </a>
+	               </li>
+	               <li class="nav-item">
+	                  <a class="nav-link"
+	                  	th:classappend="${requestURI.contains('/alerts')} ? 'active'">
+	                     <i class="bi bi-bell me-2"></i>알림 센터
+	                  </a>
+	               </li>
+	            </ul>
                <div class="mt-5 px-3">
                   <span class="small text-muted" style="color: silver !important;">carepose 1.0.0</span>
                </div>
@@ -91,7 +95,7 @@
 
 	               <div>
 	                  <h1 class="page-title mb-1">6병동</h1>
-	                  <p class="text-muted mb-0">실시간 환자 모니터링 현황</p>
+	                  <p class="text-muted mb-0">환자 모니터링 현황</p>
                </div>
                <div class="container">
   
@@ -265,7 +269,7 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    document.getElementById('status').textContent = '데이터 로딩 실패';
+                    /* document.getElementById('status').textContent = '데이터 로딩 실패'; */
                 });
         }
         

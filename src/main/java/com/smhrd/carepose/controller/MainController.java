@@ -13,6 +13,7 @@ import com.smhrd.carepose.entity.PatientEntity;
 import com.smhrd.carepose.repository.MemberRepository;
 import com.smhrd.carepose.repository.PatientRepository;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -25,10 +26,7 @@ public class MainController {
    @Autowired
    PatientRepository patientRepository;
 
-   @GetMapping("/dashboard")
-   public String nursmain() {
-      return "dashboard";
-   }
+
    
    
    @GetMapping("/login")
@@ -37,10 +35,14 @@ public class MainController {
    }
    
    @GetMapping("/rooms")
-   public String roomSelect(Model model) {
-	   List<PatientEntity> patients = patientRepository.findAll();
-	   model.addAttribute("patients", patients);
-	   return "roomSelect";
+   public String roomSelect(Model model, HttpServletRequest request) {
+       List<PatientEntity> patients = patientRepository.findAll();
+       model.addAttribute("patients", patients);
+
+       // 사이드바 active 처리용
+       model.addAttribute("requestURI", request.getRequestURI());
+
+       return "roomSelect";
    }
    
 }

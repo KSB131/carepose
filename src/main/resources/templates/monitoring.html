@@ -46,17 +46,19 @@
       }
 
       .sidebar .nav-link {
-         color: rgba(255, 255, 255, 0.7);
+         color: rgba(255, 255, 255, 0.75);
          padding: 14px 20px;
          border-radius: 12px;
-         margin-bottom: 8px;
+         margin-bottom: 33px;
          transition: all 0.3s;
          font-weight: 600;
+         display: flex;
+         align-items: center;
       }
 
       .sidebar .nav-link:hover {
          background: rgba(255, 255, 255, 0.1);
-         color: white;
+         color: #fff;
          transform: translateX(4px);
       }
 
@@ -298,30 +300,33 @@
                   <h5 class="fw-bold text-white">SMHRD 요양병원<br>안전 관제시스템</h5>
                </div>
                <ul class="nav flex-column">
-                  <li class="nav-item">
-                     <a class="nav-link" th:href="@{/dashboard}">
-                        <i class="bi bi-speedometer2 me-2"></i>대시보드
-                     </a>
-                  </li>
-                  <li class="nav-item">
-                     <a class="nav-link" th:href="@{/patients}">
-                        <i class="bi bi-hospital me-2"></i>병실 현황
-                     </a>
-                  </li>
-                  <li class="nav-item">
-                     <a class="nav-link"
-					   th:href="@{/rooms}">
-					   <i class="bi bi-camera-video me-2"></i>실시간 모니터링
-					</a>
-                  </li>
-                  <li class="nav-item">
-                     <a class="nav-link" href="#alerts">
-                        <i class="bi bi-bell me-2"></i>알림 센터
-                     </a>
-                  </li>
-               </ul>
-               <div class="mt-5">
-                  <span class="small text-white-50">carepose 1.0.0</span>
+	               <li class="nav-item">
+	                  <a class="nav-link" th:href="@{/dashboard}"
+	                  	th:classappend="${requestURI.contains('/dashboard')} ? 'active'">
+	                     <i class="bi bi-speedometer2 me-2"></i>대시보드
+	                  </a>
+	               </li>
+	               <li class="nav-item">
+	                  <a class="nav-link" th:href="@{/patients}"
+	                  	th:classappend="${requestURI.contains('/patients')} ? 'active'">
+	                     <i class="bi bi-hospital me-2"></i>병실 현황
+	                  </a>
+	               </li>
+	               <li class="nav-item">
+	                  <a class="nav-link" th:href="@{/rooms}"
+	                  	th:classappend="${requestURI.contains('/rooms')} ? 'active'">
+	                     <i class="bi bi-camera-video me-2"></i>실시간 모니터링
+	                  </a>
+	               </li>
+	               <li class="nav-item">
+	                  <a class="nav-link"
+	                  	th:classappend="${requestURI.contains('/alerts')} ? 'active'">
+	                     <i class="bi bi-bell me-2"></i>알림 센터
+	                  </a>
+	               </li>
+	            </ul>
+               <div class="mt-5 px-3">
+                  <span class="small text-muted" style="color: silver !important;">carepose 1.0.0</span>
                </div>
             </div>
          </nav>
