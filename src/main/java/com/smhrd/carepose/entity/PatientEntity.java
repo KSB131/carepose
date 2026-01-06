@@ -12,27 +12,42 @@ import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
+@Setter
 @Table(name = "patient") // DB 테이블명
 public class PatientEntity {
 
-    @Id
-    @Column(name = "patient_id", length = 50)
-    private String patientId; // 환자 고유 번호 (PK)
+	
+	@Transient
+	private PositionEntity position;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+	
+	  @Id
+	    @Column(name="patient_id")
+	    private String patientId;
 
+	    private String name;
 
-    @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
-    private PositionEntity position;
-    
-    
-    
-}
+	    private Integer grade;
+
+	    @Column(name="ulcer_location")
+	    private String ulcerLocation;
+
+	    @Column(name="device_id")
+	    private String deviceId;
+
+	    @Column(name="device_status")
+	    private String deviceStatus;
+
+	    @Column(name="room_bed")
+	    private String roomBed;
+	}

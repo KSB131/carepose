@@ -1,265 +1,226 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>침상 관리</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>침상 관리</title>
+	<!-- Bootstrap 5 CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+
 </head>
-<body>
 
-    <div layout:fragment="content">
-        
-        <!-- 페이지 헤더 -->
-        <div class="page-header">
-            <div>
-                <h2 class="page-title">침상 관리</h2>
-                <p class="page-description">디바이스-환자 매핑 관리</p>
-            </div>
-            <button class="btn btn-primary" 
-                    style="width: auto; padding: 0 16px;"
-                    onclick="openModal('patientModal')">
-                + 신규 환자 등록
-            </button>
-        </div>
+<body class="bg-light">
 
-        <!-- 검색 및 필터 -->
-        <div class="card" style="padding: 16px; display: flex; gap: 16px;">
-            <form th:action="@{/patients}" method="get" style="display: flex; gap: 16px; flex: 1;">
-                <input type="text" 
-                       name="keyword" 
-                       class="input-field" 
-                       placeholder="🔍 환자명 또는 침상 ID 검색..."
-                       th:value="${keyword}"
-                       style="flex: 1;">
-                <select name="roomFilter" class="input-field" style="width: 150px;">
-                    <option value="">전체 병실</option>
-                    <option th:each="room : ${roomList}" 
-                            th:value="${room.id}" 
-                            th:text="${room.name}"
-                            th:selected="${roomFilter == room.id}">병실</option>
-                </select>
-                <button type="submit" class="btn btn-small">검색</button>
-            </form>
-        </div>
+	<div class="container-fluid">
+		<div class="row">
+			<!-- Sidebar -->
+			<nav class="col-md-3 col-lg-2 d-md-block sidebar collapse p-0">
+				<div class="position-sticky pt-3">
+					<div class="px-3 mb-4">
+						<h5 class="fw-bold">SMHRD 요양병원<br>안전 관제시스템</h5>
+					</div>
+					<ul class="nav flex-column">
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{dashboard}">
+								대시보드
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link active" th:href="@{patients}">
+								병실 현황
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{monitoring}">
+								실시간 모니터링
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#">
+								알림 센터
+							</a>
+						</li>
+					</ul>
+					<div class="mt-5 px-3">
+						<span class="small text-muted" style="color: silver !important;">carepose 1.0.0</span>
+					</div>
+				</div>
+			</nav>
 
-        <!-- 환자 목록 테이블 -->
-        <div class="table-container">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>침상 ID</th>
-                        <th>환자명</th>
-                        <th>욕창 단계</th>
-                        <th>욕창 부위</th>
-                        <th>디바이스 상태</th>
-                        <th>액션</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- 환자 목록 반복 -->
-                    <tr th:each="patient : ${patients}">
-                        <td class="bed-id" th:text="${patient.bedId}">101-A</td>
-                        <td th:text="${patient.name}">환자명</td>
-                        <td>
-                            <!-- 욕창 단계별 뱃지 색상 -->
-                            <span th:switch="${patient.pressureUlcerStage}">
-                                <span th:case="0" class="badge badge-gray">없음</span>
-                                <span th:case="1" class="badge badge-green">1단계</span>
-                                <span th:case="2" class="badge badge-yellow">2단계</span>
-                                <span th:case="3" class="badge badge-red">3단계</span>
-                                <span th:case="4" class="badge badge-red">4단계</span>
-                            </span>
-                        </td>
-                        <td th:text="${patient.pressureUlcerArea ?: '-'}">부위</td>
-                        <td>
-                            <!-- 디바이스 연결 상태 -->
-                            <span th:if="${patient.deviceConnected}" class="connection-status text-green">
-                                <span class="connection-dot connection-dot-green"></span>
-                                연결됨
-                            </span>
-                            <span th:unless="${patient.deviceConnected}" class="connection-status text-red">
-                                <span class="connection-dot connection-dot-red"></span>
-                                연결 끊김
-                            </span>
-                        </td>
-                        <td>
-                            <button class="btn btn-small" 
-                                    th:onclick="'editPatient(' + ${patient.id} + ')'">수정</button>
-                            <button class="btn btn-small btn-danger" 
-                                    th:onclick="'deletePatient(' + ${patient.id} + ')'">삭제</button>
-                        </td>
-                    </tr>
+			<!-- Main Content -->
+			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+				<div
+					class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+					<div>
+						<h1 class="h2">침상 관리</h1>
+						<p class="text-muted">디바이스-환자 매핑 관리</p>
+					</div>
+					<div class="btn-toolbar mb-2 mb-md-0">
+						<button type="button" class="btn btn-info" data-bs-toggle="modal"
+							data-bs-target="#patientModal">
+							+ 신규 환자 등록
+						</button>
+					</div>
+				</div>
 
-                    <!-- 샘플 데이터 (개발용) -->
-                    <th:block th:if="${#lists.isEmpty(patients)}">
-                        <tr>
-                            <td class="bed-id">101-A</td>
-                            <td>김○○</td>
-                            <td><span class="badge badge-green">1단계</span></td>
-                            <td>천골</td>
-                            <td>
-                                <span class="connection-status text-green">
-                                    <span class="connection-dot connection-dot-green"></span>
-                                    연결됨
-                                </span>
-                            </td>
-                            <td>
-                                <button class="btn btn-small">수정</button>
-                                <button class="btn btn-small btn-danger">삭제</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="bed-id">101-B</td>
-                            <td>이○○</td>
-                            <td><span class="badge badge-yellow">2단계</span></td>
-                            <td>발꿈치</td>
-                            <td>
-                                <span class="connection-status text-green">
-                                    <span class="connection-dot connection-dot-green"></span>
-                                    연결됨
-                                </span>
-                            </td>
-                            <td>
-                                <button class="btn btn-small">수정</button>
-                                <button class="btn btn-small btn-danger">삭제</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="bed-id">101-C</td>
-                            <td>박○○</td>
-                            <td><span class="badge badge-gray">없음</span></td>
-                            <td>-</td>
-                            <td>
-                                <span class="connection-status text-red">
-                                    <span class="connection-dot connection-dot-red"></span>
-                                    연결 끊김
-                                </span>
-                            </td>
-                            <td>
-                                <button class="btn btn-small">수정</button>
-                                <button class="btn btn-small btn-danger">삭제</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="bed-id">101-D</td>
-                            <td>최○○</td>
-                            <td><span class="badge badge-red">3단계</span></td>
-                            <td>엉덩이</td>
-                            <td>
-                                <span class="connection-status text-green">
-                                    <span class="connection-dot connection-dot-green"></span>
-                                    연결됨
-                                </span>
-                            </td>
-                            <td>
-                                <button class="btn btn-small">수정</button>
-                                <button class="btn btn-small btn-danger">삭제</button>
-                            </td>
-                        </tr>
-                    </th:block>
-                </tbody>
-            </table>
-        </div>
+				<!-- Search & Filter -->
+				<div class="card shadow-sm mb-4">
+					<div class="card-body">
+						<form th:action="@{/patients}" method="get" class="row g-3 align-items-center">
+							<div class="col-md-6">
+								<input type="text" name="keyword" class="form-control form-control-lg"
+									placeholder="🔍 환자명 또는 침상 ID 검색..." th:value="${keyword}">
+							</div>
+							<div class="col-md-4">
+								<select name="roomFilter" class="form-select form-select-lg">
+									<option value="">병실 검색</option>
+									<option th:each="room : ${roomList}" th:value="${room.id}" th:text="${room.name}"
+										th:selected="${roomFilter == room.id}">병실</option>
+								</select>
+							</div>
+							<div class="col-md-2">
+								<button type="submit" class="btn btn-primary w-100">검색</button>
+							</div>
+						</form>
+					</div>
+				</div>
 
-        <!-- 페이지네이션 -->
-        <div class="flex-center mt-24" th:if="${totalPages > 1}">
-            <div class="btn-group">
-                <a th:href="@{/patients(page=${currentPage - 1})}" 
-                   th:if="${currentPage > 0}"
-                   class="btn btn-small">이전</a>
-                <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-                    <a th:href="@{/patients(page=${i})}" 
-                       th:text="${i + 1}"
-                       th:classappend="${i == currentPage} ? 'btn-primary' : ''"
-                       class="btn btn-small">1</a>
-                </span>
-                <a th:href="@{/patients(page=${currentPage + 1})}" 
-                   th:if="${currentPage < totalPages - 1}"
-                   class="btn btn-small">다음</a>
-            </div>
-        </div>
+				<!-- Patients Table -->
+				<div class="card shadow-sm">
+					<div class="card-body p-0">
+						<div class="table-responsive">
+							<table class="table table-hover align-middle mb-0">
+								<thead class="table-light">
+									<tr>
+										<th>침상 ID</th>
+										<th>환자명</th>
+										<th>욕창 단계</th>
+										<th>욕창 부위</th>
+										<th>실시간 모니터링</th>
+										<th>관리</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="patient : ${patients}">
+										<td class="fw-bold" th:text="${patient.roomBed}">101-A</td>
+										<td th:text="${patient.name}">환자명</td>
+										<td>
+											<span th:switch="${patient.grade}">
+												<span th:case="0" class="badge bg-secondary">없음</span>
+												<span th:case="1" class="badge bg-success">1단계</span>
+												<span th:case="2" class="badge bg-warning text-dark">2단계</span>
+												<span th:case="3" class="badge bg-danger">3단계</span>
+												<span th:case="4" class="badge bg-danger">4단계</span>
+												<span th:case="*" class="badge bg-secondary">미입력</span>
+											</span>
+										</td>
+										<td th:text="${patient.ulcerLocation ?: '-'}">부위</td>
+										<td>
+											<button class="btn btn-sm btn-outline-success me-1"
+												th:attr="data-id=${patient.patientId}"
+												onclick="editPatient(this)">화면 보러가기</button>
+										</td>
+										<td>
+											<button class="btn btn-sm btn-outline-primary me-1"
+												th:attr="data-id=${patient.patientId}"
+												onclick="editPatient(this)">수정</button>
+											<button class="btn btn-sm btn-outline-danger"
+												th:attr="data-id=${patient.patientId}"
+												onclick="deletePatient(this)">삭제</button>
+										</td>
+									</tr>
 
-    </div>
+									<!-- Empty State / Sample (Optional: Only show if list empty) -->
+									<tr th:if="${#lists.isEmpty(patients)}">
+										<td colspan="6" class="text-center py-4 text-muted">등록된 환자가 없습니다.</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
 
-    <!-- 환자 등록/수정 모달 -->
-    <div id="patientModal" class="modal hidden">
-        <div class="modal-content">
-            <h3 class="card-title">신규 환자 등록</h3>
-            <form th:action="@{/patients}" method="post">
-                <div class="settings-grid">
-                    <div class="form-group">
-                        <label class="input-label">침상 ID *</label>
-                        <input type="text" name="bedId" class="input-field" placeholder="자동검색 또는 직접입력" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="input-label">환자명 *</label>
-                        <input type="text" name="name" class="input-field" placeholder="환자 이름" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="input-label">욕창 단계</label>
-                        <select name="pressureUlcerStage" class="input-field">
-                            <option value="0">없음</option>
-                            <option value="1">1단계</option>
-                            <option value="2">2단계</option>
-                            <option value="3">3단계</option>
-                            <option value="4">4단계</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="input-label">욕창 부위</label>
-                        <input type="text" name="pressureUlcerArea" class="input-field" placeholder="천골, 발꿈치 등">
-                    </div>
-                </div>
-                <div class="btn-group mt-16">
-                    <button type="submit" class="btn btn-primary" style="width: auto; padding: 0 24px;">등록</button>
-                    <button type="button" class="btn btn-secondary" style="width: auto; padding: 0 24px;" onclick="closeModal('patientModal')">취소</button>
-                </div>
-            </form>
-        </div>
-    </div>
+				<!-- Pagination -->
+				<nav aria-label="Page navigation" class="mt-4" th:if="${totalPages > 1}">
+					<ul class="pagination justify-content-center">
+						<li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+							<a class="page-link" th:href="@{/patients(page=${currentPage - 1})}" tabindex="-1">이전</a>
+						</li>
+						<li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+							th:classappend="${i == currentPage} ? 'active'">
+							<a class="page-link" th:href="@{/patients(page=${i})}" th:text="${i + 1}">1</a>
+						</li>
+						<li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+							<a class="page-link" th:href="@{/patients(page=${currentPage + 1})}">다음</a>
+						</li>
+					</ul>
+				</nav>
 
-    <style>
-        /* 모달 스타일 */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background-color: white;
-            border-radius: 8px;
-            padding: 24px;
-            width: 100%;
-            max-width: 500px;
-        }
-    </style>
+			</main>
+		</div>
+	</div>
 
-    <script>
-        function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-        }
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
-        function editPatient(id) {
-            // TODO: 수정 모달 열기 + 데이터 로드
-            alert('환자 수정 (ID: ' + id + ')');
-        }
-        function deletePatient(id) {
-            if (confirm('정말 삭제하시겠습니까?')) {
-                // TODO: DELETE API 호출
-                // fetch('/api/patients/' + id, { method: 'DELETE' })
-                alert('환자 삭제 (ID: ' + id + ')');
-            }
-        }
-    </script>
+	<!-- Bootstrap Modal -->
+	<div class="modal fade" id="patientModal" tabindex="-1" aria-labelledby="patientModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="patientModalLabel">신규 환자 등록</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<form th:action="@{/patients}" method="post">
+					<div class="modal-body">
+						<div class="mb-3">
+							<label class="form-label">침상 ID *</label>
+							<input type="text" name="roomBed" class="form-control" required>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">환자명 *</label>
+							<input type="text" name="name" class="form-control" required>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">욕창 단계</label>
+							<select name="grade" class="form-select">
+								<option value="0">없음</option>
+								<option value="1">1단계</option>
+								<option value="2">2단계</option>
+								<option value="3">3단계</option>
+								<option value="4">4단계</option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">욕창 부위</label>
+							<input type="text" name="ulcerLocation" class="form-control" placeholder="천골, 발꿈치 등">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+						<button type="submit" class="btn btn-primary">등록</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Bootstrap 5 JS Bundle -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+	<script>
+		function editPatient(btn) {
+			const id = btn.getAttribute("data-id");
+			location.href = "/patients/" + id;
+		}
+
+		function deletePatient(btn) {
+			if (confirm('정말 삭제하시겠습니까?')) {
+				const id = btn.getAttribute("data-id");
+				location.href = "/patients/delete/" + id;
+			}
+		}
+	</script>
 
 </body>
+
 </html>

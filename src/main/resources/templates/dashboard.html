@@ -1,126 +1,179 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" th:href="@{/css/style.css}">
-<title>관리 시스템 대시보드</title>
-</style>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>관리 시스템 대시보드</title>
+   <!-- Bootstrap 5 CSS -->
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+   <!-- Custrom CSS (Optional, keeping if needed for specific overrides) -->
+   <link rel="stylesheet" th:href="@{/css/style.css}">
+
 </head>
-<body>
-   <nav>
-      <h2>SMHRD 요양병원<br>안전 관제시스템</h2>
-      <br>
-      <br>
-      <ul>
-         <li>대시보드</li>
-         <li>병실 현황</li>
-         <li><a th:href="@{templates/monitoring}"  style="text-decoration: none; color: black">실시간 모니터링</a></li>
-         <li>알림 센터</li>
-      </ul>
-      
-      <br>
-      <span style="color: gray">carepose 1.0.0</span>
-   </nav>
 
-   <main>
-      <header>
-         <div class="header-title">
-            <h2>6병동</h2>
-            <p>실시간 환자 모니터링 현황</p>
-         </div>
-         <div class="header-info">
-            <p>현재 시간: 오전 9:56:03</p>
-         </div>
-      </header>
+<body class="bg-light">
 
-      <div class="status-grid">
-         <div class="status-card">
-            <span class="dot" style="background-color: var(--blue)"></span>
-            <div class="count">0</div>
-            <div class="label">전체 환자</div>
-         </div>
-         <div class="status-card">
-            <span class="dot" style="background-color: var(--green)"></span>
-            <div class="count">0</div>
-            <div class="label">정상</div>
-         </div>
-         <div class="status-card">
-            <span class="dot" style="background-color: var(--yellow)"></span>
-            <div class="count">0</div>
-            <div class="label">주의</div>
-         </div>
-         <div class="status-card">
-            <span class="dot" style="background-color: var(--red)"></span>
-            <div class="count">0</div>
-            <div class="label">위험</div>
-         </div>
-      </div>
-
-      <div class="section-box">
-         <p style="display: flex; justify-content: right">
-            <span class="alarm-badge"><a>🔔 새로운 알림 0건</a></span>
-         </p>
-         <div class="bed-grid">
-            <div ><h3 style="color: #3f4034">최근 이벤트</h3></div>
-            <div><h3 style="color: #3f4034">자세 변경 알림</h3></div>
-         </div>
-         <div class="alert-container">
-            <div class="alert-list">
-               <div class="alert-item white">
-               <span> 00:00 &nbsp; <b> 601C </b> &nbsp; 메시지 </span>
-               <button class = "confirm-btn">기록 확인</button>
+   <div class="container-fluid">
+      <div class="row">
+         <!-- Sidebar -->
+         <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse p-0">
+            <div class="position-sticky pt-3">
+               <div class="px-3 mb-4">
+                  <h5 class="fw-bold">SMHRD 요양병원<br>안전 관제시스템</h5>
                </div>
-               <div class="alert-item black">
-               <span> 00:00 &nbsp; 508A &nbsp; 메시지 </span>
-               <button class = "confirm-btn">기록 확인</button>
-               </div>
-               <div class="alert-item black">
-               <span> 00:00 &nbsp; 503C &nbsp; 메시지 </span>
-               <button class = "confirm-btn">기록 확인</button>
-               </div>
-               
-            </div>
-            
-            
-            
-            <div class="alert-list">
-               <div class="alert-item red">
-                  <span>14:30 &nbsp; <b>103호 B</b> &nbsp;
-                     체위 변경 필요 (2시간 초과)
-                  </span>
-                  <button class="confirm-btn">처리 완료</button>
-               </div>
-               <div class="alert-item red">
-                  <span>14:30 &nbsp; <b>103호 B</b> &nbsp;
-                     체위 변경 필요 (2시간 초과)
-                  </span>
-                  <button class="confirm-btn">처리 완료</button>
-               </div>
-               <div class="alert-item red">
-                  <span>14:25 &nbsp; <b>101호 D</b> &nbsp;
-                     체위 변경 필요 (2시간 초과)
-                  </span>
-                  <button class="confirm-btn">처리완료</button>
-               </div>
-               <div class="alert-item yellow">
-                  <span>14:15 &nbsp; <b>101호 B</b> &nbsp;
-                     자세 유지 시간 주의
-                  </span>
-                  <button class="confirm-btn">처리완료</button>
+               <ul class="nav flex-column">
+                  <li class="nav-item">
+                     <a class="nav-link active" th:href="@{dashboard}">
+                        대시보드
+                     </a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link" th:href="@{patients}">
+                        병실 현황
+                     </a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link" th:href="@{monitoring}">
+                        실시간 모니터링
+                     </a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link" href="#">
+                        알림 센터
+                     </a>
+                  </li>
+               </ul>
+               <div class="mt-5 px-3">
+                  <span class="small text-muted" style="color: silver !important;">carepose 1.0.0</span>
                </div>
             </div>
-         </div>
-      </div>
-      
+         </nav>
 
-      <div class="bed-status-container">
-      
-               <div class="bed-grid">
-            <div class="bed-card bed-green">환 자 관 리</div>
-            <div class="bed-card bed-red">실시간 모니터링</div>
-         </div>
+         <!-- Main Content -->
+         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div
+               class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+               <div>
+                  <h1 class="h2">6병동</h1>
+                  <p class="text-muted">실시간 환자 모니터링 현황</p>
+               </div>
+               <div class="btn-toolbar mb-2 mb-md-0">
+                  <div class="btn-group me-2">
+                     <button type="button" class="btn btn-sm btn-outline-secondary">현재 시간: <span id="clock">오전
+                           9:56:03</span></button>
+                  </div>
+               </div>
+            </div>
+
+            <!-- Status Cards -->
+            <div class="row g-4 mb-4">
+               <div class="col-md-3">
+                  <div class="status-card h-100">
+                     <span class="dot bg-primary"></span>
+                     <div class="h3 fw-bold my-2">0</div>
+                     <div class="text-muted">전체 환자</div>
+                  </div>
+               </div>
+               <div class="col-md-3">
+                  <div class="status-card h-100">
+                     <span class="dot bg-success"></span>
+                     <div class="h3 fw-bold my-2">0</div>
+                     <div class="text-muted">정상</div>
+                  </div>
+               </div>
+               <div class="col-md-3">
+                  <div class="status-card h-100">
+                     <span class="dot bg-warning"></span>
+                     <div class="h3 fw-bold my-2">0</div>
+                     <div class="text-muted">주의</div>
+                  </div>
+               </div>
+               <div class="col-md-3">
+                  <div class="status-card h-100">
+                     <span class="dot bg-danger"></span>
+                     <div class="h3 fw-bold my-2">0</div>
+                     <div class="text-muted">위험</div>
+                  </div>
+               </div>
+            </div>
+
+            <!-- Alerts Section -->
+            <div class="row g-4">
+               <div class="col-6">
+                  <div class="card shadow-sm mb-4">
+                     <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                        <h5 class="mb-0 text-secondary">최근 이벤트 </h5>
+                     </div>
+                     <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                           <!-- Example Alert Items -->
+                           <div class="list-group-item d-flex justify-content-between align-items-center">
+                              <span>00:00 &nbsp; <b>601C</b> &nbsp; 메시지</span>
+                              <button class="btn btn-sm btn-secondary">기록 확인</button>
+                           </div>
+                           <div class="list-group-item d-flex justify-content-between align-items-center bg-light">
+                              <span>00:00 &nbsp; 508A &nbsp; 메시지</span>
+                              <button class="btn btn-sm btn-secondary">기록 확인</button>
+                           </div>
+                 
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-6">
+                  <div class="card shadow-sm mb-4">
+                     <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                        <h5 class="mb-0 text-secondary"> 자세 변경 알림</h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">🔔 새로운 알림 0건</a>
+                     </div>
+                     <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                           <!-- Example Alert Items -->
+                         
+                           <div
+                              class="list-group-item list-group-item-danger d-flex justify-content-between align-items-center">
+                              <span>14:30 &nbsp; <b>103호 B</b> &nbsp; 체위 변경 필요 (2시간 초과)</span>
+                              <button class="btn btn-sm btn-danger">처리 완료</button>
+                           </div>
+                           <div
+                              class="list-group-item list-group-item-danger d-flex justify-content-between align-items-center">
+                              <span>14:30 &nbsp; <b>103호 B</b> &nbsp; 체위 변경 필요 (2시간 초과)</span>
+                              <button class="btn btn-sm btn-danger">처리 완료</button>
+                           </div>
+                           <div
+                              class="list-group-item list-group-item-warning d-flex justify-content-between align-items-center">
+                              <span>14:15 &nbsp; <b>101호 B</b> &nbsp; 자세 유지 시간 주의</span>
+                              <button class="btn btn-sm btn-warning">처리완료</button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               <!-- Quick Actions / Bed Status -->
+               <div class="col-lg-15">
+                  <div class="row g-3">
+                     <div class="col-6">
+                        <div class="bed-card bed-green shadow-sm">
+                           환 자 관 리
+                        </div>
+                     </div>
+                     <div class="col-6">
+                        <div class="bed-card bed-red shadow-sm">
+                           실시간 모니터링
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+         </main>
       </div>
-   </main>
+   </div>
+
+   <!-- Bootstrap 5 JS Bundle -->
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
