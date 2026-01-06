@@ -2,32 +2,46 @@
 /* 1. 전체 공통 & 색상 변수                          */
 /* ---------------------------------------------- */
 
+.page-header {
+         background: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
+         border-radius: 20px;
+         padding: 28px;
+         margin-bottom: 32px;
+         box-shadow: 0 6px 25px rgba(100,148,237,.15);
+      }
+
+      .page-title {
+         font-size: 40px;
+         font-weight: 900;
+         background: linear-gradient(135deg, #667eea, #764ba2);
+         -webkit-background-clip: text;
+         -webkit-text-fill-color: transparent;
+      }
+
 :root {
     /* 파스텔 메인 컬러 */
-    --mint-100: #d4f4e8;
-    --mint-200: #a7e9d1;
-    --mint-300: #7adeba;
-    --mint-400: #4dd3a3;
+--orange-100: #fff5ed;
+    --orange-200: #ffdecb;
+    --orange-300: #ffb088;
+    --orange-400: #ff8c00;
 
-    --blue-100: #e3f2fd;
-    --blue-200: #bbdefb;
-    --blue-300: #90caf9;
-    --blue-400: #64b5f6;
+    /* 뉴트럴 화이트 계열 (기존 blue/sky 대체) */
+    --white-100: #ffffff;
+    --white-200: #fafafa;
+    --white-300: #f5f5f5;
 
-    --sky-100: #e0f2fe;
-    --sky-200: #bae6fd;
-    --sky-300: #7dd3fc;
+    /* 핵심 변경: 배경 그라데이션 (깔끔한 화이트-웜톤) */
+    --gradient-main: linear-gradient(135deg, #fffaf7 0%, #fff0e5 100%);
+    --gradient-card: linear-gradient(145deg, #ffffff 0%, #fffcfb 100%);
 
-    /* 그라데이션 */
-    --gradient-main: linear-gradient(135deg, #e0f2fe 0%, #d4f4e8 100%);
-    --gradient-card: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
-
-    /* 기존 변수 유지 */
-    --bg-color: #f4f7f9;
+    /* 배경 및 카드 기본 설정 */
+    --bg-color: #fffaf7;    /* 전체 배경을 따뜻한 미색으로 */
     --sidebar-color: #ffffff;
     --card-bg: #ffffff;
+    
+    /* 텍스트 색상도 조금 더 부드럽게 */
+    --text-main: #454545;
     --border-color: #e0e0e0;
-    --text-main: #2c3e50;
     --text-muted: #64748b;
     --text-secondary: #64748b;
     --text-primary: #2c3e50;
@@ -259,7 +273,7 @@ body.auth-mode main {
 }
 
 .btn-danger {
-    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    background: linear-gradient(135deg,  #f5b29a 0%, #fecaca 100%);
     color: var(--danger);
 }
 
@@ -330,8 +344,7 @@ body.auth-mode main {
 /* 7. 사이드바                                     */
 /* ---------------------------------------------- */
 
-nav,
-.sidebar {
+nav {
     width: 280px;
     background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
     color: white;
@@ -340,6 +353,7 @@ nav,
     box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
     border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
+
 
 nav h1 {
     font-size: 1.5rem;
@@ -432,6 +446,34 @@ nav li {
     margin-top: 4px;
 }
 
+.sidebar {
+         background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+         min-height: 100vh;
+         box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+      }
+
+      .sidebar .nav-link {
+         color: rgba(255,255,255,0.75);
+         padding: 14px 20px;
+         border-radius: 12px;
+         margin-bottom: 8px;
+         font-weight: 600;
+         transition: all .3s;
+      }
+
+      .sidebar .nav-link:hover {
+         background: rgba(255,255,255,0.1);
+         color: #fff;
+         transform: translateX(4px);
+      }
+
+      .sidebar .nav-link.active {
+         background: linear-gradient(135deg,
+            rgba(100,181,246,.25),
+            rgba(102,126,234,.25));
+         color: #fff;
+      }
+
 
 /* ---------------------------------------------- */
 /* 8. 메인 콘텐츠                                  */
@@ -449,8 +491,7 @@ main,
 /* 9. 페이지 헤더                                  */
 /* ---------------------------------------------- */
 
-header,
-.page-header {
+header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -462,8 +503,7 @@ header,
     border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
-.header-title h2,
-.page-title {
+.header-title h2 {
     margin: 0;
     font-size: 32px;
     font-weight: 700;
@@ -1951,6 +1991,7 @@ header,
     background-color: #198754;
 }
 
+
 .pose-change-box {
     background-color: #f8f9fa;
     border-radius: 8px;
@@ -2016,3 +2057,4 @@ header,
         box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
     }
 }
+

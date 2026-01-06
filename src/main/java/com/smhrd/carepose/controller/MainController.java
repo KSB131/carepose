@@ -25,8 +25,6 @@ public class MainController {
    @Autowired
    PatientRepository patientRepository;
 
-
-
    @GetMapping("/dashboard")
    public String nursmain() {
       return "dashboard";
@@ -36,6 +34,13 @@ public class MainController {
    @GetMapping("/login")
    public String loginPage() {
       return "login";
+   }
+   
+   @GetMapping("/rooms")
+   public String roomSelect(Model model) {
+	   List<PatientEntity> patients = patientRepository.findAll();
+	   model.addAttribute("patients", patients);
+	   return "roomSelect";
    }
    
 }

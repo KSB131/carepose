@@ -8,7 +8,10 @@ import com.smhrd.carepose.entity.PatientEntity;
 @Repository
 public interface PatientRepository extends JpaRepository<PatientEntity, String> {
     
-	/*
+    List<PatientEntity> findByNameContaining(String keyword);
+
+    List<PatientEntity> findByRoomBedContaining(String roomBed);
+   /*
     // 특정 병실/침상 번호로 환자 찾기 예시
     PatientEntity findByPatientId(String patientId);
     

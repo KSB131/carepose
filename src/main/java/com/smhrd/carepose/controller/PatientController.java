@@ -9,28 +9,24 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.RequestParam;
+import com.smhrd.carepose.CareposeApplication;
 import com.smhrd.carepose.entity.PatientEntity;
 import com.smhrd.carepose.repository.PatientRepository;
 
 import lombok.RequiredArgsConstructor;
+
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/patients")
 public class PatientController {
 
+    private final CareposeApplication careposeApplication;
+
     private final PatientRepository patientRepository;
 
 
-    /** 목록 */
-    @GetMapping
-    public String list(Model model){
-
-        model.addAttribute("patients", patientRepository.findAll());
-
-        return "patients";
-    }
 
 
     /** 저장 (등록 + 수정 공용) */
@@ -76,4 +72,29 @@ public class PatientController {
 
         return "redirect:/patients";
     }
+    
+    /*검색*/
+    @GetMapping
+    public String list(
+            @RequestParam(required=false) String keyword,
+            Model model){
+
+        List<PatientEntity> patients;
+
+        if(keyword != null && !keyword.trim().isEmpty()){
+            patients = patientRepository.findByNameContaining(keyword);
+        } 
+        else {
+            patients = patientRepository.findAll();
+        }
+
+        model.addAttribute("patients", patients);
+        model.addAttribute("keyword", keyword);
+
+        return "patients";
+    }
+
+    
+    
+    
 }

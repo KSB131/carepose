@@ -27,7 +27,7 @@ import lombok.Setter;
 public class PatientEntity {
 
 	
-	@Transient
+	@OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
 	private PositionEntity position;
 
 	

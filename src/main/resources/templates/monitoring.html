@@ -1,275 +1,489 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>실시간 모니터링</title>
-   <!-- Bootstrap 5 CSS -->
    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-   <link rel="stylesheet" th:href="@{/css/style.css}">
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+   <style>
+      :root {
+         --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+         --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+         --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+         --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+         --card-shadow: 0 4px 20px rgba(100, 148, 237, 0.08);
+         --gradient-main: linear-gradient(135deg, #fffaf7 0%, #fff0e5 100%);
+      }
+
+      body {
+		    margin: 0;
+		    min-height: 100vh;
+		    background: var(--gradient-main);
+		}
+      
+      .room-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    font-size: 36px;
+    font-weight: 900;
+    color: #1f2937;
+    
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    padding: 8px 20px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+      /* 사이드바 스타일 */
+      .sidebar {
+         background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+         min-height: 100vh;
+         box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .sidebar .nav-link {
+         color: rgba(255, 255, 255, 0.7);
+         padding: 14px 20px;
+         border-radius: 12px;
+         margin-bottom: 8px;
+         transition: all 0.3s;
+         font-weight: 600;
+      }
+
+      .sidebar .nav-link:hover {
+         background: rgba(255, 255, 255, 0.1);
+         color: white;
+         transform: translateX(4px);
+      }
+
+      .sidebar .nav-link.active {
+         background: linear-gradient(135deg, rgba(100, 181, 246, 0.2) 0%, rgba(102, 126, 234, 0.2) 100%);
+         color: white;
+      }
+
+      /* 페이지 헤더 */
+      .page-header {
+         background: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
+         border-radius: 20px;
+         padding: 28px;
+         margin-top: 16px;
+         margin-bottom: 32px;
+         box-shadow: 0 6px 25px rgba(100,148,237,.15);
+      }
+
+      .page-title {
+         font-size: 40px;
+         font-weight: 900;
+         background: linear-gradient(135deg, #667eea, #764ba2);
+         -webkit-background-clip: text;
+         -webkit-text-fill-color: transparent;
+      }
+
+      /* 카메라 카드 */
+      .camera-card {
+         background: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
+         border-radius: 20px;
+         overflow: hidden;
+         border: 2px solid rgba(255, 255, 255, 0.8);
+         box-shadow: var(--card-shadow);
+         transition: all 0.3s ease;
+         height: 100%;
+      }
+
+      .camera-card:hover {
+         transform: translateY(-4px);
+         box-shadow: 0 12px 40px rgba(100, 148, 237, 0.15);
+      }
+
+      .camera-view {
+         position: relative;
+         background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+         aspect-ratio: 16/9;
+         display: flex;
+      }
+
+      .camera-left {
+         flex: 1;
+         background: white;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         padding: 20px;
+         border-right: 2px dashed rgba(100, 181, 246, 0.3);
+      }
+
+      .camera-right {
+         flex: 1;
+         background: linear-gradient(135deg, #e0f2fe 0%, #d4f4e8 100%);
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         justify-content: center;
+         padding: 20px;
+      }
+
+      .pose-arrow-center {
+         position: absolute;
+         top: 50%;
+         left: 50%;
+         transform: translate(-50%, -50%);
+         width: 48px;
+         height: 48px;
+         background: white;
+         border-radius: 50%;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+         border: 3px solid #64b5f6;
+         z-index: 10;
+      }
+
+      .status-badge {
+         position: absolute;
+         top: 12px;
+         right: 12px;
+         padding: 6px 14px;
+         border-radius: 20px;
+         font-size: 12px;
+         font-weight: 700;
+         color: white;
+         z-index: 15;
+         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .status-normal {
+         background: var(--success-gradient);
+      }
+
+      .status-warning {
+         background: var(--warning-gradient);
+      }
+
+      .status-danger {
+         background: var(--danger-gradient);
+         animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+         0%, 100% { opacity: 1; }
+         50% { opacity: 0.7; }
+      }
+
+      /* 환자 정보 영역 */
+      .patient-info {
+         padding: 20px 24px;
+         background: white;
+      }
+
+      .bed-badge {
+         background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+         color: #374151;
+         padding: 4px 12px;
+         border-radius: 8px;
+         font-size: 13px;
+         font-weight: 600;
+      }
+
+      .patient-name {
+         font-size: 20px;
+         font-weight: 800;
+         color: #1f2937;
+         margin: 0;
+      }
+
+      .pose-display {
+         background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+         border-radius: 12px;
+         padding: 16px;
+         margin-top: 12px;
+      }
+
+      .pose-current {
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         padding: 12px;
+      }
+
+      .pose-label {
+         font-size: 11px;
+         color: #6b7280;
+         font-weight: 700;
+         text-transform: uppercase;
+         letter-spacing: 0.5px;
+         margin-bottom: 6px;
+      }
+
+      .pose-value {
+         font-size: 24px;
+         font-weight: 900;
+         color: #1f2937;
+      }
+
+      .pose-next .pose-value {
+         color: #3b82f6;
+      }
+
+      .timer-display {
+         background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+         border-radius: 12px;
+         padding: 16px;
+         text-align: center;
+         margin-top: 12px;
+      }
+
+      .timer-label {
+         display: block;
+         font-size: 11px;
+         color: #991b1b;
+         font-weight: 600;
+         margin-bottom: 4px;
+         text-transform: uppercase;
+      }
+
+      .timer-value {
+         font-size: 28px;
+         font-weight: 900;
+         color: #dc2626;
+         font-family: 'Courier New', monospace;
+      }
+
+      /* 이미지 스타일 */
+      .patient-image {
+         max-width: 100%;
+         max-height: 180px;
+         object-fit: contain;
+      }
+
+      .pose-icon {
+         font-size: 48px;
+         color: #3b82f6;
+      }
+
+      /* 그리드 컨트롤 버튼 */
+      .grid-control .btn {
+         border-radius: 10px;
+         font-weight: 600;
+         padding: 8px 20px;
+      }
+
+      /* 반응형 */
+      @media (max-width: 768px) {
+         .camera-view {
+            flex-direction: column;
+         }
+         
+         .camera-left, .camera-right {
+            border: none;
+         }
+         
+         .pose-arrow-center {
+            top: 50%;
+         }
+      }
+   </style>
 </head>
-
-<body class="bg-light">
-
+<body>
    <div class="container-fluid">
       <div class="row">
-         <!-- Sidebar -->
+         <!-- 사이드바 -->
          <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse p-0">
-            <div class="position-sticky pt-3">
-               <div class="px-3 mb-4">
-                  <h5 class="fw-bold">SMHRD 요양병원<br>안전 관제시스템</h5>
+            <div class="position-sticky pt-4 px-3">
+               <div class="mb-4">
+                  <h5 class="fw-bold text-white">SMHRD 요양병원<br>안전 관제시스템</h5>
                </div>
                <ul class="nav flex-column">
                   <li class="nav-item">
-                     <a class="nav-link" th:href="@{dashboard}">
-                        대시보드
+                     <a class="nav-link" th:href="@{/dashboard}">
+                        <i class="bi bi-speedometer2 me-2"></i>대시보드
                      </a>
                   </li>
                   <li class="nav-item">
-                     <a class="nav-link" th:href="@{patients}">
-                        병실 현황
+                     <a class="nav-link" th:href="@{/patients}">
+                        <i class="bi bi-hospital me-2"></i>병실 현황
                      </a>
                   </li>
                   <li class="nav-item">
-                     <a class="nav-link active" th:href="@{monitoring}">
-                        실시간 모니터링
-                     </a>
+                     <a class="nav-link"
+					   th:href="@{/rooms}">
+					   <i class="bi bi-camera-video me-2"></i>실시간 모니터링
+					</a>
                   </li>
                   <li class="nav-item">
-                     <a class="nav-link" href="#">
-                        알림 센터
+                     <a class="nav-link" href="#alerts">
+                        <i class="bi bi-bell me-2"></i>알림 센터
                      </a>
                   </li>
                </ul>
-               <div class="mt-5 px-3">
-                  <span class="small text-muted" style="color: silver !important;">carepose 1.0.0</span>
+               <div class="mt-5">
+                  <span class="small text-white-50">carepose 1.0.0</span>
                </div>
             </div>
          </nav>
 
-         <!-- Main Content -->
-         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div
-               class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-               <div class="d-flex align-items-center">
-                  <img src="/images/logo.png" alt="Logo" class="me-3" style="height: 40px; display: none;">
-                  <!-- Logo hidden if not exist, or add onerror -->
-                  <div>
-                     <h1 class="h2">실시간 모니터링</h1>
-                     <p class="text-muted mb-0">카메라 영상 및 스켈레톤 좌표</p>
-                  </div>
+         <!-- 메인 콘텐츠 -->
+         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+   
+   <div class="page-header mb-6 d-flex justify-content-between align-items-center">
+      <div class="header-left">
+                  <h1 class="page-title mb-1">실시간 모니터링</h1>
                </div>
-               <div class="btn-toolbar mb-2 mb-md-0">
-                  <div class="btn-group me-2">
-                     <button type="button" class="btn btn-sm btn-outline-secondary"
-                        onclick="setGridSize(2)">2x2</button>
-                     <button type="button" class="btn btn-sm btn-primary" onclick="setGridSize(3)">3x2</button>
-                     <button type="button" class="btn btn-sm btn-outline-secondary"
-                        onclick="setGridSize(4)">4x2</button>
-                  </div>
+               
+               <div class="room-center" style="position: static; transform: none; margin: 0 auto;">
+			      601
+			   </div>
+               
+               <div class="grid-control btn-group ms-auto">
+                  <button type="button" class="btn btn-outline-secondary" onclick="setGrid(2)">
+                     <i class="bi bi-grid me-1"></i>2x2
+                  </button>
+                  <button type="button" class="btn btn-primary" onclick="setGrid(3)">
+                     <i class="bi bi-grid-3x2 me-1"></i>3x2
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary" onclick="setGrid(4)">
+                     <i class="bi bi-grid-fill me-1"></i>4x2
+                  </button>
                </div>
             </div>
 
-            <!-- Camera Grid -->
-            <!-- Using row-cols-* classes for grid sizing. ID used for JS targeting -->
-            <div id="cameraGrid" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+            <!-- 카메라 그리드 -->
+            <div id="cameraGrid" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
 
-               <!-- Loop for Cameras -->
-               <div class="col" th:each="camera : ${cameras}">
-                  <div class="card camera-card"
-                     th:classappend="${camera.status == 'WARNING'} ? 'camera-card-warning' : (${camera.status == 'DANGER'} ? 'camera-card-danger' : '')">
+			   <!-- 1️⃣ cameras 있을 때 -->
+			   <div class="col" th:each="camera : ${cameras}">
+			      <div class="card camera-card border-0">
+			
+			         <div class="camera-view">
+			            <div class="status-badge status-normal"
+			                 th:text="${camera.statusLabel}">
+			               정상
+			            </div>
+			
+			            <img th:src="${camera.streamUrl}"
+			                 style="width:100%; height:100%; object-fit:cover;">
+			         </div>
+			
+			         <div class="patient-info">
+			            <span class="bed-badge" th:text="${camera.bedId}"></span>
+			            <h6 class="patient-name" th:text="${camera.patientName}"></h6>
+			         </div>
+			
+			      </div>
+			   </div>
+			
+			   <!-- 2️⃣ cameras 없을 때만 patients -->
+			   <th:block th:if="${cameras == null or #lists.isEmpty(cameras)}">
+			      <div class="col" th:each="p : ${patients}">
+			         <div class="card camera-card border-0">
+			
+			            <div class="camera-view">
 
-                     <div class="camera-view">
-                        <img th:src="${camera.streamUrl}" alt="카메라 영상"
-                           style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="camera-status-badge"
-                           th:classappend="${camera.status == 'NORMAL'} ? 'camera-status-normal' : (${camera.status == 'WARNING'} ? 'camera-status-warning' : 'camera-status-danger')"
-                           th:text="${camera.statusLabel}">상태</div>
-                     </div>
-                     <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                           <div>
-                              <span class="badge bg-secondary me-2 bed-id" th:text="${camera.bedId}">ID</span>
-                              <span class="fw-bold patient-name" th:text="${camera.patientName}">환자명</span>
-                           </div>
-                        </div>
-                        <p class="card-text text-muted small" th:text="'현재: ' + ${camera.currentPose}">자세</p>
-                     </div>
-                  </div>
-               </div>
-
-               <!-- Sample Data / Fallback if cameras empty -->
-               <th:block th:if="${cameras == null or #lists.isEmpty(cameras)}">
-                  <div class="col" th:each="p : ${patients}">
-                     <div class="card h-100 shadow-sm overflow-hidden">
-                        <div class="monitor-card">
-                           <!-- Left: Image -->
-                           <div class="monitor-left" th:data-folder="${#strings.substring(p.patientId, 0, 3)}"
-                              th:data-sub="${p.patientId}" th:data-pos="${p.position?.lastPosition}">
-                              <img class="dynamic-patient-img" src="/images/bed_person.png" alt="실시간 환자 체위"
-                                 style="width: 90%; height: auto; max-height: 100%; object-fit: contain;">
-                           </div>
-
-                           <!-- Right: Info -->
-                           <div class="monitor-right">
-                              <div class="status-badge status-normal">정상</div>
-
-                              <div class="mt-2">
-                                 <span class="badge bg-light text-dark border bed-id"
-                                    th:text="${p.patientId}">병실번호</span>
-                                 <span class="fw-bold fs-5 ms-1 patient-name" th:text="${p.name}">환자명</span>
-                              </div>
-
-                              <div class="pose-change-box">
-                                 <div class="pose-column">
-                                    <span class="pose-label">현재 체위</span>
-                                    <span class="pose-value"
-                                       th:text="${p.position != null ? p.position.lastPosition : '기록없음'}">좌측위</span>
-                                 </div>
-                                 <div class="pose-arrow">→</div>
-                                 <div class="pose-column next">
-                                    <span class="pose-label">변경 예정</span>
-                                    <span class="pose-value" th:with="current=${p.position?.lastPosition}"
-                                       th:text="${current == '좌측위' ? '앙와위' : (current == '앙와위' ? '우측위' : (current == '우측위' ? '좌측위' : '상태확인'))}">
-                                       앙와위
-                                    </span>
-                                 </div>
-                              </div>
-
-                              <div class="timer-box">
-                                 <span class="timer-label">남은 시간</span>
-                                 <span class="timer timer-display"
-                                    th:data-start-time="${p.position?.lastPositionTime}">상태 확인</span>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </th:block>
-            </div>
-
-
+						   <div class="status-badge status-normal">정상</div>
+						
+						   <div class="camera-left"
+						        th:data-folder="${#strings.substring(p.patientId, 0, 3)}"
+						        th:data-sub="${p.patientId}"
+						        th:data-pos="${p.position?.lastPosition}">
+						
+						      <img class="patient-image dynamic-patient-img"
+						           src="/images/bed_person.png"
+						           alt="현재 체위">
+						   </div>
+						
+						   <div class="pose-arrow-center">
+						      <i class="bi bi-arrow-right text-primary fw-bold fs-4"></i>
+						   </div>
+						
+						   <div class="camera-right">
+						      <div class="pose-current">
+						         <span class="pose-label">변경 예정</span>
+						         <i class="bi bi-person-standing pose-icon"></i>
+						         <span class="pose-value"
+						               th:with="cur=${p.position?.lastPosition}"
+						               th:text="${cur == '좌측위' ? '앙와위'
+						                       : (cur == '앙와위' ? '우측위'
+						                       : (cur == '우측위' ? '좌측위' : '확인'))}">
+						         </span>
+						      </div>
+						   </div>
+						
+						</div>
+						
+						<div class="patient-info">
+						   <div class="text-center mb-3">
+  <span class="bed-badge d-inline-block mb-1"
+        th:text="${p.patientId}"></span>
+  <h6 class="patient-name mb-0"
+      th:text="${p.name}"></h6>
+</div>
+						
+						   <div class="pose-display text-center">
+						      <span class="pose-label">현재 체위</span>
+						      <div class="pose-value"
+						           th:text="${p.position != null ? p.position.lastPosition : '기록없음'}">
+						      </div>
+						   </div>
+						
+						   <div class="timer-display">
+						      <span class="timer-label">남은 시간</span>
+						      <div class="timer-value timer-display"
+						           th:data-start-time="${p.position?.lastPositionTime}">
+						         00:00:00
+						      </div>
+						   </div>
+						</div>
+									         </div>
+									      </div>
+									   </th:block>
+						
+						      </div>
+						   </div>
+						
+						</div>
          </main>
       </div>
    </div>
 
-   <!-- Bootstrap Guide Modal -->
-   <div class="modal fade" id="guideModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
-      data-bs-keyboard="false">
+   <!-- Bootstrap Modal -->
+   <div class="modal fade" id="alertModal" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
          <div class="modal-content border-danger border-3">
             <div class="modal-header bg-danger text-white">
-               <h5 class="modal-title">⚠️ 자세 변경 알림</h5>
+               <h5 class="modal-title">
+                  <i class="bi bi-exclamation-triangle-fill me-2"></i>자세 변경 알림
+               </h5>
+               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body text-center">
+            <div class="modal-body text-center p-4">
                <p class="fs-5 mb-3">
-                  <span id="targetBed" class="fw-bold"></span> 환자분 자세 변경 시간입니다.
+                  <strong id="alertBed" class="text-danger"></strong> 환자분 자세 변경 시간입니다.
                </p>
                <div class="ratio ratio-16x9 mb-3">
                   <video id="guideVideo" muted loop class="rounded">
                      <source src="/videos/LtoS.mp4" type="video/mp4">
                   </video>
                </div>
-               <button type="button" class="btn btn-success btn-lg w-100" onclick="closeGuide()">확인 (조치 완료)</button>
+               <button type="button" class="btn btn-success btn-lg w-100" data-bs-dismiss="modal">
+                  <i class="bi bi-check-circle me-2"></i>확인 (조치 완료)
+               </button>
             </div>
          </div>
       </div>
    </div>
 
-   <!-- Bootstrap 5 JS Bundle -->
    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
    <script>
-
-      function loadLatestImages() {
-         const cards = document.querySelectorAll('.monitor-left');
-
-         cards.forEach(card => {
-            const folder = card.getAttribute('data-folder');
-            const sub = card.getAttribute('data-sub');
-            const pos = card.getAttribute('data-pos');
-            const imgTag = card.querySelector('.dynamic-patient-img');
-
-            let prefix = "default";
-            if (pos === '앙와위') prefix = "face";
-            else if (pos === '좌측위') prefix = "left";
-            else if (pos === '우측위') prefix = "right";
-
-            checkImageExists(imgTag, folder, sub, prefix, 10);
-         });
-      }
-
-      function checkImageExists(imgTag, folder, sub, prefix, num) {
-         if (num <= 0) return;
-
-         const testPath = `/images/${folder}/${sub}/${prefix}${num}.jpg`;
-         const img = new Image();
-
-         img.onload = function () {
-            imgTag.src = testPath;
-         };
-
-         img.onerror = function () {
-            checkImageExists(imgTag, folder, sub, prefix, num - 1);
-         };
-
-         img.src = testPath;
-      }
-
-      document.addEventListener("DOMContentLoaded", function () {
-         loadLatestImages();
-
-         // Initialize Bootstrap Modal
-         window.guideModal = new bootstrap.Modal(document.getElementById('guideModal'));
-      });
-
-      const video = document.getElementById('guideVideo');
-      const targetBedSpan = document.getElementById('targetBed');
-
-      function closeGuide() {
-         window.guideModal.hide();
-         video.pause();
-         video.currentTime = 0;
-      }
-
-      function checkTimers() {
-         // Check if modal is shown (Bootstrap adds 'show' class to modal element or backdrop exists)
-         if (document.getElementById('guideModal').classList.contains('show')) return;
-
-         const timers = document.querySelectorAll('.timer-display');
-
-         timers.forEach(timer => {
-            if (timer.innerText === "00:00:00") {
-               const card = timer.closest('.monitor-card') || timer.closest('.camera-card'); // Support both
-               if (card) {
-                  const bedIdPart = card.querySelector('.bed-id');
-                  const patientNamePart = card.querySelector('.patient-name');
-
-                  const bedId = bedIdPart ? bedIdPart.innerText : "?";
-                  const patientName = patientNamePart ? patientNamePart.innerText : "?";
-
-                  showGuidePopup(bedId + " (" + patientName + ")");
-               }
-            }
-         });
-      }
-
-      function showGuidePopup(bedNo) {
-         targetBedSpan.innerText = bedNo;
-         window.guideModal.show();
-         video.play().catch(error => console.log("Auto-play blocked"));
-      }
-
-      setInterval(checkTimers, 1000);
-
-      // Update Grid logic to use Bootstrap row-cols classes
-      function setGridSize(cols) {
+   let modalOpen = false;
+   
+      function setGrid(cols) {
          const grid = document.getElementById('cameraGrid');
-         // Reset classes
-         grid.className = 'row g-4 mb-5';
-
-         // Add specific class based on cols
+         grid.className = 'row g-4';
+         
          if (cols === 2) {
             grid.classList.add('row-cols-1', 'row-cols-md-2');
          } else if (cols === 3) {
@@ -279,40 +493,114 @@
          }
       }
 
-      function updateTimers() {
-         const timerElements = document.querySelectorAll('.timer-display');
-         const limitSeconds = 120 * 60;
+      // 타이머 업데이트 시뮬레이션
+      const TOTAL_SECONDS = 2 * 60 * 60; // 2시간 = 7200초
 
-         timerElements.forEach(el => {
-            const startTimeStr = el.getAttribute('data-start-time');
-            if (!startTimeStr) return;
+function updateTimersFromDB() {
+  const timers = document.querySelectorAll('.timer-value');
 
-            const startTime = new Date(startTimeStr);
-            const now = new Date();
+  timers.forEach(timer => {
+    const startTimeStr = timer.dataset.startTime;
+    if (!startTimeStr) return;
 
-            const elapsedSeconds = Math.floor((now - startTime) / 1000);
-            let remainingSeconds = limitSeconds - elapsedSeconds;
+    // DB 시간 → Date 객체
+    const startTime = new Date(startTimeStr);
+    const now = new Date();
 
-            if (remainingSeconds <= 0) {
-               remainingSeconds = 0;
-               el.style.color = "#dc3545"; // Red
-            } else {
-               el.style.color = "#212529"; // Default
-            }
+    // 경과 시간(초)
+    const elapsedSeconds = Math.floor((now - startTime) / 1000);
 
-            const h = Math.floor(remainingSeconds / 3600).toString().padStart(2, '0');
-            const m = Math.floor((remainingSeconds % 3600) / 60).toString().padStart(2, '0');
-            const s = (remainingSeconds % 60).toString().padStart(2, '0');
+    // 남은 시간
+    let remaining = TOTAL_SECONDS - elapsedSeconds;
+    if (remaining < 0) remaining = 0;
 
-            el.innerText = `${h}:${m}:${s}`;
-         });
-      }
+    const h = Math.floor(remaining / 3600);
+    const m = Math.floor((remaining % 3600) / 60);
+    const s = remaining % 60;
 
-      updateTimers();
-      setInterval(updateTimers, 1000);
+    timer.textContent =
+      `${String(h).padStart(2,'0')}:` +
+      `${String(m).padStart(2,'0')}:` +
+      `${String(s).padStart(2,'0')}`;
 
+    // 0초 → 알림
+    if (remaining === 0 && !timer.dataset.alerted) {
+      timer.dataset.alerted = "true";
+
+      const card = timer.closest('.camera-card');
+      const bedId = card.querySelector('.bed-badge').textContent;
+      const patientName = card.querySelector('.patient-name').textContent;
+
+      showAlert(`${bedId} (${patientName})`);
+    }
+  });
+}
+
+// 최초 실행 + 1초 주기
+updateTimersFromDB();
+setInterval(updateTimersFromDB, 1000);
+
+function showAlert(bedInfo) {
+	  if (modalOpen) return;   // ✅ 중복 방지
+	  modalOpen = true;
+
+	  document.getElementById('alertBed').textContent = bedInfo;
+	  const modalEl = document.getElementById('alertModal');
+	  const modal = new bootstrap.Modal(modalEl);
+
+	  modal.show();
+
+	  const video = document.getElementById('guideVideo');
+	  video.currentTime = 0;
+	  video.play().catch(() => {});
+
+	  // ✅ 모달이 완전히 닫히면 backdrop 정리
+	  modalEl.addEventListener('hidden.bs.modal', () => {
+	    modalOpen = false;
+	    video.pause();
+
+	    document
+	      .querySelectorAll('.modal-backdrop')
+	      .forEach(b => b.remove());
+
+	    document.body.classList.remove('modal-open');
+	    document.body.style.removeProperty('padding-right');
+	  }, { once: true });
+	}
+
+
+      
+      
+      function loadLatestImages() {
+    	   const cards = document.querySelectorAll('.camera-left');
+
+    	   cards.forEach(card => {
+    	      const folder = card.getAttribute('data-folder');
+    	      const sub = card.getAttribute('data-sub');
+    	      const pos = card.getAttribute('data-pos');
+    	      const imgTag = card.querySelector('.dynamic-patient-img');
+
+    	      let prefix = "default";
+    	      if (pos === '앙와위') prefix = "face";
+    	      else if (pos === '좌측위') prefix = "left";
+    	      else if (pos === '우측위') prefix = "right";
+
+    	      checkImageExists(imgTag, folder, sub, prefix, 10);
+    	   });
+    	}
+
+    	function checkImageExists(imgTag, folder, sub, prefix, num) {
+    	   if (num <= 0) return;
+
+    	   const path = `/images/${folder}/${sub}/${prefix}${num}.jpg`;
+    	   const img = new Image();
+
+    	   img.onload = () => imgTag.src = path;
+    	   img.onerror = () => checkImageExists(imgTag, folder, sub, prefix, num - 1);
+    	   img.src = path;
+    	}
+
+    	document.addEventListener("DOMContentLoaded", loadLatestImages);
    </script>
-
 </body>
-
 </html>

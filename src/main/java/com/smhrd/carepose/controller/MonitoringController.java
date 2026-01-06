@@ -27,6 +27,8 @@ public class MonitoringController {
        model.addAttribute("cameras", null);
        return "monitoring";
    }
+   
+   
 
 
    
