@@ -38,6 +38,69 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
+	/* 실시간 캠 라벨 스타일 */
+.camera-label {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20; /* 이미지나 다른 배지보다 위에 배치 */
+    
+    background: rgba(255, 255, 255, 0.85); /* 반투명 흰색 배경 */
+    padding: 4px 16px;
+    border-radius: 23px;
+    font-size: 15px;
+    font-weight: 800;
+    color: #1f2937;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+	/* 온습도 박스 */
+	/* 박스와 박스 간격 */
+    .sensor-widget {
+        margin-bottom: -40px;
+    }
+    
+    .sensor-card {
+	    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	    color: white;
+	    border: none;
+	    transition: transform 0.2s;
+	    height: 80px;
+	    border-radius: 15px; /* 이 부분을 추가하여 모서리를 둥글게 만듭니다 */
+	}
+    
+    .sensor-card * {
+	    line-height: 1;
+	}
+    
+    .sensor-card .card-body {
+	    padding: 0.05rem 0.4rem;  /* 위아래 / 좌우 */
+	    height: 100%;
+	    
+	    display: flex;
+	    flex-direction: column;
+	    justify-content: center;
+	    align-items: center;
+	}
+	
+	.sensor-title,
+	.sensor-unit {
+	    margin: 0;
+	    padding: 0;
+	}
+    
+    .sensor-card:hover {
+        transform: translateY(-3px);
+    }
+    
+    .sensor-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+    
+
       /* 사이드바 스타일 */
       .sidebar {
          background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
@@ -333,28 +396,57 @@
 
          <!-- 메인 콘텐츠 -->
          <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+
+<div class="page-header mb-6 d-flex align-items-center position-relative" style="min-height: 120px;">
    
-   <div class="page-header mb-6 d-flex justify-content-between align-items-center">
-      <div class="header-left">
-                  <h1 class="page-title mb-1">실시간 모니터링</h1>
-               </div>
-               
-               <div class="room-center" style="position: static; transform: none; margin: 0 auto;">
-			      601
-			   </div>
-               
-               <div class="grid-control btn-group ms-auto">
-                  <button type="button" class="btn btn-outline-secondary" onclick="setGrid(2)">
-                     <i class="bi bi-grid me-1"></i>2x2
-                  </button>
-                  <button type="button" class="btn btn-primary" onclick="setGrid(3)">
-                     <i class="bi bi-grid-3x2 me-1"></i>3x2
-                  </button>
-                  <button type="button" class="btn btn-outline-secondary" onclick="setGrid(4)">
-                     <i class="bi bi-grid-fill me-1"></i>4x2
-                  </button>
+   <div class="header-left">
+      <h1 class="page-title mb-0">실시간 모니터링</h1>
+   </div>
+   
+   <div class="room-center" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0;">
+      601
+   </div>
+   
+   <div class="d-flex align-items-center ms-auto gap-3">
+      
+      <div class="sensor-widget" style="margin-bottom: 0 !important;">
+         <div class="d-flex gap-2"> 
+            <div style="width: 120px;"> 
+               <div class="card sensor-card" style="background: linear-gradient(135deg, #f2d383 0%, #ed966b 100%); margin-bottom: 0;">
+                  <div class="card-body text-center">
+                     <div class="sensor-title">온도</div>
+                     <div class="sensor-value" id="temperature">--</div>
+                     <span class="sensor-unit">°C</span>
+                  </div>
                </div>
             </div>
+            
+            <div style="width: 120px;">
+               <div class="card sensor-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); margin-bottom: 0;">
+                  <div class="card-body text-center">
+                     <div class="sensor-title">습도</div>
+                     <div class="sensor-value" id="humidity">--</div>
+                     <span class="sensor-unit">%</span>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      
+      <div class="grid-control btn-group">
+         <button type="button" class="btn btn-outline-secondary" onclick="setGrid(2)">
+            <i class="bi bi-grid me-1"></i>2x2
+         </button>
+         <button type="button" class="btn btn-primary" onclick="setGrid(3)">
+            <i class="bi bi-grid-3x2 me-1"></i>3x2
+         </button>
+         <button type="button" class="btn btn-outline-secondary" onclick="setGrid(4)">
+            <i class="bi bi-grid-fill me-1"></i>4x2
+         </button>
+      </div>
+
+   </div>
+</div>
 
             <!-- 카메라 그리드 -->
             <div id="cameraGrid" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
@@ -363,11 +455,19 @@
 			   <div class="col" th:each="camera : ${cameras}">
 			      <div class="card camera-card border-0">
 			
+				
+					
+					
 			         <div class="camera-view">
+			         
+			         	<div class="camera-label">실시간 캠</div>
+			         
 			            <div class="status-badge status-normal"
 			                 th:text="${camera.statusLabel}">
 			               정상
 			            </div>
+			            
+			            
 			
 			            <img th:src="${camera.streamUrl}"
 			                 style="width:100%; height:100%; object-fit:cover;">
@@ -387,6 +487,8 @@
 			         <div class="card camera-card border-0">
 			
 			            <div class="camera-view">
+			            
+			            	<div class="camera-label">실시간 캠</div>
 
 						   <div class="status-badge status-normal">정상</div>
 						
@@ -421,11 +523,11 @@
 						
 						<div class="patient-info">
 						   <div class="text-center mb-3">
-  <span class="bed-badge d-inline-block mb-1"
-        th:text="${p.patientId}"></span>
-  <h6 class="patient-name mb-0"
-      th:text="${p.name}"></h6>
-</div>
+							  <span class="bed-badge d-inline-block mb-1"
+							        th:text="${p.patientId}"></span>
+							  <h6 class="patient-name mb-0"
+							      th:text="${p.name}"></h6>
+							</div>
 						
 						   <div class="pose-display text-center">
 						      <span class="pose-label">현재 체위</span>

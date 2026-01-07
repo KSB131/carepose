@@ -20,8 +20,9 @@
     font-weight: bold;
     margin-left: 5px;
 }
+	/* 박스와 박스 간격 */
     .sensor-widget {
-        margin-bottom: 5px;
+        margin-bottom: -40px;
     }
     
     .sensor-card {
@@ -29,8 +30,28 @@
         color: white;
         border: none;
         transition: transform 0.2s;
-        padding:0.2rem;
+        height: 80px;
     }
+    
+    .sensor-card * {
+	    line-height: 1;
+	}
+    
+    .sensor-card .card-body {
+	    padding: 0.05rem 0.4rem;  /* 위아래 / 좌우 */
+	    height: 100%;
+	    
+	    display: flex;
+	    flex-direction: column;
+	    justify-content: center;
+	    align-items: center;
+	}
+	
+	.sensor-title,
+	.sensor-unit {
+	    margin: 0;
+	    padding: 0;
+	}
     
     .sensor-card:hover {
         transform: translateY(-3px);
@@ -99,9 +120,13 @@
                </div>
                <div class="container">
   
-        
+<!-- 온습도 박스 -->
 <div class="sensor-widget">
-    <div class="d-flex gap-2 justify-content-end"> <div style="width: 120px;"> <div class="card sensor-card" style="background: linear-gradient(135deg, #f2d383 0%, #ed966b 100%);">
+    <div class="d-flex gap-2 justify-content-end"> 
+    
+    	<!-- 온도 박스 -->
+    	<div style="width: 120px;"> 
+    		<div class="card sensor-card" style="background: linear-gradient(135deg, #f2d383 0%, #ed966b 100%);">
                 <div class="card-body text-center">
                     <div class="sensor-title">온도</div>
                     <div class="sensor-value" id="temperature">--</div>
@@ -110,6 +135,7 @@
             </div>
         </div>
         
+        <!-- 습도 박스 -->
         <div style="width: 120px;">
             <div class="card sensor-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
                 <div class="card-body text-center">
