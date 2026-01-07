@@ -47,31 +47,31 @@
             </div>
 
             <ul class="nav flex-column">
-	               <li class="nav-item">
-	                  <a class="nav-link" th:href="@{/dashboard}"
-	                  	th:classappend="${requestURI.contains('/dashboard')} ? 'active'">
-	                     <i class="bi bi-speedometer2 me-2"></i>대시보드
-	                  </a>
-	               </li>
-	               <li class="nav-item">
-	                  <a class="nav-link" th:href="@{/patients}"
-	                  	th:classappend="${requestURI.contains('/patients')} ? 'active'">
-	                     <i class="bi bi-hospital me-2"></i>병실 현황
-	                  </a>
-	               </li>
-	               <li class="nav-item">
-	                  <a class="nav-link" th:href="@{/rooms}"
-	                  	th:classappend="${requestURI.contains('/rooms')} ? 'active'">
-	                     <i class="bi bi-camera-video me-2"></i>실시간 모니터링
-	                  </a>
-	               </li>
-	               <li class="nav-item">
-	                  <a class="nav-link"
-	                  	th:classappend="${requestURI.contains('/alerts')} ? 'active'">
-	                     <i class="bi bi-bell me-2"></i>알림 센터
-	                  </a>
-	               </li>
-	            </ul>
+                  <li class="nav-item">
+                     <a class="nav-link" th:href="@{/dashboard}"
+                        th:classappend="${requestURI.contains('/dashboard')} ? 'active'">
+                        <i class="bi bi-speedometer2 me-2"></i>대시보드
+                     </a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link" th:href="@{/patients}"
+                        th:classappend="${requestURI.contains('/patients')} ? 'active'">
+                        <i class="bi bi-hospital me-2"></i>병실 현황
+                     </a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link" th:href="@{/rooms}"
+                        th:classappend="${requestURI.contains('/rooms')} ? 'active'">
+                        <i class="bi bi-camera-video me-2"></i>실시간 모니터링
+                     </a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link"
+                        th:classappend="${requestURI.contains('/alerts')} ? 'active'">
+                        <i class="bi bi-bell me-2"></i>알림 센터
+                     </a>
+                  </li>
+               </ul>
 
             <div class="mt-5 px-3">
                   <span class="small text-muted" style="color: silver !important;">carepose 1.0.0</span>
@@ -91,17 +91,16 @@
          </div>
 
          <!-- 병실 선택 -->
-         <div class="row g-4">
-            <div class="col-md-3"
-                 th:each="p : ${patients}">
-               <a th:href="@{/monitoring(room=${p.patientId})}"
-                  class="text-decoration-none text-dark">
-                  <div class="room-card">
-                     [[${p.patientId}]]
-                  </div>
-               </a>
+         <div class="row g-4" th:with="roomSet=${#sets.toSet(patients.![#strings.substring(patientId, 0, 3)])}">
+    <div class="col-md-3" th:each="roomNo : ${#lists.sort(#lists.toList(roomSet))}">
+        <a th:href="@{/monitoring(room=${roomNo})}" class="text-decoration-none text-dark">
+            <div class="room-card">
+                <i class="bi bi-door-closed me-2 text-primary"></i>
+                <span th:text="${roomNo} + '호'">301호</span>
             </div>
-         </div>
+        </a>
+    </div>
+</div>
 
       </main>
    </div>

@@ -17,10 +17,10 @@
       }
 
       body {
-		    margin: 0;
-		    min-height: 100vh;
-		    background: var(--gradient-main);
-		}
+          margin: 0;
+          min-height: 100vh;
+          background: var(--gradient-main);
+      }
       
       .room-center {
     position: absolute;
@@ -38,7 +38,7 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-	/* 실시간 캠 라벨 스타일 */
+   /* 실시간 캠 라벨 스타일 */
 .camera-label {
     position: absolute;
     top: 12px;
@@ -56,40 +56,40 @@
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-	/* 온습도 박스 */
-	/* 박스와 박스 간격 */
+   /* 온습도 박스 */
+   /* 박스와 박스 간격 */
     .sensor-widget {
         margin-bottom: -40px;
     }
     
     .sensor-card {
-	    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	    color: white;
-	    border: none;
-	    transition: transform 0.2s;
-	    height: 80px;
-	    border-radius: 15px; /* 이 부분을 추가하여 모서리를 둥글게 만듭니다 */
-	}
+       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+       color: white;
+       border: none;
+       transition: transform 0.2s;
+       height: 80px;
+       border-radius: 15px; /* 이 부분을 추가하여 모서리를 둥글게 만듭니다 */
+   }
     
     .sensor-card * {
-	    line-height: 1;
-	}
+       line-height: 1;
+   }
     
     .sensor-card .card-body {
-	    padding: 0.05rem 0.4rem;  /* 위아래 / 좌우 */
-	    height: 100%;
-	    
-	    display: flex;
-	    flex-direction: column;
-	    justify-content: center;
-	    align-items: center;
-	}
-	
-	.sensor-title,
-	.sensor-unit {
-	    margin: 0;
-	    padding: 0;
-	}
+       padding: 0.05rem 0.4rem;  /* 위아래 / 좌우 */
+       height: 100%;
+       
+       display: flex;
+       flex-direction: column;
+       justify-content: center;
+       align-items: center;
+   }
+   
+   .sensor-title,
+   .sensor-unit {
+       margin: 0;
+       padding: 0;
+   }
     
     .sensor-card:hover {
         transform: translateY(-3px);
@@ -363,31 +363,31 @@
                   <h5 class="fw-bold text-white">SMHRD 요양병원<br>안전 관제시스템</h5>
                </div>
                <ul class="nav flex-column">
-	               <li class="nav-item">
-	                  <a class="nav-link" th:href="@{/dashboard}"
-	                  	th:classappend="${requestURI.contains('/dashboard')} ? 'active'">
-	                     <i class="bi bi-speedometer2 me-2"></i>대시보드
-	                  </a>
-	               </li>
-	               <li class="nav-item">
-	                  <a class="nav-link" th:href="@{/patients}"
-	                  	th:classappend="${requestURI.contains('/patients')} ? 'active'">
-	                     <i class="bi bi-hospital me-2"></i>병실 현황
-	                  </a>
-	               </li>
-	               <li class="nav-item">
-	                  <a class="nav-link" th:href="@{/rooms}"
-	                  	th:classappend="${requestURI.contains('/rooms')} ? 'active'">
-	                     <i class="bi bi-camera-video me-2"></i>실시간 모니터링
-	                  </a>
-	               </li>
-	               <li class="nav-item">
-	                  <a class="nav-link"
-	                  	th:classappend="${requestURI.contains('/alerts')} ? 'active'">
-	                     <i class="bi bi-bell me-2"></i>알림 센터
-	                  </a>
-	               </li>
-	            </ul>
+                  <li class="nav-item">
+                     <a class="nav-link" th:href="@{/dashboard}"
+                        th:classappend="${requestURI.contains('/dashboard')} ? 'active'">
+                        <i class="bi bi-speedometer2 me-2"></i>대시보드
+                     </a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link" th:href="@{/patients}"
+                        th:classappend="${requestURI.contains('/patients')} ? 'active'">
+                        <i class="bi bi-hospital me-2"></i>병실 현황
+                     </a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link" th:href="@{/rooms}"
+                        th:classappend="${requestURI.contains('/rooms')} ? 'active'">
+                        <i class="bi bi-camera-video me-2"></i>실시간 모니터링
+                     </a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link"
+                        th:classappend="${requestURI.contains('/alerts')} ? 'active'">
+                        <i class="bi bi-bell me-2"></i>알림 센터
+                     </a>
+                  </li>
+               </ul>
                <div class="mt-5 px-3">
                   <span class="small text-muted" style="color: silver !important;">carepose 1.0.0</span>
                </div>
@@ -395,17 +395,20 @@
          </nav>
 
          <!-- 메인 콘텐츠 -->
-         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4" 
+      th:with="targetRoom=${param.room != null ? param.room[0] : '---'}"> 
 
-<div class="page-header mb-6 d-flex align-items-center position-relative" style="min-height: 120px;">
-   
-   <div class="header-left">
-      <h1 class="page-title mb-0">실시간 모니터링</h1>
-   </div>
-   
-   <div class="room-center" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0;">
-      601
-   </div>
+   <div class="page-header mb-6 d-flex align-items-center position-relative" style="min-height: 120px;">
+      
+      <div class="header-left">
+         <h1 class="page-title mb-0">실시간 모니터링</h1>
+      </div>
+      
+      <div class="room-center" th:text="${targetRoom}">
+         601
+      </div>
+      
+
    
    <div class="d-flex align-items-center ms-auto gap-3">
       
@@ -451,107 +454,91 @@
             <!-- 카메라 그리드 -->
             <div id="cameraGrid" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
 
-			   <!-- 1️⃣ cameras 있을 때 -->
-			   <div class="col" th:each="camera : ${cameras}">
-			      <div class="card camera-card border-0">
-			
-				
-					
-					
-			         <div class="camera-view">
-			         
-			         	<div class="camera-label">실시간 캠</div>
-			         
-			            <div class="status-badge status-normal"
-			                 th:text="${camera.statusLabel}">
-			               정상
-			            </div>
-			            
-			            
-			
-			            <img th:src="${camera.streamUrl}"
-			                 style="width:100%; height:100%; object-fit:cover;">
-			         </div>
-			
-			         <div class="patient-info">
-			            <span class="bed-badge" th:text="${camera.bedId}"></span>
-			            <h6 class="patient-name" th:text="${camera.patientName}"></h6>
-			         </div>
-			
-			      </div>
-			   </div>
-			
-			   <!-- 2️⃣ cameras 없을 때만 patients -->
-			   <th:block th:if="${cameras == null or #lists.isEmpty(cameras)}">
-			      <div class="col" th:each="p : ${patients}">
-			         <div class="card camera-card border-0">
-			
-			            <div class="camera-view">
-			            
-			            	<div class="camera-label">실시간 캠</div>
-
-						   <div class="status-badge status-normal">정상</div>
-						
-						   <div class="camera-left"
-						        th:data-folder="${#strings.substring(p.patientId, 0, 3)}"
-						        th:data-sub="${p.patientId}"
-						        th:data-pos="${p.position?.lastPosition}">
-						
-						      <img class="patient-image dynamic-patient-img"
-						           src="/images/bed_person.png"
-						           alt="현재 체위">
-						   </div>
-						
-						   <div class="pose-arrow-center">
-						      <i class="bi bi-arrow-right text-primary fw-bold fs-4"></i>
-						   </div>
-						
-						   <div class="camera-right">
-						      <div class="pose-current">
-						         <span class="pose-label">변경 예정</span>
-						         <i class="bi bi-person-standing pose-icon"></i>
-						         <span class="pose-value"
-						               th:with="cur=${p.position?.lastPosition}"
-						               th:text="${cur == '좌측위' ? '앙와위'
-						                       : (cur == '앙와위' ? '우측위'
-						                       : (cur == '우측위' ? '좌측위' : '확인'))}">
-						         </span>
-						      </div>
-						   </div>
-						
-						</div>
-						
-						<div class="patient-info">
-						   <div class="text-center mb-3">
-							  <span class="bed-badge d-inline-block mb-1"
-							        th:text="${p.patientId}"></span>
-							  <h6 class="patient-name mb-0"
-							      th:text="${p.name}"></h6>
-							</div>
-						
-						   <div class="pose-display text-center">
-						      <span class="pose-label">현재 체위</span>
-						      <div class="pose-value"
-						           th:text="${p.position != null ? p.position.lastPosition : '기록없음'}">
-						      </div>
-						   </div>
-						
-						   <div class="timer-display">
-						      <span class="timer-label">남은 시간</span>
-						      <div class="timer-value timer-display"
-						           th:data-start-time="${p.position?.lastPositionTime}">
-						         00:00:00
-						      </div>
-						   </div>
-						</div>
-									         </div>
-									      </div>
-									   </th:block>
-						
-						      </div>
-						   </div>
-						
-						</div>
+   <div class="col" th:each="camera : ${cameras}"
+        th:if="${camera.bedId != null and #strings.length(camera.bedId) >= 3 and #strings.substring(camera.bedId, 0, 3) == targetRoom}">
+      <div class="card camera-card border-0">
+         <div class="camera-view">
+            <div class="camera-label">실시간 캠</div>
+            <div class="status-badge status-normal" th:text="${camera.statusLabel}">정상</div>
+            <img th:src="${camera.streamUrl}" style="width:100%; height:100%; object-fit:cover;">
+         </div>
+         <div class="patient-info text-center">
+            <span class="bed-badge d-inline-block mb-1" th:text="${camera.bedId}"></span>
+            <h6 class="patient-name mb-0" th:text="${camera.patientName}"></h6>
+         </div>
+      </div>
+   </div>
+         
+            <!-- 2️⃣ cameras 없을 때만 patients -->
+            <th:block th:if="${cameras == null or #lists.isEmpty(cameras)}">
+               <div class="col" th:each="p : ${patients}"
+                    th:if="${p.patientId != null and #strings.length(p.patientId) >= 3 and #strings.substring(p.patientId, 0, 3) == targetRoom}">
+                  <div class="card camera-card border-0">
+         
+                     <div class="camera-view">
+                     <div class="camera-label">실시간 캠</div>
+                     <div class="status-badge status-normal">정상</div>
+                  
+                     <div class="camera-left"
+                          th:data-folder="${#strings.substring(p.patientId, 0, 3)}"
+                          th:data-sub="${p.patientId}"
+                          th:data-pos="${p.position?.lastPosition}">
+                  
+                        <img class="patient-image dynamic-patient-img"
+                             src="/images/bed_person.png"
+                             alt="현재 체위">
+                     </div>
+                  
+                     <div class="pose-arrow-center">
+                        <i class="bi bi-arrow-right text-primary fw-bold fs-4"></i>
+                     </div>
+                  
+                     <div class="camera-right">
+                        <div class="pose-current">
+                           <span class="pose-label">변경 예정</span>
+                           <i class="bi bi-person-standing pose-icon"></i>
+                           <span class="pose-value"
+                                 th:with="cur=${p.position?.lastPosition}"
+                                 th:text="${cur == '좌측위' ? '앙와위'
+                                         : (cur == '앙와위' ? '우측위'
+                                         : (cur == '우측위' ? '좌측위' : '확인'))}">
+                           </span>
+                        </div>
+                     </div>
+                  
+                  </div>
+                  
+                  <div class="patient-info">
+                     <div class="text-center mb-3">
+  <span class="bed-badge d-inline-block mb-1"
+        th:text="${p.patientId}"></span>
+  <h6 class="patient-name mb-0"
+      th:text="${p.name}"></h6>
+</div>
+                  
+                     <div class="pose-display text-center">
+                        <span class="pose-label">현재 체위</span>
+                        <div class="pose-value"
+                             th:text="${p.position != null ? p.position.lastPosition : '기록없음'}">
+                        </div>
+                     </div>
+                  
+                     <div class="timer-display">
+                        <span class="timer-label">남은 시간</span>
+                        <div class="timer-value timer-display"
+                             th:data-start-time="${p.position?.lastPositionTime}">
+                           00:00:00
+                        </div>
+                     </div>
+                  </div>
+                                    </div>
+                                 </div>
+                              </th:block>
+                  
+                        </div>
+                     </div>
+                  
+                  </div>
          </main>
       </div>
    </div>
@@ -648,66 +635,66 @@ updateTimersFromDB();
 setInterval(updateTimersFromDB, 1000);
 
 function showAlert(bedInfo) {
-	  if (modalOpen) return;   // ✅ 중복 방지
-	  modalOpen = true;
+     if (modalOpen) return;   // ✅ 중복 방지
+     modalOpen = true;
 
-	  document.getElementById('alertBed').textContent = bedInfo;
-	  const modalEl = document.getElementById('alertModal');
-	  const modal = new bootstrap.Modal(modalEl);
+     document.getElementById('alertBed').textContent = bedInfo;
+     const modalEl = document.getElementById('alertModal');
+     const modal = new bootstrap.Modal(modalEl);
 
-	  modal.show();
+     modal.show();
 
-	  const video = document.getElementById('guideVideo');
-	  video.currentTime = 0;
-	  video.play().catch(() => {});
+     const video = document.getElementById('guideVideo');
+     video.currentTime = 0;
+     video.play().catch(() => {});
 
-	  // ✅ 모달이 완전히 닫히면 backdrop 정리
-	  modalEl.addEventListener('hidden.bs.modal', () => {
-	    modalOpen = false;
-	    video.pause();
+     // ✅ 모달이 완전히 닫히면 backdrop 정리
+     modalEl.addEventListener('hidden.bs.modal', () => {
+       modalOpen = false;
+       video.pause();
 
-	    document
-	      .querySelectorAll('.modal-backdrop')
-	      .forEach(b => b.remove());
+       document
+         .querySelectorAll('.modal-backdrop')
+         .forEach(b => b.remove());
 
-	    document.body.classList.remove('modal-open');
-	    document.body.style.removeProperty('padding-right');
-	  }, { once: true });
-	}
+       document.body.classList.remove('modal-open');
+       document.body.style.removeProperty('padding-right');
+     }, { once: true });
+   }
 
 
       
       
       function loadLatestImages() {
-    	   const cards = document.querySelectorAll('.camera-left');
+          const cards = document.querySelectorAll('.camera-left');
 
-    	   cards.forEach(card => {
-    	      const folder = card.getAttribute('data-folder');
-    	      const sub = card.getAttribute('data-sub');
-    	      const pos = card.getAttribute('data-pos');
-    	      const imgTag = card.querySelector('.dynamic-patient-img');
+          cards.forEach(card => {
+             const folder = card.getAttribute('data-folder');
+             const sub = card.getAttribute('data-sub');
+             const pos = card.getAttribute('data-pos');
+             const imgTag = card.querySelector('.dynamic-patient-img');
 
-    	      let prefix = "default";
-    	      if (pos === '앙와위') prefix = "face";
-    	      else if (pos === '좌측위') prefix = "left";
-    	      else if (pos === '우측위') prefix = "right";
+             let prefix = "default";
+             if (pos === '앙와위') prefix = "face";
+             else if (pos === '좌측위') prefix = "left";
+             else if (pos === '우측위') prefix = "right";
 
-    	      checkImageExists(imgTag, folder, sub, prefix, 10);
-    	   });
-    	}
+             checkImageExists(imgTag, folder, sub, prefix, 10);
+          });
+       }
 
-    	function checkImageExists(imgTag, folder, sub, prefix, num) {
-    	   if (num <= 0) return;
+       function checkImageExists(imgTag, folder, sub, prefix, num) {
+          if (num <= 0) return;
 
-    	   const path = `/images/${folder}/${sub}/${prefix}${num}.jpg`;
-    	   const img = new Image();
+          const path = `/images/${folder}/${sub}/${prefix}${num}.jpg`;
+          const img = new Image();
 
-    	   img.onload = () => imgTag.src = path;
-    	   img.onerror = () => checkImageExists(imgTag, folder, sub, prefix, num - 1);
-    	   img.src = path;
-    	}
+          img.onload = () => imgTag.src = path;
+          img.onerror = () => checkImageExists(imgTag, folder, sub, prefix, num - 1);
+          img.src = path;
+       }
 
-    	document.addEventListener("DOMContentLoaded", loadLatestImages);
+       document.addEventListener("DOMContentLoaded", loadLatestImages);
    </script>
 </body>
 </html>
