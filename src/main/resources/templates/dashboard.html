@@ -1,325 +1,364 @@
 <!DOCTYPE html>
 <html lang="ko">
-
-<head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>관리 시스템 대시보드</title>
-   <!-- Bootstrap 5 CSS -->
-   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-   <!-- Custrom CSS (Optional, keeping if needed for specific overrides) -->
-   <link rel="stylesheet" th:href="@{/css/style.css}">
-
-</head>
-<style>
-
-/* 스타일 태그 안에 추가 */
-#clock {
-    font-family: 'Courier New', Courier, monospace; /* 숫자 폭을 일정하게 유지 */
-    font-weight: bold;
-    margin-left: 5px;
-}
-	/* 박스와 박스 간격 */
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>관리 시스템 대시보드</title>
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <!-- Custrom CSS (Optional, keeping if needed for specific overrides) -->
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <style>
+    /* 스타일 태그 안에 추가 */
+    #clock {
+      font-family: "Courier New", Courier, monospace; /* 숫자 폭을 일정하게 유지 */
+      font-weight: bold;
+      margin-left: 5px;
+    }
+    /* 박스와 박스 간격 */
     .sensor-widget {
-        margin-bottom: -40px;
+      margin-bottom: -40px;
     }
-    
+
     .sensor-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        transition: transform 0.2s;
-        height: 80px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      transition: transform 0.2s;
+      height: 80px;
     }
-    
+
     .sensor-card * {
-	    line-height: 1;
-	}
-    
+      line-height: 1;
+    }
+
     .sensor-card .card-body {
-	    padding: 0.05rem 0.4rem;  /* 위아래 / 좌우 */
-	    height: 100%;
-	    
-	    display: flex;
-	    flex-direction: column;
-	    justify-content: center;
-	    align-items: center;
-	}
-	
-	.sensor-title,
-	.sensor-unit {
-	    margin: 0;
-	    padding: 0;
-	}
-    
+      padding: 0.05rem 0.4rem; /* 위아래 / 좌우 */
+      height: 100%;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .sensor-title,
+    .sensor-unit {
+      margin: 0;
+      padding: 0;
+    }
+
     .sensor-card:hover {
-        transform: translateY(-3px);
+      transform: translateY(-3px);
     }
-    
+
     .sensor-value {
-        font-size: 1.5rem;
-        font-weight: bold;
+      font-size: 1.5rem;
+      font-weight: bold;
     }
-    
-  
-</style>
+  </style>
 
-<body class="bg-light">
-
-   <div class="container-fluid">
+  <body class="bg-light">
+    <div class="container-fluid">
       <div class="row">
-         <!-- Sidebar -->
-         <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse p-0">
-         <div class="position-sticky pt-4 px-3">
-            <div class="mb-4">
-               <h5 class="fw-bold text-white">
-                  SMHRD 요양병원<br>안전 관제시스템
-               </h5>
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse p-0">
+          <div class="position-sticky pt-4 px-3">
+            <div class="sidebar-logo">
+              <div class="sidebar-title">SMHRD 요양병원</div>
+              <div class="sidebar-subtitle">안전 관제시스템</div>
             </div>
-               <ul class="nav flex-column">
-	               <li class="nav-item">
-	                  <a class="nav-link" th:href="@{/dashboard}"
-	                  	th:classappend="${requestURI.contains('/dashboard')} ? 'active'">
-	                     <i class="bi bi-speedometer2 me-2"></i>대시보드
-	                  </a>
-	               </li>
-	               <li class="nav-item">
-	                  <a class="nav-link" th:href="@{/patients}"
-	                  	th:classappend="${requestURI.contains('/patients')} ? 'active'">
-	                     <i class="bi bi-hospital me-2"></i>병실 현황
-	                  </a>
-	               </li>
-	               <li class="nav-item">
-	                  <a class="nav-link" th:href="@{/rooms}"
-	                  	th:classappend="${requestURI.contains('/rooms')} ? 'active'">
-	                     <i class="bi bi-camera-video me-2"></i>실시간 모니터링
-	                  </a>
-	               </li>
-	               <li class="nav-item">
-	                  <a class="nav-link"
-	                  	th:classappend="${requestURI.contains('/alerts')} ? 'active'">
-	                     <i class="bi bi-bell me-2"></i>알림 센터
-	                  </a>
-	               </li>
-	            </ul>
-               <div class="mt-5 px-3">
-                  <span class="small text-muted" style="color: silver !important;">carepose 1.0.0</span>
-               </div>
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  th:href="@{/dashboard}"
+                  th:classappend="${requestURI.contains('/dashboard')} ? 'active'"
+                >
+                  <i class="bi bi-speedometer2 me-2"></i>대시보드
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  th:href="@{/patients}"
+                  th:classappend="${requestURI.contains('/patients')} ? 'active'"
+                >
+                  <i class="bi bi-hospital me-2"></i>침상 관리 
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  th:href="@{/rooms}"
+                  th:classappend="${requestURI.contains('/rooms')} ? 'active'"
+                >
+                  <i class="bi bi-camera-video me-2"></i>실시간 모니터링
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  th:classappend="${requestURI.contains('/alerts')} ? 'active'"
+                >
+                  <i class="bi bi-bell me-2"></i>알림 센터
+                </a>
+              </li>
+            </ul>
+            <div class="mt-5 px-3">
+              <span class="small text-muted" style="color: silver !important"
+                >carepose 1.0.0</span
+              >
             </div>
-         </nav>
+          </div>
+        </nav>
 
-         <!-- Main Content -->
-         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-         
-         	<div class="page-header d-flex align-items-center">
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+          <div class="page-header d-flex align-items-center">
+            <div>
+              <h1 class="page-title mb-1">6병동</h1>
+              <p class="text-muted mb-0">환자 모니터링 현황</p>
+            </div>
+            <div class="container">
+              <!-- 온습도 박스 -->
+              <div class="sensor-widget">
+                <div class="d-flex gap-2 justify-content-end">
+                  <!-- 온도 박스 -->
+                  <div style="width: 120px">
+                    <div
+                      class="card sensor-card"
+                      style="
+                        background: linear-gradient(
+                          135deg,
+                          #f2d383 0%,
+                          #ed966b 100%
+                        );
+                      "
+                    >
+                      <div class="card-body text-center">
+                        <div class="sensor-title">온도</div>
+                        <div class="sensor-value" id="temperature">--</div>
+                        <span class="sensor-unit">°C</span>
+                      </div>
+                    </div>
+                  </div>
 
-	               <div>
-	                  <h1 class="page-title mb-1">6병동</h1>
-	                  <p class="text-muted mb-0">환자 모니터링 현황</p>
-               </div>
-               <div class="container">
-  
-<!-- 온습도 박스 -->
-<div class="sensor-widget">
-    <div class="d-flex gap-2 justify-content-end"> 
-    
-    	<!-- 온도 박스 -->
-    	<div style="width: 120px;"> 
-    		<div class="card sensor-card" style="background: linear-gradient(135deg, #f2d383 0%, #ed966b 100%);">
-                <div class="card-body text-center">
-                    <div class="sensor-title">온도</div>
-                    <div class="sensor-value" id="temperature">--</div>
-                    <span class="sensor-unit">°C</span>
+                  <!-- 습도 박스 -->
+                  <div style="width: 120px">
+                    <div
+                      class="card sensor-card"
+                      style="
+                        background: linear-gradient(
+                          135deg,
+                          #4facfe 0%,
+                          #00f2fe 100%
+                        );
+                      "
+                    >
+                      <div class="card-body text-center">
+                        <div class="sensor-title">습도</div>
+                        <div class="sensor-value" id="humidity">--</div>
+                        <span class="sensor-unit">%</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+              </div>
+
+              <div class="last-update">
+                <span class="status"></span>
+                <span id="status"></span>
+              </div>
             </div>
-        </div>
-        
-        <!-- 습도 박스 -->
-        <div style="width: 120px;">
-            <div class="card sensor-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                <div class="card-body text-center">
-                    <div class="sensor-title">습도</div>
-                    <div class="sensor-value" id="humidity">--</div>
-                    <span class="sensor-unit">%</span>
+
+            <div class="btn-toolbar mb-2 mb-md-0">
+              <div class="btn-group me-6">
+                <button type="button" class="btn btn-sm btn-secondary">
+                  현재 시간 <span id="clock"> </span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Status Cards -->
+          <div class="row g-4 mb-4">
+            <div class="col-md-3">
+              <div class="status-card h-100">
+                <span class="dot bg-primary"></span>
+                <div class="h3 fw-bold my-2">0</div>
+                <div class="text-muted">전체 환자</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="status-card h-100">
+                <span class="dot bg-success"></span>
+                <div class="h3 fw-bold my-2">0</div>
+                <div class="text-muted">정상</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="status-card h-100">
+                <span class="dot bg-warning"></span>
+                <div class="h3 fw-bold my-2">0</div>
+                <div class="text-muted">주의</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="status-card h-100">
+                <span class="dot bg-danger"></span>
+                <div class="h3 fw-bold my-2">0</div>
+                <div class="text-muted">위험</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerts Section -->
+          <div class="row g-4">
+            <div class="col-6">
+              <div class="card shadow-sm mb-4">
+                <div
+                  class="card-header bg-white d-flex justify-content-between align-items-center py-3"
+                >
+                  <h5 class="mb-0 text-secondary">최근 이벤트</h5>
                 </div>
+                <div class="card-body p-0">
+                  <div class="list-group list-group-flush">
+                    <!-- Example Alert Items -->
+
+                    <div
+                      class="list-group-item d-flex justify-content-between align-items-center"
+                    >
+                      <span>00:00 &nbsp; <b>601C</b> &nbsp; 낙상 발생</span>
+                      <button class="btn btn-sm btn btn-outline-primary">
+                        기록 확인
+                      </button>
+                    </div>
+                    <div
+                      class="list-group-item d-flex justify-content-between align-items-center"
+                    >
+                      <span>00:00 &nbsp; <b>601C</b> &nbsp; 낙상 발생</span>
+                      <button class="btn btn-sm btn btn-outline-primary">
+                        기록 확인
+                      </button>
+                    </div>
+                    <div
+                      class="list-group-item d-flex justify-content-between align-items-center"
+                    >
+                      <span>00:00 &nbsp; <b>601C</b> &nbsp; 낙상 발생</span>
+                      <button class="btn btn-sm btn btn-outline-primary">
+                        기록 확인
+                      </button>
+                    </div>
+                    <div
+                      class="list-group-item d-flex justify-content-between align-items-center"
+                    >
+                      <span>00:00 &nbsp; <b>601C</b> &nbsp; 낙상 발생</span>
+                      <button class="btn btn-sm btn btn-outline-primary">
+                        기록 확인
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-        </div>
+            <div class="col-6">
+              <div class="card shadow-sm mb-4">
+                <div
+                  class="card-header bg-white d-flex justify-content-between align-items-center py-3"
+                >
+                  <h5 class="mb-0 text-secondary">자세 변경 알림</h5>
+                  <a href="#" class="btn btn-sm btn-outline-primary"
+                    >🔔 새로운 알림 0건</a
+                  >
+                </div>
+                <div class="card-body p-0">
+                  <div class="list-group list-group-flush">
+                    <!-- Example Alert Items -->
 
-    </div>
-</div>
-        
-        <div class="last-update">
-            <span class="status "></span>
-            <span id="status"></span>
-        </div>
-    </div>
-               
-               <div class="btn-toolbar mb-2 mb-md-0">
-                  <div class="btn-group me-6">
-                     <button type="button" class="btn btn-sm btn-secondary">현재 시간  <span id="clock">
-                           </span></button>
+                    <div
+                      class="list-group-item list-group-item-danger d-flex justify-content-between align-items-center"
+                    >
+                      <span
+                        >14:30 &nbsp; <b>103호 B</b> &nbsp; 체위 변경 필요
+                        (2시간 초과)</span
+                      >
+                      <button class="btn btn-sm btn-danger">처리 완료</button>
+                    </div>
+                    <div
+                      class="list-group-item list-group-item-danger d-flex justify-content-between align-items-center"
+                    >
+                      <span
+                        >14:30 &nbsp; <b>103호 B</b> &nbsp; 체위 변경 필요
+                        (2시간 초과)</span
+                      >
+                      <button class="btn btn-sm btn-danger">처리 완료</button>
+                    </div>
+                    <div
+                      class="list-group-item list-group-item-warning d-flex justify-content-between align-items-center"
+                    >
+                      <span
+                        >14:15 &nbsp; <b>101호 B</b> &nbsp; 자세 유지 시간
+                        주의</span
+                      >
+                      <button class="btn btn-sm btn-warning">처리 완료</button>
+                    </div>
                   </div>
-               </div>
-            </div>
-
-            <!-- Status Cards -->
-            <div class="row g-4 mb-4">
-               <div class="col-md-3">
-                  <div class="status-card h-100">
-                     <span class="dot bg-primary"></span>
-                     <div class="h3 fw-bold my-2">0</div>
-                     <div class="text-muted">전체 환자</div>
-                  </div>
-               </div>
-               <div class="col-md-3">
-                  <div class="status-card h-100">
-                     <span class="dot bg-success"></span>
-                     <div class="h3 fw-bold my-2">0</div>
-                     <div class="text-muted">정상</div>
-                  </div>
-               </div>
-               <div class="col-md-3">
-                  <div class="status-card h-100">
-                     <span class="dot bg-warning"></span>
-                     <div class="h3 fw-bold my-2">0</div>
-                     <div class="text-muted">주의</div>
-                  </div>
-               </div>
-               <div class="col-md-3">
-                  <div class="status-card h-100">
-                     <span class="dot bg-danger"></span>
-                     <div class="h3 fw-bold my-2">0</div>
-                     <div class="text-muted">위험</div>
-                  </div>
-               </div>
-            </div>
-
-            <!-- Alerts Section -->
-            <div class="row g-4">
-               <div class="col-6">
-                  <div class="card shadow-sm mb-4">
-                     <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-                        <h5 class="mb-0 text-secondary">최근 이벤트 </h5>
-                     </div>
-                     <div class="card-body p-0">
-                        <div class="list-group list-group-flush">
-                           <!-- Example Alert Items -->
-                          
-                           <div class="list-group-item d-flex justify-content-between align-items-center">
-                              <span>00:00 &nbsp; <b>601C</b> &nbsp; 낙상 발생</span>
-                              <button class="btn btn-sm btn btn-outline-primary ">기록 확인</button>
-                           </div>
-                           <div class="list-group-item d-flex justify-content-between align-items-center">
-                              <span>00:00 &nbsp; <b>601C</b> &nbsp; 낙상 발생</span>
-                              <button class="btn btn-sm btn btn-outline-primary ">기록 확인</button>
-                           </div>
-                           <div class="list-group-item d-flex justify-content-between align-items-center">
-                              <span>00:00 &nbsp; <b>601C</b> &nbsp; 낙상 발생</span>
-                              <button class="btn btn-sm btn btn-outline-primary ">기록 확인</button>
-                           </div>
-                           <div class="list-group-item d-flex justify-content-between align-items-center">
-                              <span>00:00 &nbsp; <b>601C</b> &nbsp; 낙상 발생</span>
-                              <button class="btn btn-sm btn btn-outline-primary ">기록 확인</button>
-                           </div>
-                    
-                        </div>
-                     </div>
-                  </div>
-               </div>
-               <div class="col-6">
-                  <div class="card shadow-sm mb-4">
-                     <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-                        <h5 class="mb-0 text-secondary"> 자세 변경 알림</h5>
-                        <a href="#" class="btn btn-sm btn-outline-primary">🔔 새로운 알림 0건</a>
-                     </div>
-                     <div class="card-body p-0">
-                        <div class="list-group list-group-flush">
-                           <!-- Example Alert Items -->
-                         
-                           <div
-                              class="list-group-item list-group-item-danger d-flex justify-content-between align-items-center">
-                              <span>14:30 &nbsp; <b>103호 B</b> &nbsp; 체위 변경 필요 (2시간 초과)</span>
-                              <button class="btn btn-sm btn-danger">처리 완료</button>
-                           </div>
-                           <div
-                              class="list-group-item list-group-item-danger d-flex justify-content-between align-items-center">
-                              <span>14:30 &nbsp; <b>103호 B</b> &nbsp; 체위 변경 필요 (2시간 초과)</span>
-                              <button class="btn btn-sm btn-danger">처리 완료</button>
-                           </div>
-                           <div
-                              class="list-group-item list-group-item-warning d-flex justify-content-between align-items-center">
-                              <span>14:15 &nbsp; <b>101호 B</b> &nbsp; 자세 유지 시간 주의</span>
-                              <button class="btn btn-sm btn-warning">처리 완료</button>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-
-               <!-- Quick Actions / Bed Status -->
-               <div class="col-lg-15">
-                  <div class="row g-3">
-                     <div class="col-6">
-                        <div class="bed-card bed-green shadow-sm">
-                           환 자 관 리
-                        </div>
-                     </div>
-                     <div class="col-6">
-                        <div class="bed-card bed-red shadow-sm">
-                           실시간 모니터링
-                        </div>
-                     </div>
-                  </div>
-               </div>
+                </div>
+              </div>
             </div>
 
-         </main>
-      </div>
-   </div>
+ 
 
-   <!-- Bootstrap 5 JS Bundle -->
-   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-<script>
-        // 센서 데이터 가져오기
-        function fetchSensorData() {
-            fetch('/api/sensor')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('temperature').textContent = data.temperature.toFixed(1);
-                    document.getElementById('humidity').textContent = data.humidity.toFixed(1);
-                    
-                    const now = new Date();
-                   
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    /* document.getElementById('status').textContent = '데이터 로딩 실패'; */
-                });
-        }
-        
-        // 페이지 로드 시 즉시 실행
-        fetchSensorData();
-        
-        // 2초마다 자동 업데이트
-        setInterval(fetchSensorData, 2000);
-        
-        function updateClock() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('ko-KR', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false // 24시간 형식이 깔끔하면 false, 오전/오후가 필요하면 true
-            });
-            document.getElementById('clock').textContent = timeString;
-        }
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+  <script>
+    // 센서 데이터 가져오기
+    function fetchSensorData() {
+      fetch("/api/sensor")
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById("temperature").textContent =
+            data.temperature.toFixed(1);
+          document.getElementById("humidity").textContent =
+            data.humidity.toFixed(1);
 
-        // 1초마다 업데이트
-        setInterval(updateClock, 1000);
-        updateClock(); // 즉시 실행
-        
-    </script>
+          const now = new Date();
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          /* document.getElementById('status').textContent = '데이터 로딩 실패'; */
+        });
+    }
 
+    // 페이지 로드 시 즉시 실행
+    fetchSensorData();
+
+    // 2초마다 자동 업데이트
+    setInterval(fetchSensorData, 2000);
+
+    function updateClock() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString("ko-KR", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // 24시간 형식이 깔끔하면 false, 오전/오후가 필요하면 true
+      });
+      document.getElementById("clock").textContent = timeString;
+    }
+
+    // 1초마다 업데이트
+    setInterval(updateClock, 1000);
+    updateClock(); // 즉시 실행
+  </script>
 </html>
