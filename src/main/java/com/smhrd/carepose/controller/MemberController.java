@@ -50,6 +50,7 @@ public class MemberController {
     }
     
     // 로그인 로직 처리 (post)
+    // 로그인 로직 처리 (post)
     @PostMapping("/login")
     public String loginProcess(@RequestParam String username,
                          @RequestParam String password,
