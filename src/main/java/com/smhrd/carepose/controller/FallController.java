@@ -49,10 +49,22 @@ public class FallController {
     @GetMapping("/recent")
     public ResponseEntity<List<FallEntity>> getRecentFalls(@RequestParam(defaultValue = "10") int limit) {
         try {
+            System.out.println("=== /api/fall/recent 호출됨, limit: " + limit + " ===");
             PageRequest pageRequest = PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "fallAt"));
             List<FallEntity> falls = fallRepository.findAll(pageRequest).getContent();
-            return ResponseEntity.ok(falls);
+            System.out.println("조회된 낙상 데이터 개수: " + falls.size());
+            if (!falls.isEmpty()) {
+                System.out.println("첫 번째 데이터: " + falls.get(0));
+            }
+            // 캐시 방지 헤더 추가
+            return ResponseEntity.ok()
+                .header("Cache-Control", "no-cache, no-store, must-revalidate")
+                .header("Pragma", "no-cache")
+                .header("Expires", "0")
+                .body(falls);
         } catch (Exception e) {
+            System.err.println("낙상 데이터 조회 중 에러: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }

@@ -5,13 +5,19 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.smhrd.carepose.dto.MonitoringDTO;
 import com.smhrd.carepose.entity.PatientEntity;
 import com.smhrd.carepose.entity.PositionEntity;
 import com.smhrd.carepose.repository.PatientRepository;
+import com.smhrd.carepose.repository.PositionRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -20,6 +26,9 @@ public class MonitoringController {
 
    @Autowired
    private PatientRepository patientRepository;
+   
+   @Autowired
+   private PositionRepository positionRepository;
 
    @GetMapping("/monitoring")
    public String monitoringPage(Model model, HttpServletRequest request) {
@@ -35,8 +44,42 @@ public class MonitoringController {
        return "monitoring";
    }
    
-   
+   // -----------------------------
+   // ✅ 2시간 타이머 종료 시 DB 시간 갱신용 API
+   // -----------------------------
+   @PostMapping("/api/updatePositionTime")
+   @ResponseBody
+   public ResponseEntity<String> updatePositionTime(@RequestParam String bedId) {
 
+       // 침상에 해당하는 PositionEntity 조회
+       PositionEntity pos = positionRepository.findByPatientId(bedId);
 
+       if (pos != null) {
+           // 현재 시간으로 갱신
+           pos.setLastPositionTime(LocalDateTime.now());
+           positionRepository.save(pos);
+           return ResponseEntity.ok("갱신 완료");
+       }
+
+       return ResponseEntity.badRequest().body("해당 침상 없음");
+   }
+
+   @GetMapping("/api/monitoringData")
+   @ResponseBody
+   public ResponseEntity<List<MonitoringDTO>> getMonitoringData() {
+
+       List<MonitoringDTO> result = patientRepository.findAll().stream()
+           .map(p -> {
+               PositionEntity pos = p.getPosition();
+               return new MonitoringDTO(
+                   p.getPatientId(),
+                   pos != null ? pos.getLastPosition() : null,
+                   pos != null ? pos.getLastPositionTime() : null
+               );
+           })
+           .toList();
+
+       return ResponseEntity.ok(result);
+   }
    
 }

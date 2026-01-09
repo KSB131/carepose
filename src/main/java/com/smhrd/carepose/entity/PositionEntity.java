@@ -13,7 +13,11 @@ import java.time.LocalDateTime;
 public class PositionEntity {
 
     @Id
-    @Column(name = "patient_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "position_num")
+    private Long positionNum;
+    
+    @Column(name = "patient_id", nullable=false, unique = true)
     private String patientId; // Patient 테이블의 PK와 동일한 값
 
     @Column(name = "last_position")
@@ -23,9 +27,13 @@ public class PositionEntity {
     private LocalDateTime lastPositionTime;
 
     // 환자 정보와 연결 (Optional)
-    @OneToOne
-    @MapsId // Position의 PK(patientId)를 Patient의 PK와 매핑
-    @JoinColumn(name = "patient_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+        name = "patient_id",
+        referencedColumnName = "patient_id",
+        insertable = false,
+        updatable = false
+    )
     private PatientEntity patient;
     
     

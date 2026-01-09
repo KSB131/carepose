@@ -610,7 +610,6 @@
 	                let remaining =
 	                    TOTAL_SECONDS - Math.floor((now - startTime) / 1000);
 
-	                
 	                if (remaining < 0) remaining = 0;
 
 	                // 4️⃣ 화면 출력
@@ -623,19 +622,32 @@
 	                    `${String(m).padStart(2,'0')}:` +
 	                    `${String(s).padStart(2,'0')}`;
 
-	                 // 5️⃣ DB 시간이 변경되었을 때만 알림
-	                    const prevTime = timerEl.dataset.lastTime;
+	                // 5️⃣ 0초 알림
+	                if (remaining === 0 && timerEl.dataset.done !== "true") {
 
-	                    if (remaining === 0 && prevTime !== p.lastPositionTime) {
+    timerEl.dataset.done = "true"; // 🔒 다시 실행 방지
 
-	                        timerEl.dataset.lastTime = p.lastPositionTime; // 서버 기준 기록
+    const card = timerEl.closest('.camera-card');
+    const bedId = card.querySelector('.bed-badge').textContent;
+    const patientName = card.querySelector('.patient-name').textContent;
 
-	                        const card = timerEl.closest('.camera-card');
-	                        const bedId = card.querySelector('.bed-badge').textContent;
-	                        const patientName = card.querySelector('.patient-name').textContent;
+    // ✅ 1. 팝업 띄우기
+    showAlert(`${bedId} (${patientName})`);
 
-	                        showAlert(`${bedId} (${patientName})`);
-	                    }
+    // ✅ 2. 서버에 시간 갱신 요청
+    fetch('/api/updatePositionTime', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+            bedId: bedId
+        })
+    })
+    .then(res => res.text())
+    .then(msg => console.log('⏱ DB 갱신:', msg))
+    .catch(err => console.error('DB 갱신 실패', err));
+}
 	            });
 	        })
 	        .catch(err => console.error('타이머 동기화 실패:', err));

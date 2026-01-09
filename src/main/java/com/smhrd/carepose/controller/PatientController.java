@@ -84,6 +84,7 @@ public class PatientController {
 
         if(keyword != null && !keyword.trim().isEmpty()){
             patients = patientRepository.findByNameContaining(keyword);
+            patients = patientRepository.findByPatientIdContaining("601");
         } 
         else {
             patients = patientRepository.findAll();
