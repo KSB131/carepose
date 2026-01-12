@@ -2,6 +2,7 @@ package com.smhrd.carepose.controller;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,15 +72,30 @@ public class MonitoringController {
        List<MonitoringDTO> result = patientRepository.findAll().stream()
            .map(p -> {
                PositionEntity pos = p.getPosition();
+               
+               int grade = p.getGrade();  // int 타입
+               int totalSeconds;
+
+               switch (grade) {
+                   case 1: totalSeconds = 105 * 60; break;  // 1시간45분
+                   case 2: totalSeconds = 90 * 60; break;   // 1시간30분
+                   case 3: totalSeconds = 80 * 60; break;   // 1시간20분
+                   default: totalSeconds = 120 * 60;        // grade 0
+               }
+               
                return new MonitoringDTO(
                    p.getPatientId(),
                    pos != null ? pos.getLastPosition() : null,
-                   pos != null ? pos.getLastPositionTime() : null
+                   pos != null ? pos.getLastPositionTime() : null,
+                   grade,
+                   totalSeconds
                );
            })
            .toList();
 
        return ResponseEntity.ok(result);
    }
+   
+   
    
 }

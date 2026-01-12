@@ -27,7 +27,7 @@ import lombok.Setter;
 public class PatientEntity {
 
 	
-	@OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
 	private PositionEntity position;
 
 	
@@ -37,7 +37,10 @@ public class PatientEntity {
 
 	    private String name;
 
-	    private Integer grade;
+	    private int grade;
+	    public int getGrade() {
+	    	return grade;
+	    }
 
 	    @Column(name="ulcer_location")
 	    private String ulcerLocation;

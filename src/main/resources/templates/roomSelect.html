@@ -106,25 +106,14 @@
           </div>
 
           <!-- 병실 선택 -->
-          <div
-            class="row g-4"
-            th:with="roomSet=${#sets.toSet(patients.![#strings.substring(patientId, 0, 3)])}"
-          >
-            <div
-              class="col-md-3"
-              th:each="roomNo : ${#lists.sort(#lists.toList(roomSet))}"
-            >
-              <a
-                th:href="@{/monitoring(room=${roomNo})}"
-                class="text-decoration-none text-dark"
-              >
-                <div class="room-card">
-                  <i class="bi bi-door-closed me-2 text-primary"></i>
-                  <span th:text="${roomNo} + '호'">301호</span>
-                </div>
-              </a>
+          <div class="row g-4"> <div class="col-3" th:each="roomNo : ${roomList}"> <a th:href="@{/monitoring(room=${roomNo})}" class="text-decoration-none text-dark">
+            <div class="room-card">
+                <i class="bi bi-door-closed me-2 text-primary"></i>
+                <span th:text="${roomNo} + '호'">301호</span>
             </div>
-          </div>
+        </a>
+    </div>
+</div>
         </main>
       </div>
     </div>

@@ -572,7 +572,6 @@
    }
 
    // 타이머 업데이트 시뮬레이션
-   const TOTAL_SECONDS = 2 * 60 * 60; // 2시간 = 7200초
 
    function updateTimerDisplay(element, remaining) {
        const h = Math.floor(remaining / 3600);
@@ -607,8 +606,10 @@
 	                const startTime = new Date(p.lastPositionTime);
 	                const now = new Date();
 
+	                const totalSeconds = p.totalSeconds || 7200;
+	                
 	                let remaining =
-	                    TOTAL_SECONDS - Math.floor((now - startTime) / 1000);
+	                    totalSeconds - Math.floor((now - startTime) / 1000);
 
 	                if (remaining < 0) remaining = 0;
 

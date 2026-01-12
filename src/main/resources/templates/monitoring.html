@@ -16,6 +16,15 @@
          --card-shadow: 0 4px 20px rgba(100, 148, 237, 0.08);
          --gradient-main: linear-gradient(135deg, #fffaf7 0%, #fff0e5 100%);
       }
+      
+      .pose-icon-img {
+    width: 32px;  /* 아이콘 크기에 맞춰 조절 */
+    height: 7d0px; /* 아이콘 크기에 맞춰 조절 */
+    object-fit: cover;
+    border-radius: 4px; /* 살짝 둥글게 (선택) */
+    vertical-align: middle;
+    margin-right: 8px; /* 텍스트와의 간격 */
+}
 
       
       .room-center {
@@ -464,18 +473,22 @@
                      </div>
                   
                      <div class="camera-right">
-                        <div class="pose-current">
-                           <span class="pose-label">변경 예정</span>
-                           <i class="bi bi-person-standing pose-icon"></i>
+   <div class="pose-current" 
+        th:with="cur=${p.position?.lastPosition}, 
+                 nextPose=${cur == '좌측위' ? '앙와위' : (cur == '앙와위' ? '우측위' : (cur == '우측위' ? '좌측위' : '확인'))}">
+      
+      <span class="pose-label">변경 예정</span>
 
-                           <span class="pose-value"
-                                 th:with="cur=${p.position?.lastPosition}"
-                                 th:text="${cur == '좌측위' ? '앙와위'
-                                         : (cur == '앙와위' ? '우측위'
-                                         : (cur == '우측위' ? '좌측위' : '확인'))}">
-                           </span>
-                        </div>
-                     </div>
+      <img th:if="${nextPose != '확인'}" 
+           th:src="@{'/images/' + ${nextPose} + '.png'}" 
+           class="pose-icon-img" 
+           th:alt="${nextPose}">
+      
+      <i th:if="${nextPose == '확인'}" class="bi bi-person-standing pose-icon"></i>
+
+      <span class="pose-value" th:text="${nextPose}"></span>
+   </div>
+</div>
                   
                   </div>
                   
@@ -572,7 +585,6 @@
    }
 
    // 타이머 업데이트 시뮬레이션
-   const TOTAL_SECONDS = 2 * 60 * 60; // 2시간 = 7200초
 
    function updateTimerDisplay(element, remaining) {
        const h = Math.floor(remaining / 3600);
@@ -607,10 +619,11 @@
 	                const startTime = new Date(p.lastPositionTime);
 	                const now = new Date();
 
-	                let remaining =
-	                    TOTAL_SECONDS - Math.floor((now - startTime) / 1000);
-
+	                const totalSeconds = p.totalSeconds || 7200;
 	                
+	                let remaining =
+	                    totalSeconds - Math.floor((now - startTime) / 1000);
+
 	                if (remaining < 0) remaining = 0;
 
 	                // 4️⃣ 화면 출력
@@ -623,19 +636,32 @@
 	                    `${String(m).padStart(2,'0')}:` +
 	                    `${String(s).padStart(2,'0')}`;
 
-	                 // 5️⃣ DB 시간이 변경되었을 때만 알림
-	                    const prevTime = timerEl.dataset.lastTime;
+	                // 5️⃣ 0초 알림
+	                if (remaining === 0 && timerEl.dataset.done !== "true") {
 
-	                    if (remaining === 0 && prevTime !== p.lastPositionTime) {
+    timerEl.dataset.done = "true"; // 🔒 다시 실행 방지
 
-	                        timerEl.dataset.lastTime = p.lastPositionTime; // 서버 기준 기록
+    const card = timerEl.closest('.camera-card');
+    const bedId = card.querySelector('.bed-badge').textContent;
+    const patientName = card.querySelector('.patient-name').textContent;
 
-	                        const card = timerEl.closest('.camera-card');
-	                        const bedId = card.querySelector('.bed-badge').textContent;
-	                        const patientName = card.querySelector('.patient-name').textContent;
+    // ✅ 1. 팝업 띄우기
+    showAlert(`${bedId} (${patientName})`);
 
-	                        showAlert(`${bedId} (${patientName})`);
-	                    }
+    // ✅ 2. 서버에 시간 갱신 요청
+    fetch('/api/updatePositionTime', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+            bedId: bedId
+        })
+    })
+    .then(res => res.text())
+    .then(msg => console.log('⏱ DB 갱신:', msg))
+    .catch(err => console.error('DB 갱신 실패', err));
+}
 	            });
 	        })
 	        .catch(err => console.error('타이머 동기화 실패:', err));

@@ -9,9 +9,11 @@ import com.smhrd.carepose.entity.PatientEntity;
 public interface PatientRepository extends JpaRepository<PatientEntity, String> {
     
     List<PatientEntity> findByNameContaining(String keyword);
-    List<PatientEntity> findByPatientIdContaining(String keyword);
+    List<PatientEntity> findByPatientIdContaining(String patientId);
+    
+    
 
-    List<PatientEntity> findByRoomBedContaining(String roomBed);
+    
     
     
    /*

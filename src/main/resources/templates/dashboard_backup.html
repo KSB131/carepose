@@ -455,63 +455,32 @@
     let autoCloseTimer = null; // 자동 닫기 타이머
     let countdownInterval = null; // 카운트다운 인터벌
     let remainingSeconds = 15; // 남은 시간
-    let modalElement = null;
-    let modal = null;
-
-    // DOM이 로드된 후 모달 초기화
-    document.addEventListener('DOMContentLoaded', function() {
-      modalElement = document.getElementById("fallModal");
-      if (modalElement) {
-        modal = new bootstrap.Modal(modalElement);
-        console.log("✅ Modal initialized");
-        
-        // 낙상 체크 시작
-        checkFallStatus();
-        setInterval(checkFallStatus, 1500);
-      } else {
-        console.error("❌ Modal element not found!");
-      }
-    });
+    const modal = new bootstrap.Modal(document.getElementById("fallModal"));
 
     async function checkFallStatus() {
-      if (!modal) {
-        console.log("⏳ Modal not ready yet");
-        return;
-      }
-      
       try {
-        const res = await fetch("/api/fall/status");
+        const res = await fetch("http://localhost:8001/fall_status");
         const data = await res.json();
         
         console.log("🔍 Fetched data:", data);
         console.log("🔍 data.fall value:", data.fall, "type:", typeof data.fall);
-        console.log("🔍 currentFallNum:", currentFallNum, "modalShown:", modalShown);
+        console.log("🔍 modalShown:", modalShown);
 
-        // fall 값이 true 또는 문자열 "true"인 경우 처리
-        const isFall = data.fall === true || data.fall === "true";
-        
-        if (isFall) {
+        if (data.fall === true) {
           console.log("✅ Fall detected! Showing modal...");
-          console.log("  Fall Num:", data.fall_num, "type:", typeof data.fall_num);
+          console.log("  Fall Num:", data.fall_num);
           console.log("📍 Room:", data.room);
           console.log("🖼️ Image:", data.image);
           console.log("⏰ Timestamp:", data.timestamp);
-          
-          // fall_num을 정수로 변환
-          const fallNum = parseInt(data.fall_num);
-          
-          // 이미 처리된 낙상이면 무시
-          if (handledFalls.includes(fallNum)) {
+                    // 이미 처리된 낙상이면 무시
+          if (handledFalls.includes(data.fall_num)) {
             console.log("✔️ Already handled fall, skipping...");
             return;
           }
-          
-          // 새로운 낙상이거나 아직 모달이 안 떴을 때
-          if (!modalShown || currentFallNum !== fallNum) {
-            console.log("🚨 NEW FALL - Opening modal!");
-            
+                    // 새로운 낙상이거나 아직 모달이 안 떴을 때
+          if (!modalShown || currentFallNum !== data.fall_num) {
             // fall_num 저장
-            currentFallNum = fallNum;
+            currentFallNum = data.fall_num;
             
             // 침상번호, 시간, 이미지 업데이트
             document.getElementById("fallRoomNumber").textContent = data.room || "Unknown";
@@ -524,7 +493,6 @@
 
             // 모달이 이미 열려있으면 닫았다가 다시 열기
             if (modalShown) {
-              console.log("🔄 Modal already shown, updating...");
               // 기존 타이머/인터벌 취소
               if (autoCloseTimer) {
                 clearTimeout(autoCloseTimer);
@@ -536,15 +504,14 @@
               modal.hide();
               setTimeout(() => {
                 modal.show();
-                console.log("✅ Modal re-opened with new fall!");
+                console.log("🔄 Modal updated with new fall!");
                 
                 // 카운트다운 시작
                 startCountdown();
               }, 300);
             } else {
-              console.log("🆕 Opening modal for first time");
               modal.show();
-              console.log("✅ Modal.show() called!");
+              console.log("✅ Modal shown!");
               
               // 카운트다운 시작
               startCountdown();
@@ -555,9 +522,6 @@
             console.log("⚠️ Same fall, modal already shown, skipping...");
           }
         } else {
-          if (modalShown) {
-            console.log("ℹ️ Fall cleared, resetting modalShown");
-          }
           modalShown = false;
           console.log("❌ No fall detected (data.fall is false)");
         }
@@ -565,6 +529,8 @@
         console.error("❌ Error in checkFallStatus:", e);
       }
     }
+
+    setInterval(checkFallStatus, 1500);
     
     // 카운트다운 함수
     function startCountdown() {
@@ -593,43 +559,38 @@
       }, 15000);
     }
     
-    // 확인 버튼 클릭 시 handled_at 업데이트 (DOMContentLoaded 내에서 초기화)
-    document.addEventListener('DOMContentLoaded', function() {
-      const fallModalElement = document.getElementById("fallModal");
-      if (fallModalElement) {
-        fallModalElement.addEventListener("hidden.bs.modal", async function() {
-          // 타이머와 인터벌 모두 취소
-          if (autoCloseTimer) {
-            clearTimeout(autoCloseTimer);
-            autoCloseTimer = null;
-          }
-          if (countdownInterval) {
-            clearInterval(countdownInterval);
-            countdownInterval = null;
-          }
+    // 확인 버튼 클릭 시 handled_at 업데이트
+    document.getElementById("fallModal").addEventListener("hidden.bs.modal", async function() {
+      // 타이머와 인터벌 모두 취소
+      if (autoCloseTimer) {
+        clearTimeout(autoCloseTimer);
+        autoCloseTimer = null;
+      }
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+      }
+      
+      if (currentFallNum) {
+        try {
+          const response = await fetch(`/api/fall/handle/${currentFallNum}`, {
+            method: 'POST'
+          });
+          const result = await response.json();
           
-          if (currentFallNum) {
-            try {
-              const response = await fetch(`/api/fall/handle/${currentFallNum}`, {
-                method: 'POST'
-              });
-              const result = await response.json();
-              
-              if (result.success) {
-                console.log("✅ 조치 완료 처리됨:", currentFallNum);
-                // 처리된 목록에 추가
-                handledFalls.push(currentFallNum);
-              } else {
-                console.error("❌ 조치 완료 처리 실패:", result.message);
-              }
-            } catch (e) {
-              console.error("❌ API 호출 실패:", e);
-            }
-            
-            currentFallNum = null;
-            modalShown = false;
+          if (result.success) {
+            console.log("✅ 조치 완료 처리됨:", currentFallNum);
+            // 처리된 목록에 추가
+            handledFalls.push(currentFallNum);
+          } else {
+            console.error("❌ 조치 완료 처리 실패:", result.message);
           }
-        });
+        } catch (e) {
+          console.error("❌ API 호출 실패:", e);
+        }
+        
+        currentFallNum = null;
+        modalShown = false;
       }
     });
   </script>

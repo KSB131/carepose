@@ -5,5 +5,7 @@ import java.time.LocalDateTime;
 public record MonitoringDTO(
     String patientId,
     String lastPosition,
-    LocalDateTime lastPositionTime
+    LocalDateTime lastPositionTime,
+    int grade,
+    int totalSeconds
 ) {}

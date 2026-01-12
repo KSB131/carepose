@@ -48,4 +48,13 @@ public class PositionEntity {
     public void setIdleMinutes(Long idleMinutes) {
         this.idleMinutes = idleMinutes;
     }
+    
+    public int getGradeAsInt() {
+    	try {
+    		return patient.getGrade();
+    	} catch (Exception e) {
+    		return 0;
+    	}
+    }
+    
 }
