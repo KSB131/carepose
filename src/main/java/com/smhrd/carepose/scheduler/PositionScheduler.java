@@ -19,11 +19,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PositionScheduler {
 
-    private PositionRepository positionRepository;
+    private final PositionRepository positionRepository;
 
     // ⏱ 1초마다 자동 실행
     @Transactional
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 10000)
     public void autoUpdatePositionTime() {
     	
 		/* System.out.println("⏰ Scheduler 실행됨: " + LocalDateTime.now()); */

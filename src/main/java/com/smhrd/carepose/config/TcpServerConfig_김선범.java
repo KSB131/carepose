@@ -23,7 +23,7 @@ import java.util.Map;
 @Component
 public class TcpServerConfig_김선범 implements CommandLineRunner {
 
-    private static final int PORT = 5001;
+	/* private static final int PORT = 5001; */
     private final tools.jackson.databind.ObjectMapper objectMapper = new tools.jackson.databind.ObjectMapper();
     
     // 이미지 저장 기본 경로 (src/main/resources/static/images/)

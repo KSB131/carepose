@@ -154,28 +154,28 @@
                <div class="col-md-3">
                   <div class="status-card h-100">
                      <span class="dot bg-primary"></span>
-                     <div class="h3 fw-bold my-2">0</div>
+                     <div class="h3 fw-bold my-2" th:text="${totalPatientCount}">0</div>
                      <div class="text-muted">전체 환자</div>
                   </div>
                </div>
                <div class="col-md-3">
                   <div class="status-card h-100">
                      <span class="dot bg-success"></span>
-                     <div class="h3 fw-bold my-2">0</div>
+                     <div class="h3 fw-bold my-2" th:text="${normalPatientCount}">0</div>
                      <div class="text-muted">정상</div>
                   </div>
                </div>
                <div class="col-md-3">
                   <div class="status-card h-100">
                      <span class="dot bg-warning"></span>
-                     <div class="h3 fw-bold my-2">0</div>
+                     <div class="h3 fw-bold my-2" th:text="${cautionPatientCount}">0</div>
                      <div class="text-muted">주의</div>
                   </div>
                </div>
                <div class="col-md-3">
                   <div class="status-card h-100">
                      <span class="dot bg-danger"></span>
-                     <div class="h3 fw-bold my-2">0</div>
+                     <div class="h3 fw-bold my-2" th:text="${dangerPatientCount}">0</div>
                      <div class="text-muted">위험</div>
                   </div>
                </div>
