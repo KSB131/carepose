@@ -27,7 +27,7 @@ FALL_ALERT_DURATION = 5
 # 얼굴 프라이버시 설정
 ENABLE_FACE_PRIVACY = True
 PRIVACY_MODE = "blur"  # "mosaic", "blur", "black"
-PIXEL_SIZE = 20
+PIXEL_SIZE = 30
 BLUR_STRENGTH = 51
 
 # 화면 표시 설정
@@ -161,7 +161,7 @@ def save_fall_to_db(bed_id, image_name, timestamp):
         INSERT INTO fall (patient_id, pic_id, fall_body, fall_at)
         VALUES (%s, %s, %s, %s)
     """
-    cursor.execute(sql, (bed_id, image_name, "", timestamp))
+    cursor.execute(sql, (bed_id, image_name, "wrist", timestamp))
     conn.commit()
     cursor.close()
     conn.close()
