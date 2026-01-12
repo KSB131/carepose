@@ -12,19 +12,23 @@ import com.smhrd.carepose.entity.PositionEntity;
 import com.smhrd.carepose.repository.PatientRepository;
 import com.smhrd.carepose.repository.PositionRepository;
 
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class PositionScheduler {
 
-    @Autowired
     private PositionRepository positionRepository;
 
     // ⏱ 1초마다 자동 실행
+    @Transactional
     @Scheduled(fixedRate = 1000)
     public void autoUpdatePositionTime() {
     	
 		/* System.out.println("⏰ Scheduler 실행됨: " + LocalDateTime.now()); */
 
-        List<PositionEntity> list = positionRepository.findAll();
+    	List<PositionEntity> list = positionRepository.findAllWithPatient();
         LocalDateTime now = LocalDateTime.now();
 
         for (PositionEntity pos : list) {

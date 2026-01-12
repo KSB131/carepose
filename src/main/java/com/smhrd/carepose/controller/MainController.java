@@ -26,9 +26,6 @@ public class MainController {
    
    @Autowired
    PatientRepository patientRepository;
-
-
-   
    
    @GetMapping("/rooms")
    public String roomSelect(Model model, HttpServletRequest request) {

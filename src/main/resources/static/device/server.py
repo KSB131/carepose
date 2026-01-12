@@ -7,7 +7,7 @@ app = FastAPI()
 
 # server.py가 있는 디렉터리 기준으로 fall_status.txt 경로 설정
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-FALL_STATUS_FILE = os.path.join(BASE_DIR, "fall_status.txt")
+FALL_STATUS_FILE = os.path.join(BASE_DIR, "fall_status.json")
 
 # 웹페이지에서 접근 허용
 app.add_middleware(
