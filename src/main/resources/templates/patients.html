@@ -63,6 +63,10 @@
                   <i class="bi bi-bell me-2"></i>알림 센터
                 </a>
               </li>
+              <li class="nav-item"><a class="nav-link" th:href="@{/manager}"
+                     th:classappend="${requestURI.contains('/manager')} ? 'active'">
+                        <i class="bi bi-bell me-2"></i>관리자
+                  </a></li>
             </ul>
 
             <div class="mt-5 px-3">
@@ -83,8 +87,9 @@
             <div class="ms-auto">
               <button
                 type="button"
-                class="btn btn-success"
+                class="btn btn-success btn-lg px-4 py-3"
                 onclick="openModal('register')"
+                style="font-size: 1.1rem; font-weight: 600"
               >
                 + 신규 환자 등록
               </button>
@@ -173,15 +178,17 @@
                         </button>
                       </td>
                       <td class="text-center">
-                        <button class="btn btn-sm btn-outline-primary me-1" 
-        th:attr="data-id=${patient.patientId}, 
+                        <button
+                          class="btn btn-sm btn-outline-primary me-1"
+                          th:attr="data-id=${patient.patientId}, 
                  data-name=${patient.name}, 
                  data-grade=${patient.grade}, 
                  data-location=${patient.ulcerLocation}, 
                  data-patientid=${patient.patientId}"
-        onclick="openModal('edit', this)">
-    수정
-</button>
+                          onclick="openModal('edit', this)"
+                        >
+                          수정
+                        </button>
                         <button
                           class="btn btn-sm btn-outline-danger"
                           th:attr="data-id=${patient.patientId}"
@@ -252,103 +259,135 @@
 
     <!-- Bootstrap Modal -->
     <div class="modal fade" id="patientModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form id="patientForm" method="post">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalTitle">신규 환자 등록</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form id="patientForm" method="post">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalTitle">신규 환자 등록</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+              ></button>
+            </div>
 
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">침상 ID *</label>
-            <input type="text" id="m_patientId" name="patientId" class="form-control" required />
-          </div>
-          <div class="mb-3">
-            <label class="form-label">환자명 *</label>
-            <input type="text" id="m_name" name="name" class="form-control" required />
-          </div>
-          <div class="mb-3">
-            <label class="form-label">욕창 단계</label>
-            <select id="m_grade" name="grade" class="form-select">
-              <option value="0">없음</option>
-              <option value="1">1단계</option>
-              <option value="2">2단계</option>
-              <option value="3">3단계</option>
-              <option value="4">4단계</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">욕창 부위</label>
-            <input type="text" id="m_location" name="ulcerLocation" class="form-control" placeholder="천골, 발꿈치 등" />
-          </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">침상 ID *</label>
+                <input
+                  type="text"
+                  id="m_patientId"
+                  name="patientId"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">환자명 *</label>
+                <input
+                  type="text"
+                  id="m_name"
+                  name="name"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">욕창 단계</label>
+                <select id="m_grade" name="grade" class="form-select">
+                  <option value="0">없음</option>
+                  <option value="1">1단계</option>
+                  <option value="2">2단계</option>
+                  <option value="3">3단계</option>
+                  <option value="4">4단계</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">욕창 부위</label>
+                <input
+                  type="text"
+                  id="m_location"
+                  name="ulcerLocation"
+                  class="form-control"
+                  placeholder="천골, 발꿈치 등"
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" id="submitBtn" class="btn btn-primary">
+                등록
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                취소
+              </button>
+            </div>
+          </form>
         </div>
-        <div class="modal-footer">
-          <button type="submit" id="submitBtn" class="btn btn-primary">등록</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-        </div>
-      </form>
+      </div>
     </div>
-  </div>
-</div>
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-    function openModal(mode, btn) {
-        const modal = new bootstrap.Modal(document.getElementById('patientModal'));
-        const form = document.getElementById('patientForm');
-        const title = document.getElementById('modalTitle');
-        const submitBtn = document.getElementById('submitBtn');
-        
+      function openModal(mode, btn) {
+        const modal = new bootstrap.Modal(
+          document.getElementById("patientModal")
+        );
+        const form = document.getElementById("patientForm");
+        const title = document.getElementById("modalTitle");
+        const submitBtn = document.getElementById("submitBtn");
+
         // 필드들
-        const patientIdInput = document.getElementById('m_patientId');
-        const nameInput = document.getElementById('m_name');
-        const gradeInput = document.getElementById('m_grade');
-        const locationInput = document.getElementById('m_location');
-        
-        let oldIdInput = document.getElementById('oldPatientId');
+        const patientIdInput = document.getElementById("m_patientId");
+        const nameInput = document.getElementById("m_name");
+        const gradeInput = document.getElementById("m_grade");
+        const locationInput = document.getElementById("m_location");
+
+        let oldIdInput = document.getElementById("oldPatientId");
         if (!oldIdInput) {
-            oldIdInput = document.createElement('input');
-            oldIdInput.type = 'hidden';
-            oldIdInput.id = 'oldPatientId';
-            oldIdInput.name = 'oldPatientId'; // Controller의 @RequestParam 이름과 일치
-            form.appendChild(oldIdInput);
+          oldIdInput = document.createElement("input");
+          oldIdInput.type = "hidden";
+          oldIdInput.id = "oldPatientId";
+          oldIdInput.name = "oldPatientId"; // Controller의 @RequestParam 이름과 일치
+          form.appendChild(oldIdInput);
         }
 
-        if (mode === 'register') {
-            title.innerText = "신규 환자 등록";
-            submitBtn.innerText = "등록";
-            form.action = "/patients/register"; // 등록용 엔드포인트
-            
-            // 필드 초기화
-            form.reset();
-            patientIdInput.readOnly = false;
-            
-            oldIdInput.value = ""; // 등록 시엔 비움
+        if (mode === "register") {
+          title.innerText = "신규 환자 등록";
+          submitBtn.innerText = "등록";
+          form.action = "/patients/register"; // 등록용 엔드포인트
+
+          // 필드 초기화
+          form.reset();
+          patientIdInput.readOnly = false;
+
+          oldIdInput.value = ""; // 등록 시엔 비움
         } else {
-            title.innerText = "환자 정보 수정";
-            submitBtn.innerText = "수정 완료";
-            form.action = "/patients/update"; // 수정용 엔드포인트
-            
-            const currentId = btn.getAttribute('data-patientid');
-            patientIdInput.value = currentId;
-            oldIdInput.value = currentId; // ★ 기존 ID를 확실히 세팅
-            
-            // 버튼의 dataset에서 값 가져와서 세팅
-            nameInput.value = btn.getAttribute('data-name');
-            gradeInput.value = btn.getAttribute('data-grade');
-            locationInput.value = btn.getAttribute('data-location');
-            
-            // 침상 ID(PK)는 수정 못하게 막기
-            patientIdInput.readOnly = false;
+          title.innerText = "환자 정보 수정";
+          submitBtn.innerText = "수정 완료";
+          form.action = "/patients/update"; // 수정용 엔드포인트
+
+          const currentId = btn.getAttribute("data-patientid");
+          patientIdInput.value = currentId;
+          oldIdInput.value = currentId; // ★ 기존 ID를 확실히 세팅
+
+          // 버튼의 dataset에서 값 가져와서 세팅
+          nameInput.value = btn.getAttribute("data-name");
+          gradeInput.value = btn.getAttribute("data-grade");
+          locationInput.value = btn.getAttribute("data-location");
+
+          // 침상 ID(PK)는 수정 못하게 막기
+          patientIdInput.readOnly = false;
         }
-        
+
         modal.show();
-    }
-    
+      }
+
       function editPatient(btn) {
         const id = btn.getAttribute("data-id");
         location.href = "/patients/" + id;

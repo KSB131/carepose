@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import com.smhrd.carepose.repository.MemberRepository;
 import com.smhrd.carepose.entity.MemberEntity;   // ⭐ 이거 중요
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor
 public class MemberController {
 
     @Autowired
@@ -46,10 +48,15 @@ public class MemberController {
     @GetMapping("/api/check-username")
     @ResponseBody
     public boolean checkUsername(@RequestParam String username) {
-       return memberRepository.existsById(username);
+       return memberRepository.existsByUsername(username);
     }
     
-    // 로그인 로직 처리 (post)
+    // 로그인 로직 처리 (get)
+    @GetMapping("/login")
+    public String loginPage() {
+    	return "login";
+    }
+    
     // 로그인 로직 처리 (post)
     @PostMapping("/login")
     public String loginProcess(@RequestParam String username,
@@ -66,9 +73,9 @@ public class MemberController {
           // 담당 병동/병실에(roomAuthority) 따른 페이지 분기
           String authority = member.getRoomAuthority();
           
-          if ("요양보호사".equals(authority)) {
+          if ("caregiver".equals(authority)) {
              return "redirect:/monitoring";
-          } else if ("간호사".equals(authority)) {
+          } else if ("nurse".equals(authority)) {
              return "redirect:/dashboard";
           } else {
              return "redirect:/dashboard";

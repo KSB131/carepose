@@ -455,7 +455,7 @@ nav li {
 }
 
 .sidebar .nav-link {
-   font-size:22px;
+  font-size: 22px;
   color: #64748b;
   padding: 14px 20px;
   border-radius: 12px;
@@ -587,10 +587,11 @@ header {
   background: var(--gradient-card);
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(100, 148, 237, 0.08);
-  padding: 28px;
+  padding: 28px 16px;
   border: 1px solid rgba(255, 255, 255, 0.8);
   transition: all 0.3s ease;
   position: relative;
+  border-left: 5px solid #b89c61;
 }
 
 .status-card:hover,
@@ -599,8 +600,7 @@ header {
   box-shadow: 0 8px 30px rgba(100, 148, 237, 0.15);
 }
 
-.dot,
-.stat-icon {
+.dot .stat-icon {
   width: 16px;
   height: 16px;
   border-radius: 50%;

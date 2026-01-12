@@ -74,15 +74,12 @@
 
         <!-- Room Authority -->
         <div class="mb-3">
-          <label for="roomAuthority" class="form-label">담당병동/병실 *</label>
-          <input
-            type="text"
-            id="roomAuthority"
-            name="roomAuthority"
-            class="form-control"
-            placeholder="ex) 6G, 601A"
-            required
-          />
+          <label for="roomAuthority" class="form-label">권한 확인 *</label> <br>
+          <select name="roomAuthority" class="form-select" required>
+          	<option value="" disabled selected>선택하세요</option>
+          	<option value="nurse">간호사</option>
+          	<option value="caregiver">요양보호사</option>          	
+          </select>
         </div>
 
         <!-- Buttons -->
@@ -101,14 +98,27 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      function checkDuplicate() {
-        var username = document.getElementById("username").value;
+    function checkDuplicate() {
+        const username = document.getElementById("username").value;
+
         if (!username) {
-          alert("아이디를 입력해주세요.");
+          alert("사번을 입력해주세요.");
           return;
         }
-        // TODO: AJAX Call
-        alert("중복 확인 기능 (API 연동 필요)");
+
+        fetch(`/api/check-username?username=${username}`)
+          .then(response => response.json())
+          .then(isDuplicate => {
+            if (isDuplicate) {
+              alert("이미 사용 중인 사번입니다.");
+            } else {
+              alert("사용 가능한 사번입니다.");
+            }
+          })
+          .catch(error => {
+            console.error(error);
+            alert("중복 확인 중 오류가 발생했습니다.");
+          });
       }
     </script>
   </body>

@@ -29,11 +29,14 @@ public class MemberEntity {
 	@Column(name = "password",nullable=false)
 	private String password;
 	
-	@Column(name = "roomAuthority",nullable=false)
+	@Column(name = "room_authority",nullable=false)
 	private String roomAuthority;
 
+	@Column(name = "role")
+	private String role;
 	
-	
-	
+	public void setRole (String role) {
+		this.role = role;
+	}
 	
 }

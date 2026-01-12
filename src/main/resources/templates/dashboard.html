@@ -90,6 +90,10 @@
                      th:classappend="${requestURI.contains('/alerts')} ? 'active'">
                         <i class="bi bi-bell me-2"></i>알림 센터
                   </a></li>
+                  <li class="nav-item"><a class="nav-link" th:href="@{/manager}"
+                     th:classappend="${requestURI.contains('/manager')} ? 'active'">
+                        <i class="bi bi-bell me-2"></i>관리자
+                  </a></li>
                </ul>
                <div class="mt-5 px-3">
                   <span class="small text-muted" style="color: silver !important">carepose
@@ -154,29 +158,29 @@
                <div class="col-md-3">
                   <div class="status-card h-100">
                      <span class="dot bg-primary"></span>
-                     <div class="h3 fw-bold my-2" th:text="${totalPatientCount}">0</div>
-                     <div class="text-muted">전체 환자</div>
+                     <div class="h2 fw-bold mb-0" th:text="${totalPatientCount}">0</div>
+<div class="text-muted small mt-1">전체 환자</div>
                   </div>
                </div>
                <div class="col-md-3">
                   <div class="status-card h-100">
                      <span class="dot bg-success"></span>
-                     <div class="h3 fw-bold my-2" th:text="${normalPatientCount}">0</div>
-                     <div class="text-muted">정상</div>
+                     <div class="h2 fw-bold mb-0" th:text="${normalPatientCount}">0</div>
+<div class="text-muted small mt-1">정상</div>
                   </div>
                </div>
                <div class="col-md-3">
                   <div class="status-card h-100">
                      <span class="dot bg-warning"></span>
-                     <div class="h3 fw-bold my-2" th:text="${cautionPatientCount}">0</div>
-                     <div class="text-muted">주의</div>
+                     <div class="h2 fw-bold mb-0" th:text="${cautionPatientCount}">0</div>
+                     <div class="text-muted small mt-1">주의</div>
                   </div>
                </div>
                <div class="col-md-3">
                   <div class="status-card h-100">
                      <span class="dot bg-danger"></span>
-                     <div class="h3 fw-bold my-2" th:text="${dangerPatientCount}">0</div>
-                     <div class="text-muted">위험</div>
+                     <div class="h2 fw-bold mb-0" th:text="${dangerPatientCount}">0</div>
+                     <div class="text-muted small mt-1">위험</div>
                   </div>
                </div>
             </div>
