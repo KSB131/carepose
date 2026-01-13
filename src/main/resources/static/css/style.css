@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap");
 /* ---------------------------------------------- */
 /* 1. 전체 공통 & 색상 변수                          */
 /* ---------------------------------------------- */
@@ -13,7 +14,7 @@
 .page-title {
   font-size: 40px;
   font-weight: 900;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #667eea, #566dd4);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -62,8 +63,9 @@
 }
 
 body {
+  overflow-y: scroll;
   margin: 0;
-  font-family: "Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  font-family: sans-serif;
   background: var(--gradient-main);
   min-height: 100vh;
   color: var(--text-primary);
@@ -338,16 +340,6 @@ body.auth-mode main {
 /* 7. 사이드바                                     */
 /* ---------------------------------------------- */
 
-nav {
-  width: 280px;
-  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
-  color: #2c3e50;
-  padding: 32px 24px;
-  flex-shrink: 0;
-  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.05);
-  border-right: 1px solid #e5e7eb;
-}
-
 nav h1 {
   font-size: 1.75rem;
   margin-bottom: 40px;
@@ -370,7 +362,11 @@ nav li {
 }
 
 .sidebar-logo {
-  margin-bottom: 48px;
+   background-color: #f8f9fa; /* 1. 선 윗부분에 칠할 배경색 (원하는 색상으로 변경 가능) */
+   padding: 20px 15px;       /* 상하좌우 여백 */
+   margin-bottom: 20px;      /* 아래 메뉴와의 간격 */
+   border-bottom: 2px solid #e0e0e0; /* 2. "시스템" 밑에 생기는 선 (갈색 선 역할) */
+   text-align: center;       /* 텍스트 중앙 정렬 */
 }
 
 .sidebar-logo-image {
@@ -393,18 +389,15 @@ nav li {
 }
 
 .sidebar-title {
-  font-weight: 700;
-  font-size: 32px;
-  background: linear-gradient(135deg, #ff8c00 0%, #ff6b35 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+   font-size: 32px;
+   font-weight: bold;
+   color: #334155;
+   margin-bottom: 5px;
 }
 
 .sidebar-subtitle {
-  color: #ff8c00;
-  font-size: 19px;
-  margin-top: 4px;
-  font-weight: 500;
+   font-size: 15px;
+   color: #64748b;
 }
 
 .sidebar-menu {
@@ -423,15 +416,20 @@ nav li {
   text-decoration: none;
   transition: all 0.3s;
 }
+.sidebar-logo img {
+  width: 200px; /* ← 여기 숫자 줄여 */
+  max-width: 100%;
+  height: auto;
+}
 
 .menu-item:hover {
   background: linear-gradient(135deg, #fff5ed 0%, #ffe4d6 100%);
-  color: #ff8c00;
+
   transform: translateX(4px);
 }
 
 .menu-item.active {
-  background: linear-gradient(135deg, #ff8c00 0%, #ff6b35 100%);
+  background: linear-gradient(135deg, #ddd79b 0%, #ff6b35 100%);
   color: white;
   box-shadow: 0 4px 15px rgba(255, 140, 0, 0.25);
 }
@@ -456,6 +454,7 @@ nav li {
 
 .sidebar .nav-link {
   font-size: 22px;
+  font-family: "Noto Sans KR", sans-serif;
   color: #64748b;
   padding: 14px 20px;
   border-radius: 12px;
@@ -465,15 +464,15 @@ nav li {
 }
 
 .sidebar .nav-link:hover {
-  background: linear-gradient(135deg, #fff5ed 0%, #ffe4d6 100%);
-  color: #ff8c00;
+  background: linear-gradient(135deg, #f1e6e6 0%, #fff1f1 100%);
   transform: translateX(4px);
 }
 
 .sidebar .nav-link.active {
-  background: linear-gradient(135deg, #ff8c00 0%, #ff6b35 100%);
-  color: #fff;
-  box-shadow: 0 4px 15px rgba(255, 140, 0, 0.25);
+  color: #e0493e;
+  background: rgba(234, 88, 12, 0.08);
+  border-left: 4px solid #d3401b;
+  box-shadow: 0 4px 15px rgba(104, 101, 98, 0.25);
 }
 
 /* ---------------------------------------------- */
@@ -591,7 +590,6 @@ header {
   border: 1px solid rgba(255, 255, 255, 0.8);
   transition: all 0.3s ease;
   position: relative;
-  border-left: 5px solid #b89c61;
 }
 
 .status-card:hover,
@@ -1313,30 +1311,7 @@ header {
 /*  Added during refactoring                 */
 /* ========================================= */
 
-/* Sidebar Navigation */
-.sidebar {
-  min-height: 100vh;
-  background-color: #2c3e50;
-  color: white;
-}
-
-.sidebar a {
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: none;
-  padding: 10px 15px;
-  display: block;
-}
-
-.sidebar a:hover {
-  color: white;
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.sidebar .nav-link.active {
-  color: white;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-left: 3px solid #0d6efd;
-}
+/* Sidebar Navigation - 중복 제거됨 (위 섹션 참조) */
 
 /* Auth Pages (Login/Register) overrides */
 .auth-mode {

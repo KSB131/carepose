@@ -28,6 +28,7 @@
 .sensor-card {
    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
    color: white;
+
    border: none;
    transition: transform 0.2s;
    height: 80px;
@@ -86,9 +87,13 @@
                      th:classappend="${requestURI.contains('/rooms')} ? 'active'">
                         <i class="bi bi-camera-video me-2"></i>실시간 모니터링
                   </a></li>
-                  <li class="nav-item"><a class="nav-link"
+              <li class="nav-item"><a class="nav-link" th:href="@{alerts}"
                      th:classappend="${requestURI.contains('/alerts')} ? 'active'">
                         <i class="bi bi-bell me-2"></i>알림 센터
+                  </a></li>
+                  <li class="nav-item"><a class="nav-link" th:href="@{/manager}"
+                     th:classappend="${requestURI.contains('/manager')} ? 'active'">
+                        <i class="bi bi-bell me-2"></i>관리자
                   </a></li>
                </ul>
                <div class="mt-5 px-3">
@@ -110,9 +115,9 @@
                   <div class="sensor-widget">
                      <div class="d-flex gap-2 justify-content-end">
                         <!-- 온도 박스 -->
-                        <div style="width: 120px">
+                        <div style="width: 140px">
                            <div class="card sensor-card"
-                              style="background: linear-gradient(135deg, #f2d383 0%,#ed966b 100%);">
+                              style="background: linear-gradient(135deg,  #d87f74 0%,#f2d383 100%);">
                               <div class="card-body text-center">
                                  <div class="sensor-title">온도</div>
                                  <div class="sensor-value" id="temperature">--</div>
@@ -122,9 +127,9 @@
                         </div>
 
                         <!-- 습도 박스 -->
-                        <div style="width: 120px">
+                        <div style="width: 140px">
                            <div class="card sensor-card"
-                              style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                              style="background: linear-gradient(135deg, rgb(116, 180, 245) 0%, rgb(87, 153, 207) 100%);">
                               <div class="card-body text-center">
                                  <div class="sensor-title">습도</div>
                                  <div class="sensor-value" id="humidity">--</div>
@@ -142,7 +147,7 @@
 
                <div class="btn-toolbar mb-2 mb-md-0">
                   <div class="btn-group me-6">
-                     <button type="button" class="btn btn-lg btn-secondary">
+                     <button type="button" class="btn btn-sm btn-secondary">
                         현재 시간 <span id="clock"> </span>
                      </button>
                   </div>
@@ -152,31 +157,31 @@
             <!-- Status Cards -->
             <div class="row g-4 mb-4">
                <div class="col-md-3">
-                  <div class="status-card h-100">
+                  <div class="status-card h-100"  style="border-left:6px solid #0d6efd;">
                      <span class="dot bg-primary"></span>
-                     <div class="h3 fw-bold my-2" th:text="${totalPatientCount}">0</div>
-                     <div class="text-muted">전체 환자</div>
+                     <div class="h2 fw-bold mb-0" th:text="${totalPatientCount}">0</div>
+<div class="text-muted small mt-1">전체 환자</div>
                   </div>
                </div>
                <div class="col-md-3">
-                  <div class="status-card h-100">
+                  <div class="status-card h-100" style = "border-left:6px solid #198754;">
                      <span class="dot bg-success"></span>
-                     <div class="h3 fw-bold my-2" th:text="${normalPatientCount}">0</div>
-                     <div class="text-muted">정상</div>
+                     <div class="h2 fw-bold mb-0" th:text="${normalPatientCount}">0</div>
+<div class="text-muted small mt-1">정상</div>
                   </div>
                </div>
                <div class="col-md-3">
-                  <div class="status-card h-100">
+                  <div class="status-card h-100" style ="border-left:6px solid #ffc107;">
                      <span class="dot bg-warning"></span>
-                     <div class="h3 fw-bold my-2" th:text="${cautionPatientCount}">0</div>
-                     <div class="text-muted">주의</div>
+                     <div class="h2 fw-bold mb-0" th:text="${cautionPatientCount}">0</div>
+                     <div class="text-muted small mt-1">주의</div>
                   </div>
                </div>
                <div class="col-md-3">
-                  <div class="status-card h-100">
+                  <div class="status-card h-100" style ="border-left:6px solid #dc3545; ">
                      <span class="dot bg-danger"></span>
-                     <div class="h3 fw-bold my-2" th:text="${dangerPatientCount}">0</div>
-                     <div class="text-muted">위험</div>
+                     <div class="h2 fw-bold mb-0" th:text="${dangerPatientCount}">0</div>
+                     <div class="text-muted small mt-1">위험</div>
                   </div>
                </div>
             </div>
@@ -269,7 +274,7 @@
                style="object-fit: contain; max-height: 600px;" />
         </div>
 
-        <button type="button" class="btn btn-success btn-sm w-100" data-bs-dismiss="modal">
+        <button type="button" class="btn btn-success btn-lg w-100" data-bs-dismiss="modal">
           확인 (조치 완료)
         </button>
       </div>
@@ -343,26 +348,12 @@
     // 낙상 이벤트 목록 로드
     async function loadFallEvents() {
       try {
-        console.log("🔍 낙상 이벤트 로드 시작...");
-        // 캐시 방지를 위해 timestamp 추가 및 no-cache 헤더 설정
-        const timestamp = new Date().getTime();
-        const response = await fetch(`/api/fall/recent?limit=10&_t=${timestamp}`, {
-          method: 'GET',
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
-          }
-        });
-        console.log("📡 API 응답 상태:", response.status);
+        const response = await fetch("/api/fall/recent?limit=10");
         const falls = await response.json();
-        console.log("📊 받은 데이터:", falls);
-        console.log("📊 데이터 개수:", falls.length);
         
         const listContainer = document.getElementById("fallEventList");
         
         if (falls.length === 0) {
-          console.log("⚠️ 낙상 기록 없음");
           listContainer.innerHTML = `
             <div class="list-group-item text-center text-muted">
               낙상 기록이 없습니다.
@@ -399,10 +390,8 @@
           `;
         }).join('');
         
-        console.log("✅ 낙상 이벤트 렌더링 완료");
-        
       } catch (error) {
-        console.error("❌ 낙상 이벤트 로드 실패:", error);
+        console.error("낙상 이벤트 로드 실패:", error);
         document.getElementById("fallEventList").innerHTML = `
           <div class="list-group-item text-center text-danger">
             데이터 로드 실패

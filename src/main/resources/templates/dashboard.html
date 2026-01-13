@@ -22,12 +22,14 @@
 }
 /* 박스와 박스 간격 */
 .sensor-widget {
-   margin-bottom: -40px;
+   margin-top: -20px;
+   margin-bottom: -30px;
 }
 
 .sensor-card {
    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
    color: white;
+
    border: none;
    transition: transform 0.2s;
    height: 80px;
@@ -66,12 +68,13 @@
       <div class="row">
          <!-- Sidebar -->
          <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse p-0">
-            <div class="position-sticky pt-4 px-3">
+            <div class="position-sticky">
                <div class="sidebar-logo">
+               		<img src="/css/logo.png" alt="SMHRD 요양병원 로고">
                   <div class="sidebar-title">SMHRD 요양병원</div>
                   <div class="sidebar-subtitle">안전 관제시스템</div>
                </div>
-               <ul class="nav flex-column">
+               <ul class="nav flex-column px-3">
                   <li class="nav-item"><a class="nav-link"
                      th:href="@{/dashboard}"
                      th:classappend="${requestURI.contains('/dashboard')} ? 'active'">
@@ -86,7 +89,7 @@
                      th:classappend="${requestURI.contains('/rooms')} ? 'active'">
                         <i class="bi bi-camera-video me-2"></i>실시간 모니터링
                   </a></li>
-                  <li class="nav-item"><a class="nav-link"
+              <li class="nav-item"><a class="nav-link" th:href="@{alerts}"
                      th:classappend="${requestURI.contains('/alerts')} ? 'active'">
                         <i class="bi bi-bell me-2"></i>알림 센터
                   </a></li>
@@ -109,14 +112,14 @@
                   <h1 class="page-title mb-1">6병동</h1>
                   <p class="text-muted mb-0">환자 모니터링 현황</p>
                </div>
-               <div class="container">
+               <div class="container m-0">
                   <!-- 온습도 박스 -->
                   <div class="sensor-widget">
                      <div class="d-flex gap-2 justify-content-end">
                         <!-- 온도 박스 -->
-                        <div style="width: 120px">
+                        <div style="width: 140px">
                            <div class="card sensor-card"
-                              style="background: linear-gradient(135deg, #f2d383 0%,#ed966b 100%);">
+                              style="background: linear-gradient(135deg,  #d87f74 0%,#f2d383 100%);">
                               <div class="card-body text-center">
                                  <div class="sensor-title">온도</div>
                                  <div class="sensor-value" id="temperature">--</div>
@@ -126,9 +129,9 @@
                         </div>
 
                         <!-- 습도 박스 -->
-                        <div style="width: 120px">
+                        <div style="width: 140px">
                            <div class="card sensor-card"
-                              style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                              style="background: linear-gradient(135deg, rgb(116, 180, 245) 0%, rgb(87, 153, 207) 100%);">
                               <div class="card-body text-center">
                                  <div class="sensor-title">습도</div>
                                  <div class="sensor-value" id="humidity">--</div>
@@ -156,28 +159,28 @@
             <!-- Status Cards -->
             <div class="row g-4 mb-4">
                <div class="col-md-3">
-                  <div class="status-card h-100">
+                  <div class="status-card h-100"  style="border-left:6px solid #0d6efd;">
                      <span class="dot bg-primary"></span>
                      <div class="h2 fw-bold mb-0" th:text="${totalPatientCount}">0</div>
 <div class="text-muted small mt-1">전체 환자</div>
                   </div>
                </div>
                <div class="col-md-3">
-                  <div class="status-card h-100">
+                  <div class="status-card h-100" style = "border-left:6px solid #198754;">
                      <span class="dot bg-success"></span>
                      <div class="h2 fw-bold mb-0" th:text="${normalPatientCount}">0</div>
 <div class="text-muted small mt-1">정상</div>
                   </div>
                </div>
                <div class="col-md-3">
-                  <div class="status-card h-100">
+                  <div class="status-card h-100" style ="border-left:6px solid #ffc107;">
                      <span class="dot bg-warning"></span>
                      <div class="h2 fw-bold mb-0" th:text="${cautionPatientCount}">0</div>
                      <div class="text-muted small mt-1">주의</div>
                   </div>
                </div>
                <div class="col-md-3">
-                  <div class="status-card h-100">
+                  <div class="status-card h-100" style ="border-left:6px solid #dc3545; ">
                      <span class="dot bg-danger"></span>
                      <div class="h2 fw-bold mb-0" th:text="${dangerPatientCount}">0</div>
                      <div class="text-muted small mt-1">위험</div>
