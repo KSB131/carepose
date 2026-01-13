@@ -362,7 +362,11 @@ nav li {
 }
 
 .sidebar-logo {
-  margin-bottom: 48px;
+   background-color: #f8f9fa; /* 1. 선 윗부분에 칠할 배경색 (원하는 색상으로 변경 가능) */
+   padding: 20px 15px;       /* 상하좌우 여백 */
+   margin-bottom: 20px;      /* 아래 메뉴와의 간격 */
+   border-bottom: 2px solid #e0e0e0; /* 2. "시스템" 밑에 생기는 선 (갈색 선 역할) */
+   text-align: center;       /* 텍스트 중앙 정렬 */
 }
 
 .sidebar-logo-image {
@@ -385,20 +389,15 @@ nav li {
 }
 
 .sidebar-title {
-  font-family: "Noto Sans KR", sans-serif;
-  font-weight: 700;
-  font-size: 32px;
-  background: linear-gradient(135deg, #324055 0%, #324055 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+   font-size: 32px;
+   font-weight: bold;
+   color: #334155;
+   margin-bottom: 5px;
 }
 
 .sidebar-subtitle {
-  font-family: "Noto Sans KR", sans-serif;
-  color: #1f2937;
-  font-size: 25px;
-  margin-top: 4px;
-  font-weight: 500;
+   font-size: 15px;
+   color: #64748b;
 }
 
 .sidebar-menu {
@@ -416,6 +415,11 @@ nav li {
   color: #64748b;
   text-decoration: none;
   transition: all 0.3s;
+}
+.sidebar-logo img {
+  width: 200px; /* ← 여기 숫자 줄여 */
+  max-width: 100%;
+  height: auto;
 }
 
 .menu-item:hover {
@@ -1277,12 +1281,18 @@ header {
     padding: 20px;
   }
 
-  header,
-  .page-header {
+  header {
     padding: 24px;
     flex-direction: column;
     gap: 16px;
   }
+  
+  .page-header {
+   min-height: 80px !important; /* 박스의 최소 높이를 대폭 줄임 */
+   padding-top: 5px !important;
+   padding-bottom: 5px !important;
+   overflow: hidden; /* 내부 마진으로 인한 박스 늘어남 방지 */
+}
 
   .header-actions {
     width: 100%;

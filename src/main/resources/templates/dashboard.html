@@ -22,8 +22,8 @@
 }
 /* 박스와 박스 간격 */
 .sensor-widget {
-   margin-top: -20px;
-   margin-bottom: -30px;
+   margin-top: -10px !important;
+   margin-bottom: -30px !important;
 }
 
 .sensor-card {
@@ -61,6 +61,14 @@
    font-size: 1.5rem;
    font-weight: bold;
 }
+
+/* 텍스트가 절대 아래로 내려가지 않도록 설정 */
+.page-header p.text-muted {
+   white-space: nowrap !important; /* 한 줄로 강제 고정 */
+   margin-bottom: 0;
+}
+
+
 </style>
 
 <body class="bg-light">
@@ -95,7 +103,7 @@
                   </a></li>
                   <li class="nav-item"><a class="nav-link" th:href="@{/manager}"
                      th:classappend="${requestURI.contains('/manager')} ? 'active'">
-                        <i class="bi bi-bell me-2"></i>관리자
+                        <i class="bi bi-people-fill me-2"></i>관리자
                   </a></li>
                </ul>
                <div class="mt-5 px-3">
@@ -149,8 +157,9 @@
 
                <div class="btn-toolbar mb-2 mb-md-0">
                   <div class="btn-group me-6">
-                     <button type="button" class="btn btn-sm btn-secondary">
-                        현재 시간 <span id="clock"> </span>
+                     <button type="button" class="btn btn-sm btn-secondary d-flex flex-column align-items-center">
+                        현재 시간 <br>
+                        <span id="clock"> </span>
                      </button>
                   </div>
                </div>
