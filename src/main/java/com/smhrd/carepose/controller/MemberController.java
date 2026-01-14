@@ -57,33 +57,38 @@ public class MemberController {
     	return "login";
     }
     
+
+    
     // 로그인 로직 처리 (post)
     @PostMapping("/login")
     public String loginProcess(@RequestParam String username,
-                         @RequestParam String password,
-                         HttpSession session,
-                         Model model) {
+	                           @RequestParam String password,
+	                           HttpSession session,
+	                           Model model) {
        // DB에서 사용자 정보 조회
        MemberEntity member = memberRepository.findByUsernameAndPassword(username, password);
        
-       if (member != null) {
-          // 세션에 로그인 정보 저장
-          session.setAttribute("user", member);
-          
-          // 담당 병동/병실에(roomAuthority) 따른 페이지 분기
-          String authority = member.getRoomAuthority();
-          
-          if ("caregiver".equals(authority)) {
-             return "redirect:/monitoring";
-          } else if ("nurse".equals(authority)) {
-             return "redirect:/dashboard";
-          } else {
-             return "redirect:/dashboard";
-          }
-          
+       if (member == null) {
+           model.addAttribute("error", "사번 또는 비밀번호가 일치하지 않습니다.");
+           return "login";
+       }
+       
+       // 세션에 로그인 정보 저장
+       session.setAttribute("user", member);
+       session.setAttribute("role", member.getRole());
+       // 담당 병동/병실에(roomAuthority) 따른 페이지 분기
+       String authority = member.getRoomAuthority();
+       
+       String role = member.getRole();
+       
+       if ("nurse".equals(role)) {
+    	   return "redirect:/dashboard";
+       } else if ("caregiver".equals(role)) {
+    	   return "redirect:/rooms";
+       } else if ("manager".equals(role)) {
+    	   return "redirect:/manager";
        } else {
-          model.addAttribute("error", "사번 또는 비밀번호가 일치하지 않습니다.");
-          return "login";
+    	   return "redirect:/login";
        }
     }
     

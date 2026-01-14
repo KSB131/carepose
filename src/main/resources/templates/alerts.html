@@ -1,209 +1,388 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>알림 센터</title>
-<!-- Bootstrap 5 CSS -->
-<link
-   href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-   rel="stylesheet" />
-<link rel="stylesheet"
-   href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-<!-- Custrom CSS (Optional, keeping if needed for specific overrides) -->
-<link rel="stylesheet" th:href="@{/css/style.css}" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알림 센터</title>
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <!-- Custrom CSS (Optional, keeping if needed for specific overrides) -->
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
 
-<style>
-
-</style>
-
-</head>
-<body class="bg-light">
-  <div class="container-fluid">
+    <style></style>
+  </head>
+  <body class="bg-light">
+    <div class="container-fluid">
       <div class="row">
-         <!-- Sidebar -->
-         <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse p-0">
-            <div class="position-sticky">
-               <div class="sidebar-logo">
-               		<img src="/css/logo.png" alt="SMHRD 요양병원 로고">
-                  <div class="sidebar-title">SMHRD 요양병원</div>
-                  <div class="sidebar-subtitle">안전 관제시스템</div>
-               </div>
-               <ul class="nav flex-column px-3">
-                  <li class="nav-item"><a class="nav-link"
-                     th:href="@{/dashboard}"
-                     th:classappend="${requestURI.contains('/dashboard')} ? 'active'">
-                        <i class="bi bi-speedometer2 me-2"></i>대시보드
-                  </a></li>
-                  <li class="nav-item"><a class="nav-link"
-                     th:href="@{/patients}"
-                     th:classappend="${requestURI.contains('/patients')} ? 'active'">
-                        <i class="bi bi-hospital me-2"></i>침상 관리
-                  </a></li>
-                  <li class="nav-item"><a class="nav-link" th:href="@{/rooms}"
-                     th:classappend="${requestURI.contains('/rooms')} ? 'active'">
-                        <i class="bi bi-camera-video me-2"></i>실시간 모니터링
-                  </a></li>
-                  <li class="nav-item"><a class="nav-link" th:href="@{alerts}"
-                     th:classappend="${requestURI.contains('/alerts')} ? 'active'">
-                        <i class="bi bi-bell me-2"></i>알림 센터
-                  </a></li>
-                  <li class="nav-item"><a class="nav-link" th:href="@{/manager}"
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse p-0">
+          <div class="position-sticky">
+            <div class="sidebar-logo">
+              <img src="/css/logo.png" alt="SMHRD 요양병원 로고" />
+              <div class="sidebar-title">SMHRD 요양병원</div>
+              <div class="sidebar-subtitle">안전 관제시스템</div>
+            </div>
+            <ul class="nav flex-column px-3">
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  th:href="@{/dashboard}"
+                  th:classappend="${requestURI.contains('/dashboard')} ? 'active'"
+                >
+                  <i class="bi bi-speedometer2 me-2"></i>대시보드
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  th:href="@{/patients}"
+                  th:classappend="${requestURI.contains('/patients')} ? 'active'"
+                >
+                  <i class="bi bi-hospital me-2"></i>침상 관리
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  th:href="@{/rooms}"
+                  th:classappend="${requestURI.contains('/rooms')} ? 'active'"
+                >
+                  <i class="bi bi-camera-video me-2"></i>실시간 모니터링
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  th:href="@{alerts}"
+                  th:classappend="${requestURI.contains('/alerts')} ? 'active'"
+                >
+                  <i class="bi bi-bell me-2"></i>알림 센터
+                </a>
+              </li>
+              <li class="nav-item"
+                  	  th:if="${session.role == 'manager'}">
+                  	  <a class="nav-link" th:href="@{/manager}"
                      th:classappend="${requestURI.contains('/manager')} ? 'active'">
                         <i class="bi bi-people-fill me-2"></i>관리자
                   </a></li>
-               </ul>
-               <div class="mt-5 px-3">
-                  <span class="small text-muted" style="color: silver !important">carepose
-                     1.0.0</span>
-               </div>
+                  <li class="nav-item">
+    <a class="nav-link text-danger" th:href="@{/logout}">
+        <i class="bi bi-box-arrow-right me-2"></i>로그아웃
+    </a>
+</li>
+            </ul>
+            <div class="mt-5 px-3">
+              <span class="small text-muted" style="color: silver !important"
+                >carepose 1.0.0</span
+              >
             </div>
-         </nav>
+          </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        
+        
+          <div class="page-header d-flex align-items-center">
+            <div>
+              <h1 class="page-title mb-1">알림센터</h1>
+              <p class="text-muted mb-0">욕창/낙상 위험 알림</p>
+            </div>
+          </div>
+
+       
+          
+
+          <!-- Alerts Section -->
+
+          
+
+
+
          
-         <!-- Main Content -->
-         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div class="page-header d-flex align-items-center">
-               <div>
-                  <h1 class="page-title mb-1">관리자 대시보드</h1>
-                  <p class="text-muted mb-0">직원 승인/삭제</p>
-               </div>
-            </div>
+    <script type="text/javascript">
+    var today = new Date(); // 전역 변수로 설정
+
+    function buildCalendar() {
+      var calendarTableBody = document.querySelector("#calendar tbody");
+      var calendarTitle = document.getElementById("calendarTitle");
+      
+      // 제목 설정
+      calendarTitle.innerHTML = today.getFullYear() + "년 " + (today.getMonth() + 1) + "월";
+      
+      var firstDate = new Date(today.getFullYear(), today.getMonth(), 1);
+      var lastDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      
+      // 기존 날짜 데이터만 삭제
+      calendarTableBody.innerHTML = "";
+
+      var row = calendarTableBody.insertRow();
+      var cnt = 0;
+
+      // 1. 시작 요일까지 빈 칸 채우기 (2026년 1월 1일은 목요일이므로 4칸)
+      for (var i = 0; i < firstDate.getDay(); i++) {
+        row.insertCell();
+        cnt++;
+      }
+
+      // 2. 날짜 채우기
+      for (var i = 1; i <= lastDate.getDate(); i++) {
+        var cell = row.insertCell();
+        cell.innerHTML = i;
+        cell.style.textAlign = "center";
+        cell.style.cursor = "pointer";
+        
+        // 클릭 시 날짜 선택 이벤트 (부모창 id="date"에 값 전달)
+        cell.onclick = (function(n) {
+          return function() {
+            var year = today.getFullYear();
+            var month = ("0" + (today.getMonth() + 1)).slice(-2);
+            var day = ("0" + n).slice(-2);
+            var selectedYMD = year + "-" + month + "-" + day;
             
-            <!-- Alerts Section -->
+            // input 요소가 있다면 값 입력
+            var dateInput = document.getElementById("date") || opener.document.getElementById("date");
+            if(dateInput) dateInput.value = selectedYMD;
+          };
+        })(i);
 
-                  <div class="card shadow-sm mb-4">
-                     
-                     
-                     <div class="card-body p-0">
-                        <!-- 신청 권한 박스 -->
-                        <div class="row">
-						   <div class="col-12"> 
-						     <div class="card shadow-sm mb-4">
+        // 요일별 색상 및 줄바꿈 처리
+        if (cnt % 7 == 0) cell.style.color = "#F79DC2"; // 일요일
+        if (cnt % 7 == 6) cell.style.color = "skyblue"; // 토요일
 
-    
-    <div class="card-body p-0">
-        <div class="search-box px-4 py-3" style="width: 100%; max-width: 500px;">
-            <div class="input-group">
-                <span class="input-group-text bg-white border-end-0" style="border: 2px solid #dee2e6;">
-                    <i class="bi bi-search text-muted"></i>
-                </span>
-                <input type="text" id="roleSearchInput" class="form-control form-control-lg border-start-0" 
-                       placeholder="권한 입력 (예: 간호사, 요양보호사)" 
-                       style="font-size: 1.2rem; border: 2px solid #dee2e6; border-left: none; height: 60px;">
-            </div>
-        </div>
-						            
-						            
-						         </div>
-						         
-						         <div class="card-body p-0">
-						         	
-						         
-						            <div class="table-responsive">
-						               <table class="table table-hover align-middle mb-0">
-						                  <thead class="table-light">
-						                     <tr>
-						                        <th class="ps-4">사용자명(ID)</th>
-						                        <th>신청 권한</th>
-						                        <th class="text-center">작업</th>
-						                     </tr>
-						                  </thead>
-						                  <tbody>
-						                     <tr th:each="member : ${pendingMembers}">
-						                        <td class="ps-4">
-						                           <span class="fw-bold" th:text="${member.username}">username</span>
-						                        </td>
-						                        <td>
-						                           <span th:if="${member.roomAuthority == 'nurse'}" class="badge bg-info-subtle text-info px-3">간호사</span>
-						                           <span th:if="${member.roomAuthority == 'caregiver'}" class="badge bg-success-subtle text-success px-3">요양보호사</span>
-						                        </td>
-						                        <td class="text-center">
-    <div class="d-flex justify-content-center gap-2">
-        
-        <button type="button" class="btn btn-primary btn-approve btn-custom-size" 
-                th:data-username="${member.username}" 
-                th:data-auth="${member.roomAuthority}">
-            <i class="bi bi-check-lg me-1"></i> 승인
-        </button>
+        cnt++;
 
-        <button type="button" class="btn btn-outline-danger btn-delete btn-custom-size" 
-                th:data-username="${member.username}">
-            <i class="bi bi-trash me-1"></i> 삭제
-        </button>
-        
-    </div>
-</td>
-						                     </tr>
-						                     <tr th:if="${#lists.isEmpty(pendingMembers)}">
-						                        <td colspan="3" class="text-center py-5 text-muted">
-						                           승인 대기 중인 인원이 없습니다.
-						                        </td>
-						                     </tr>
-						                  </tbody>
-						               </table>
-						            </div>
-						         </div>
-						      </div>
-						   </div>
-						</div>
-                     </div>
-                  </div>
+        // 토요일이면 다음 줄 생성 (마지막 날이 아닐 때만)
+        if (cnt % 7 == 0 && i < lastDate.getDate()) {
+          row = calendarTableBody.insertRow();
+        }
+      }
 
-         </main>
-         
+      // 3. 마지막 줄 나머지 빈 칸 채우기
+      while (cnt % 7 != 0) {
+        row.insertCell();
+        cnt++;
+      }
+    }
+
+    // 이전달/다음달 함수
+    function prevCalendar() {
+      today = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      buildCalendar();
+    }
+
+    function nextCalendar() {
+      today = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+      buildCalendar();
+    }
+
+    // 초기 실행
+    window.onload = function() {
+      buildCalendar();
+    };
+</script>
+<body>
+<div class="row my-4">
+  <div class="col-md-2">
+<div class="card shadow-sm" style="padding: 10px; text-align:center; color:rgb(214, 116, 116); "><h5>날짜선택</h5></div></div>
+    <div class="col-md-10">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <button class="btn btn-sm btn-outline-secondary" onclick="prevCalendar()">◀</button>
+        <h5 class="mb-0" id="calendarTitle">yyyy년 m월</h5>
+        <button class="btn btn-sm btn-outline-secondary" onclick="nextCalendar()">▶</button>
+      </div>
+      <div class="card-body p-2">
+        <table id="calendar" class="calendar-table">
+          <thead>
+            <tr>
+              <th class="sun">일</th>
+              <th>월</th>
+              <th>화</th>
+              <th>수</th>
+              <th>목</th>
+              <th>금</th>
+              <th class="sat">토</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
   </div>
-  
-  <script th:inline="javascript">
-  document.addEventListener('DOMContentLoaded', function() {
-	    
-	    // 1. 키보드 검색 필터 로직
-	    const searchInput = document.getElementById('roleSearchInput');
-	    
-	    // 입력할 때마다 이벤트 발생
-	    searchInput.addEventListener('keyup', function() {
-	        const filterValue = this.value.toLowerCase().trim();
-	        // tbody 안의 모든 tr을 매번 새로 가져와야 정확합니다.
-	        const tableRows = document.querySelectorAll('tbody tr');
+</div>
 
-	        tableRows.forEach(row => {
-	            // "승인 대기 중인 인원이 없습니다" 메시지 행은 검색에서 제외
-	            if (row.cells.length < 2) return; 
+  <!-- Alerts Section -->
+            <div class="row g-4">
+               <div class="col-6">
+                  <div class="card shadow-sm mb-4">
+                     <div
+                        class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                        <h5 class="mb-0 text-secondary">
+                           최근 이벤트
+                           <span id="todayBadge" class="badge bg-primary ms-2"></span>
+                        </h5>
+                     </div>
+                     <div class="card-body p-0">
+                        <div class="list-group list-group-flush" id="fallEventList">
+                           <!-- 여기에 낙상 이벤트가 동적으로 로드됩니다 -->
+                           <div class="list-group-item text-center text-muted">
+                              로딩 중...
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-6">
+                  <div class="card shadow-sm mb-4">
+                     <div
+                        class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                        <h5 class="mb-0 text-secondary">자세 변경 알림</h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">🔔
+                           새로운 알림 0건</a>
+                     </div>
+                     <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                           <!-- Example Alert Items -->
 
-	            const rowText = row.textContent.toLowerCase();
-	            if (rowText.includes(filterValue)) {
-	                row.style.setProperty('display', '', 'important'); // 보임
-	            } else {
-	                row.style.setProperty('display', 'none', 'important'); // 숨김
-	            }
-	        });
-	    });
+                           <div
+                              class="list-group-item list-group-item-danger d-flex justify-content-between align-items-center">
+                              <span>14:30 &nbsp; <b>103호
+                                    B</b> &nbsp; 체위 변경 필요 (2시간 초과)
+                              </span>
+                              <button class="btn btn-sm btn-danger">처리 완료</button>
+                           </div>
+                           <div
+                              class="list-group-item list-group-item-danger d-flex justify-content-between align-items-center">
+                              <span>14:30 &nbsp; <b>103호
+                                    B</b> &nbsp; 체위 변경 필요 (2시간 초과)
+                              </span>
+                              <button class="btn btn-sm btn-danger">처리 완료</button>
+                           </div>
+                           <div
+                              class="list-group-item list-group-item-warning d-flex justify-content-between align-items-center">
+                              <span>14:15 &nbsp; <b>101호
+                                    B</b> &nbsp; 자세 유지 시간 주의
+                              </span>
+                              <button class="btn btn-sm btn-warning">처리 완료</button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <script>  document.addEventListener("DOMContentLoaded", function () {
+                   const today = new Date();
 
-	    // 2. 승인 버튼 이벤트 리스너
-	    document.querySelectorAll('.btn-approve').forEach(button => {
-	        button.addEventListener('click', function() {
-	            const username = this.getAttribute('data-username');
-	            const auth = this.getAttribute('data-auth');
-	            const authName = (auth === 'nurse' ? '간호사' : '요양보호사');
-	            
-	            if(confirm(username + " 사용자를 " + authName + "(으)로 승인하시겠습니까?")) {
-	                location.href = "/manager/approve?username=" + username + "&role=" + auth;
-	            }
-	        });
-	    });
+                   const year = today.getFullYear();
+                   const month = String(today.getMonth() + 1).padStart(2, '0');
+                   const day = String(today.getDate()).padStart(2, '0');
 
-	    // 3. 삭제 버튼 이벤트 리스너
-	    document.querySelectorAll('.btn-delete').forEach(button => {
-	        button.addEventListener('click', function() {
-	            const username = this.getAttribute('data-username');
-	            
-	            if(confirm(username + " 사용자를 삭제하시겠습니까?")) {
-	                location.href = "/manager/delete?username=" + username;
-	            }
-	        });
-	    });
-	});
+                   const days = ['일', '월', '화', '수', '목', '금', '토'];
+                   const dayOfWeek = days[today.getDay()];
+
+                   const formattedDate = `${year}.${month}.${day} (${dayOfWeek})`;
+
+                   document.getElementById("todayBadge").textContent = formattedDate;
+               });
+               
+               // 낙상 이벤트 목록 로드
+               async function loadFallEvents() {
+                 try {
+                   const response = await fetch("/api/fall/recent?limit=10");
+                   const falls = await response.json();
+                   
+                   const listContainer = document.getElementById("fallEventList");
+                   
+                   if (falls.length === 0) {
+                     listContainer.innerHTML = `
+                       <div class="list-group-item text-center text-muted">
+                         낙상 기록이 없습니다.
+                       </div>
+                     `;
+                     return;
+                   }
+                   
+                   listContainer.innerHTML = falls.map(fall => {
+                     const date = new Date(fall.fallAt);
+                     const timeStr = date.toLocaleTimeString('ko-KR', { 
+                       hour: '2-digit', 
+                       minute: '2-digit' 
+                     });
+                     
+                     const fallBodyText = fall.fallBody ? fall.fallBody : "미상";
+                     
+                     // handled_at이 있으면 확인 완료 버튼, 없으면 기록 확인 버튼
+                     const isHandled = fall.handledAt !== null;
+                     const buttonClass = isHandled ? "btn-success" : "btn-outline-primary";
+                     const buttonText = isHandled ? "확인 완료" : "기록 확인";
+                     const buttonDisabled = isHandled ? "disabled" : "";
+                     
+                     return `
+                       <div class="list-group-item d-flex justify-content-between align-items-center">
+                         <span>${timeStr} &nbsp; <b>${fall.patientId}</b> &nbsp; 낙상 발생: ${fallBodyText}</span>
+                         <button class="btn btn-sm ${buttonClass}" 
+                                 onclick="viewFallDetail(${fall.fallNum})" 
+                                 ${buttonDisabled}
+                                 id="fallBtn${fall.fallNum}">
+                           ${buttonText}
+                         </button>
+                       </div>
+                     `;
+                   }).join('');
+                   
+                 } catch (error) {
+                   console.error("낙상 이벤트 로드 실패:", error);
+                   document.getElementById("fallEventList").innerHTML = `
+                     <div class="list-group-item text-center text-danger">
+                       데이터 로드 실패
+                     </div>
+                   `;
+                 }
+               }
+               
+               // 기록 확인 버튼 클릭
+               async function viewFallDetail(fallNum) {
+                 const button = document.getElementById(`fallBtn${fallNum}`);
+                 
+                 // 이미 확인 완료된 경우
+                 if (button.disabled) {
+                   return;
+                 }
+                 
+                 try {
+                   const response = await fetch(`/api/fall/handle/${fallNum}`, {
+                     method: 'POST'
+                   });
+                   const result = await response.json();
+                   
+                   if (result.success) {
+                     // 버튼을 초록색 확인 완료로 변경
+                     button.className = "btn btn-sm btn-success";
+                     button.textContent = "확인 완료";
+                     button.disabled = true;
+                     console.log("✅ 기록 확인 완료:", fallNum);
+                   } else {
+                     alert("처리 중 오류가 발생했습니다.");
+                   }
+                 } catch (error) {
+                   console.error("기록 확인 실패:", error);
+                   alert("처리 중 오류가 발생했습니다.");
+                 }
+               }
+               
+               // 페이지 로드 시 목록 로드
+               loadFallEvents();
+               
+               // 10초마다 목록 업데이트
+               setInterval(loadFallEvents, 10000);
+               
 </script>
-
-</body>
+  </body>
 </html>

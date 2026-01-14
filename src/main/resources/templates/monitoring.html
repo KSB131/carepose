@@ -229,17 +229,19 @@
 		}
       
       .patient-bed, .pose-display {
-		    flex: 1; /* 가로 공간을 절반씩 차지 */
-		    background: #ffffff;
-		    border-radius: 12px;
-		    padding: 12px 240px; /* 내부 여백 줄임 */
-		    text-align: center;
-		    margin-top: 0 !important; /* 위아래 마진 제거 */
-		    display: flex;
-		    flex-direction: column;
-		    justify-content: center; /* 내용 중앙 정렬 */
-		    box-shadow: 0 2px 8px rgba(0,0,0,0.05); /* 은은한 그림자 */
-		}
+    flex: 1; /* 가로 공간을 동일하게 나눠 가짐 */
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 15px 10px; /* 고정값 240px를 제거하고 10px 정도로 줄임 */
+    text-align: center;
+    margin-top: 0 !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; /* 중앙 정렬 추가 */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    min-width: 0; /* 내용이 넘칠 때 박스가 깨지는 것 방지 */
+}
 
       .bed-badge {
          background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
@@ -251,11 +253,14 @@
       }
 
       .patient-name {
-         font-size: 20px;
-         font-weight: 800;
-         color: #1f2937;
-         margin: 0;
-      }
+    font-size: 1.2rem; /* 반응형 폰트 크기 사용 권장 */
+    font-weight: 800;
+    color: #1f2937;
+    margin: 0;
+    white-space: nowrap; /* 이름이 줄바꿈되지 않게 함 */
+    overflow: hidden;
+    width: 100%;
+}
 
 
       .pose-current {
@@ -377,10 +382,17 @@
                      th:classappend="${requestURI.contains('/alerts')} ? 'active'">
                         <i class="bi bi-bell me-2"></i>알림 센터
                   </a></li>
-                        <li class="nav-item"><a class="nav-link" th:href="@{/manager}"
+                        <li class="nav-item"
+                  	  th:if="${session.role == 'manager'}">
+                  	  <a class="nav-link" th:href="@{/manager}"
                      th:classappend="${requestURI.contains('/manager')} ? 'active'">
                         <i class="bi bi-people-fill me-2"></i>관리자
                   </a></li>
+                  <li class="nav-item">
+    <a class="nav-link text-danger" th:href="@{/logout}">
+        <i class="bi bi-box-arrow-right me-2"></i>로그아웃
+    </a>
+</li>
                      </ul>
                      <div class="mt-5 px-3">
                         <span class="small text-muted" style="color: silver !important;">carepose 1.0.0</span>
@@ -390,7 +402,7 @@
 
          <!-- 메인 콘텐츠 -->
          <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4" 
-      th:with="targetRoom=${param.room != null ? param.room[0] : '---'}"> 
+         		th:with="targetRoom=${param.room != null ? param.room[0] : '---'}"> 
 
    <div class="page-header mb-6 d-flex align-items-center position-relative" style="min-height: 120px;">
       
@@ -710,39 +722,29 @@ function showAlert(bedInfo) {
 
 
 
-   function loadLatestImages() {
-       const cards = document.querySelectorAll('.camera-left');
+function loadLatestImages() {
+    document.querySelectorAll('.camera-left').forEach(card => {
+        const folder = card.dataset.folder;
+        const sub = card.dataset.sub;
+        const pos = card.dataset.pos;
+        const img = card.querySelector('.dynamic-patient-img');
 
-       cards.forEach(card => {
-          const folder = card.getAttribute('data-folder');
-          const sub = card.getAttribute('data-sub');
-          const pos = card.getAttribute('data-pos');
-          const imgTag = card.querySelector('.dynamic-patient-img');
+        let prefix = "default";
+        if (pos === '앙와위') prefix = "face";
+        else if (pos === '좌측위') prefix = "left";
+        else if (pos === '우측위') prefix = "right";
 
-          let prefix = "default";
-          if (pos === '앙와위') prefix = "face";
-          else if (pos === '좌측위') prefix = "left";
-          else if (pos === '우측위') prefix = "right";
-
-          checkImageExists(imgTag, folder, sub, prefix, 30);
-       });
-    }
-
-    function checkImageExists(imgTag, folder, sub, prefix, num) {
-       if (num <= 0) return;
-
-       const path = `/images/${folder}/${sub}/${prefix}${num}.jpg`;
-       const img = new Image();
-
-       img.onload = () => imgTag.src = path + "?v=" + Date.now();
-       img.onerror = () => checkImageExists(imgTag, folder, sub, prefix, num - 1);
-       img.src = path;
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        loadLatestImages();
-        setInterval(loadLatestImages, 3000); // ✅ 3초마다 재확인
+        fetch(`/api/latest-image?folder=${folder}&sub=${sub}&prefix=${prefix}`)
+            .then(res => res.text())
+            .then(filename => {
+                if (!filename) return;
+                img.src = `/images/${folder}/${sub}/${filename}?v=${Date.now()}`;
+            });
     });
+}
+
+setInterval(loadLatestImages, 3000);
+
 
     // 센서 데이터 가져오기
     function fetchSensorData() {

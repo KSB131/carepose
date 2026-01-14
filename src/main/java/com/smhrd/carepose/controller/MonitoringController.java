@@ -1,9 +1,16 @@
 package com.smhrd.carepose.controller;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.AbstractMap;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -96,6 +103,33 @@ public class MonitoringController {
        return ResponseEntity.ok(result);
    }
    
-   
+   @GetMapping("/api/latest-image")
+   @ResponseBody
+   public String getLatestImage(
+           @RequestParam String folder,
+           @RequestParam String sub,
+           @RequestParam String prefix) {
+
+       File dir = new File("C:/carepose-images/images/" + folder + "/" + sub);
+
+       if (!dir.exists() || !dir.isDirectory()) {
+           return "";
+       }
+
+       Pattern pattern = Pattern.compile(prefix + "(\\d+)\\.jpg");
+
+       return Arrays.stream(dir.listFiles())
+               .map(File::getName)
+               .map(name -> {
+                   Matcher m = pattern.matcher(name);
+                   return m.matches()
+                           ? new AbstractMap.SimpleEntry<>(name, Integer.parseInt(m.group(1)))
+                           : null;
+               })
+               .filter(Objects::nonNull)
+               .max(Comparator.comparingInt(Map.Entry::getValue))
+               .map(Map.Entry::getKey)
+               .orElse("");
+   }
    
 }

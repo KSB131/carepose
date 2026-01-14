@@ -101,10 +101,19 @@
                      th:classappend="${requestURI.contains('/alerts')} ? 'active'">
                         <i class="bi bi-bell me-2"></i>알림 센터
                   </a></li>
-                  <li class="nav-item"><a class="nav-link" th:href="@{/manager}"
+                  <li class="nav-item"
+                  	  th:if="${session.role == 'manager'}">
+                  	  <a class="nav-link" th:href="@{/manager}"
                      th:classappend="${requestURI.contains('/manager')} ? 'active'">
                         <i class="bi bi-people-fill me-2"></i>관리자
                   </a></li>
+                  
+                  
+                  <li class="nav-item">
+    <a class="nav-link text-danger" th:href="@{/logout}">
+        <i class="bi bi-box-arrow-right me-2"></i>로그아웃
+    </a>
+</li>
                </ul>
                <div class="mt-5 px-3">
                   <span class="small text-muted" style="color: silver !important">carepose

@@ -3,15 +3,18 @@ package com.smhrd.carepose.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import com.smhrd.carepose.entity.FallEntity;
 import com.smhrd.carepose.repository.FallRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +25,104 @@ public class FallController {
     
     @Autowired
     private FallRepository fallRepository;
+    
+    private static final String FALL_IMAGE_DIR = "src/main/resources/static/device/fall";
+    private static final String FALL_STATUS_FILE = "fall_status.json";
+    
+    /**
+     * 라즈베리파이로부터 낙상 이벤트 수신
+     * POST /api/fall/event
+     */
+    @PostMapping("/event")
+    public ResponseEntity<Map<String, Object>> receiveFallEvent(
+            @RequestParam("bedId") String bedId,
+            @RequestParam("timestamp") String timestamp,
+            @RequestParam("image") MultipartFile imageFile) {
+        
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            System.out.println("🚨 낙상 이벤트 수신: " + bedId + " - " + timestamp);
+            
+            // 1. 이미지 저장
+            String imageName = imageFile.getOriginalFilename();
+            if (imageName == null || imageName.isEmpty()) {
+                imageName = "fall_" + bedId + "_" + System.currentTimeMillis() + ".jpg";
+            }
+            
+            File fallDir = new File(FALL_IMAGE_DIR);
+            if (!fallDir.exists()) {
+                fallDir.mkdirs();
+            }
+            
+            Path imagePath = Paths.get(FALL_IMAGE_DIR, imageName);
+            Files.copy(imageFile.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("✅ 이미지 저장: " + imagePath);
+            
+            // 2. DB 저장
+            FallEntity fall = new FallEntity();
+            fall.setPatientId(bedId);
+            fall.setPicId(imageName);
+            fall.setFallBody("wrist");
+            
+            // timestamp 파싱
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime fallAt = LocalDateTime.parse(timestamp, formatter);
+            fall.setFallAt(fallAt);
+            
+            FallEntity savedFall = fallRepository.save(fall);
+            System.out.println("✅ DB 저장 완료: fall_num=" + savedFall.getFallNum());
+            
+            // 3. fall_status.json 업데이트
+            updateFallStatusFile(savedFall.getFallNum(), bedId, imageName, timestamp);
+            System.out.println("✅ fall_status.json 업데이트 완료");
+            
+            response.put("success", true);
+            response.put("fall_num", savedFall.getFallNum());
+            response.put("message", "낙상 이벤트 처리 완료");
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            System.err.println("❌ 낙상 이벤트 처리 실패: " + e.getMessage());
+            e.printStackTrace();
+            
+            response.put("success", false);
+            response.put("message", "처리 실패: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+    
+    /**
+     * fall_status.json 파일 업데이트
+     */
+    private void updateFallStatusFile(Integer fallNum, String bedId, String imageName, String timestamp) {
+        try {
+            Map<String, Object> fallStatus = new HashMap<>();
+            fallStatus.put("fall", true);
+            fallStatus.put("fall_num", fallNum);
+            fallStatus.put("room", bedId);
+            fallStatus.put("image", imageName);
+            fallStatus.put("timestamp", timestamp);
+            
+            // JSON 문자열 생성
+            StringBuilder json = new StringBuilder();
+            json.append("{\n");
+            json.append("  \"fall\": true,\n");
+            json.append("  \"fall_num\": ").append(fallNum).append(",\n");
+            json.append("  \"room\": \"").append(bedId).append("\",\n");
+            json.append("  \"image\": \"").append(imageName).append("\",\n");
+            json.append("  \"timestamp\": \"").append(timestamp).append("\"\n");
+            json.append("}");
+            
+            // 파일 쓰기
+            Files.write(Paths.get(FALL_STATUS_FILE), json.toString().getBytes());
+            
+        } catch (Exception e) {
+            System.err.println("❌ fall_status.json 업데이트 실패: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
     
     @PostMapping("/handle/{fallNum}")
     public ResponseEntity<Map<String, Object>> handleFall(@PathVariable Integer fallNum) {

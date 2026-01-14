@@ -32,6 +32,6 @@ public class FallEntity {
     @Column(name = "handled_at")
     private LocalDateTime handledAt;
     
-    @Column(name = "checked_id", length = 50)
-    private String checkedId;
+    @Column(name = "member_id", length = 50)
+    private String memberId;
 }

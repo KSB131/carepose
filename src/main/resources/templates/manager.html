@@ -154,10 +154,17 @@ main,
                      th:classappend="${requestURI.contains('/alerts')} ? 'active'">
                         <i class="bi bi-bell me-2"></i>알림 센터
                   </a></li>
-                  <li class="nav-item"><a class="nav-link" th:href="@{/manager}"
+                  <li class="nav-item"
+                  	  th:if="${session.role == 'manager'}">
+                  	  <a class="nav-link" th:href="@{/manager}"
                      th:classappend="${requestURI.contains('/manager')} ? 'active'">
                         <i class="bi bi-people-fill me-2"></i>관리자
                   </a></li>
+                  <li class="nav-item">
+    <a class="nav-link text-danger" th:href="@{/logout}">
+        <i class="bi bi-box-arrow-right me-2"></i>로그아웃
+    </a>
+</li>
                </ul>
                <div class="mt-5 px-3">
                   <span class="small text-muted" style="color: silver !important">carepose
@@ -224,6 +231,10 @@ main,
 						                        <td>
 						                           <span th:if="${member.roomAuthority == 'nurse'}" class="badge bg-info-subtle text-info px-3">간호사</span>
 						                           <span th:if="${member.roomAuthority == 'caregiver'}" class="badge bg-success-subtle text-success px-3">요양보호사</span>
+						                           <span th:if="${member.roomAuthority == 'manager'}"
+      class="badge bg-secondary-subtle text-success px-3 
+             border border-3 border-dark fw-bold">
+						                           		관리자</span>
 						                        </td>
 						                        <td class="text-center">
     <div class="d-flex justify-content-center gap-2">
@@ -291,7 +302,10 @@ main,
 	        button.addEventListener('click', function() {
 	            const username = this.getAttribute('data-username');
 	            const auth = this.getAttribute('data-auth');
-	            const authName = (auth === 'nurse' ? '간호사' : '요양보호사');
+	            let authName = "";
+	            if(auth === 'nurse') authName = "간호사";
+	            else if(auth === 'caregiver') authName = "요양보호사";
+	            else if(auth === 'manager') authName = "관리자";
 	            
 	            if(confirm(username + " 사용자를 " + authName + "(으)로 승인하시겠습니까?")) {
 	                location.href = "/manager/approve?username=" + username + "&role=" + auth;
