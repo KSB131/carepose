@@ -18,17 +18,6 @@ IMAGE_ROOT = r"C:\carepose-images\images"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # ==================== Spring Boot static 저장 경로 ====================
-ULCER_DIR = os.path.join(
-    BASE_DIR,
-    "src",
-    "main",
-    "resources",
-    "static",
-    "device",
-    "ulcer"
-)
-os.makedirs(ULCER_DIR, exist_ok=True)
-
 FALL_DIR = os.path.join(
     BASE_DIR,
     "src",
@@ -64,8 +53,6 @@ BLUR_STRENGTH = 51
 # 화면 표시 설정
 ENABLE_DISPLAY = True  # imshow 활성화 여부
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-FALL_DIR = os.path.join(BASE_DIR, "fall")
 os.makedirs(FALL_DIR, exist_ok=True)
 
 FALL_STATUS_FILE = os.path.join(BASE_DIR, "fall_status.json")
@@ -196,24 +183,6 @@ def save_fall_to_db(bed_id, image_name, timestamp):
     conn.commit()
     cursor.close()
     conn.close()
-    
-# 사진 파일 이름 번호 자동 계산
-def get_next_pose_image_name(bed_id: str, pose: str):
-    """
-    예:
-    503F_face12.jpg 가 있으면 → 503F_face13.jpg
-    """
-    pattern = re.compile(rf"^{bed_id}_{pose}(\d+)\.jpg$")
-    max_num = 0
-
-    for fname in os.listdir(ULCER_DIR):
-        m = pattern.match(fname)
-        if m:
-            num = int(m.group(1))
-            max_num = max(max_num, num)
-
-    return f"{bed_id}_{pose}{max_num + 1}.jpg"
-
 
 def get_room_folder(bed_id: str):
     """
@@ -328,14 +297,17 @@ async def analyze(image: UploadFile, bed_id: str = Form(...)):
    
            pose_name = pose_names[pred]  # face / left / right
    
-           # ✅ 파일명 생성
-           image_name = get_next_pose_image_name(bed_id, pose_name)
-   
-           # ✅ 저장
-           save_path = os.path.join(ULCER_DIR, image_name)
+           # 1. 침대 폴더 확보
+           bed_dir = get_room_folder(bed_id)
+
+           # 2. 다음 파일명 생성
+           file_name = get_next_pose_filename(bed_dir, pose_name)
+
+           # 3. 저장
+           save_path = os.path.join(bed_dir, file_name)
            cv2.imwrite(save_path, annotated)
 
-           print(f"🛏 자세 변경 → 사진 저장: {image_name}")
+           print(f"📸 저장 완료: {save_path}")
     
     # 화면에 자세 정보 표시
     cv2.putText(

@@ -17,6 +17,7 @@
   background: linear-gradient(135deg, #667eea, #566dd4);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
 }
 
 :root {
@@ -362,11 +363,14 @@ nav li {
 }
 
 .sidebar-logo {
-   background-color: #f8f9fa; /* 1. 선 윗부분에 칠할 배경색 (원하는 색상으로 변경 가능) */
-   padding: 20px 15px;       /* 상하좌우 여백 */
-   margin-bottom: 20px;      /* 아래 메뉴와의 간격 */
-   border-bottom: 2px solid #e0e0e0; /* 2. "시스템" 밑에 생기는 선 (갈색 선 역할) */
-   text-align: center;       /* 텍스트 중앙 정렬 */
+  background-color: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #fafafa 100%
+  ); /* 1. 선 윗부분에 칠할 배경색 (원하는 색상으로 변경 가능) */
+  padding: 20px 15px; /* 상하좌우 여백 */
+  margin-bottom: 20px; /* 아래 메뉴와의 간격 */
+  text-align: center; /* 텍스트 중앙 정렬 */
 }
 
 .sidebar-logo-image {
@@ -389,15 +393,16 @@ nav li {
 }
 
 .sidebar-title {
-   font-size: 32px;
-   font-weight: bold;
-   color: #334155;
-   margin-bottom: 5px;
+  font-size: 32px;
+  font-weight: bold;
+  color: #334155;
+  margin-bottom: 5px;
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
 }
 
 .sidebar-subtitle {
-   font-size: 15px;
-   color: #64748b;
+  font-size: 15px;
+  color: #64748b;
 }
 
 .sidebar-menu {
@@ -417,13 +422,13 @@ nav li {
   transition: all 0.3s;
 }
 .sidebar-logo img {
-  width: 200px; /* ← 여기 숫자 줄여 */
+  width: 140px;
   max-width: 100%;
   height: auto;
 }
 
 .menu-item:hover {
-  background: linear-gradient(135deg, #fff5ed 0%, #ffe4d6 100%);
+  background: linear-gradient(135deg, #fff5ed 0%, #f7eadf 100%);
 
   transform: translateX(4px);
 }
@@ -464,12 +469,12 @@ nav li {
 }
 
 .sidebar .nav-link:hover {
-  background: linear-gradient(135deg, #f1e6e6 0%, #fff1f1 100%);
-  transform: translateX(4px);
+  background: linear-gradient(135deg, #fdfdfd 0%, #f0d3c3 100%);
+  transform: translateX(2px);
 }
 
 .sidebar .nav-link.active {
-  color: #e0493e;
+  color: #e75a50;
   background: rgba(234, 88, 12, 0.08);
   border-left: 4px solid #d3401b;
   box-shadow: 0 4px 15px rgba(104, 101, 98, 0.25);
@@ -847,6 +852,46 @@ header {
   50% {
     opacity: 0.6;
   }
+}
+
+/*달력*/
+
+.calendar-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 15px;
+}
+
+.calendar-table th {
+  padding: 10px 0;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.calendar-table td {
+  padding: 10px 0;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.calendar-table td:hover {
+  background-color: rgba(234, 88, 12, 0.12);
+}
+
+.calendar-table td.selected {
+  background-color: #ea580c;
+  color: #fff;
+  font-weight: 600;
+}
+
+.calendar-table .sun {
+  color: #f87171;
+}
+
+.calendar-table .sat {
+  color: #60a5fa;
 }
 
 /* ---------------------------------------------- */
@@ -1281,18 +1326,12 @@ header {
     padding: 20px;
   }
 
-  header {
+  header,
+  .page-header {
     padding: 24px;
     flex-direction: column;
     gap: 16px;
   }
-  
-  .page-header {
-   min-height: 80px !important; /* 박스의 최소 높이를 대폭 줄임 */
-   padding-top: 5px !important;
-   padding-bottom: 5px !important;
-   overflow: hidden; /* 내부 마진으로 인한 박스 늘어남 방지 */
-}
 
   .header-actions {
     width: 100%;

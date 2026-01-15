@@ -14,6 +14,8 @@
 <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
 <style>
+
+
 /* 스타일 태그 안에 추가 */
 #clock {
    font-family: "Courier New", Courier, monospace; /* 숫자 폭을 일정하게 유지 */
@@ -22,7 +24,8 @@
 }
 /* 박스와 박스 간격 */
 .sensor-widget {
-   margin-bottom: -40px;
+   margin-top: -10px !important;
+   margin-bottom: -30px !important;
 }
 
 .sensor-card {
@@ -60,6 +63,32 @@
    font-size: 1.5rem;
    font-weight: bold;
 }
+
+/* 텍스트가 절대 아래로 내려가지 않도록 설정 */
+.page-header p.text-muted {
+   white-space: nowrap !important; /* 한 줄로 강제 고정 */
+   margin-bottom: 0;
+}
+
+/* 카드 공통 스타일 */
+   .status-card {
+      border: 1px solid #eef2f6;
+      border-radius: 12px;
+      padding: 1.5rem;
+      background: #fff;
+      transition: transform 0.2s;
+   }
+   .status-card:hover { transform: translateY(-5px); }
+   
+   /* 컬러 배리에이션 - 부트스트랩 기본색보다 채도를 낮춘 커스텀 컬러 */
+   .card-total { border-top: 4px solid #6366f1; background-color: #f8f9ff; } /* Indigo */
+   .card-normal { border-top: 4px solid #10b981; background-color: #f0fdf4; } /* Emerald */
+   .card-caution { border-top: 4px solid #f59e0b; background-color: #fffbeb; } /* Amber */
+   .card-danger { border-top: 4px solid #ef4444; background-color: #fef2f2; } /* Rose */
+
+   .stat-label { color: #64748b; font-weight: 500; font-size: 0.875rem; }
+   .stat-value { color: #1e293b; letter-spacing: -0.02em; }
+
 </style>
 
 <body class="bg-light">
@@ -67,12 +96,13 @@
       <div class="row">
          <!-- Sidebar -->
          <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse p-0">
-            <div class="position-sticky pt-4 px-3">
+            <div class="position-sticky">
                <div class="sidebar-logo">
+                     <img src="/css/logo.png" alt="SMHRD 요양병원 로고">
                   <div class="sidebar-title">SMHRD 요양병원</div>
                   <div class="sidebar-subtitle">안전 관제시스템</div>
                </div>
-               <ul class="nav flex-column">
+               <ul class="nav flex-column px-3">
                   <li class="nav-item"><a class="nav-link"
                      th:href="@{/dashboard}"
                      th:classappend="${requestURI.contains('/dashboard')} ? 'active'">
@@ -91,10 +121,19 @@
                      th:classappend="${requestURI.contains('/alerts')} ? 'active'">
                         <i class="bi bi-bell me-2"></i>알림 센터
                   </a></li>
-                  <li class="nav-item"><a class="nav-link" th:href="@{/manager}"
+                  <li class="nav-item"
+                  	  th:if="${session.role == 'manager'}">
+                  	  <a class="nav-link" th:href="@{/manager}"
                      th:classappend="${requestURI.contains('/manager')} ? 'active'">
-                        <i class="bi bi-bell me-2"></i>관리자
+                        <i class="bi bi-people-fill me-2"></i>관리자
                   </a></li>
+                  
+                  
+                  <li class="nav-item">
+    <a class="nav-link text-danger" th:href="@{/logout}">
+        <i class="bi bi-box-arrow-right me-2"></i>로그아웃
+    </a>
+</li>
                </ul>
                <div class="mt-5 px-3">
                   <span class="small text-muted" style="color: silver !important">carepose
@@ -110,7 +149,7 @@
                   <h1 class="page-title mb-1">6병동</h1>
                   <p class="text-muted mb-0">환자 모니터링 현황</p>
                </div>
-               <div class="container">
+               <div class="container m-0">
                   <!-- 온습도 박스 -->
                   <div class="sensor-widget">
                      <div class="d-flex gap-2 justify-content-end">
@@ -147,8 +186,9 @@
 
                <div class="btn-toolbar mb-2 mb-md-0">
                   <div class="btn-group me-6">
-                     <button type="button" class="btn btn-sm btn-secondary">
-                        현재 시간 <span id="clock"> </span>
+                     <button type="button" class="btn btn-sm btn-secondary d-flex flex-column align-items-center">
+                        현재 시간 <br>
+                        <span id="clock"> </span>
                      </button>
                   </div>
                </div>
@@ -156,35 +196,31 @@
 
             <!-- Status Cards -->
             <div class="row g-4 mb-4">
-               <div class="col-md-3">
-                  <div class="status-card h-100"  style="border-left:6px solid #0d6efd;">
-                     <span class="dot bg-primary"></span>
-                     <div class="h2 fw-bold mb-0" th:text="${totalPatientCount}">0</div>
-<div class="text-muted small mt-1">전체 환자</div>
-                  </div>
-               </div>
-               <div class="col-md-3">
-                  <div class="status-card h-100" style = "border-left:6px solid #198754;">
-                     <span class="dot bg-success"></span>
-                     <div class="h2 fw-bold mb-0" th:text="${normalPatientCount}">0</div>
-<div class="text-muted small mt-1">정상</div>
-                  </div>
-               </div>
-               <div class="col-md-3">
-                  <div class="status-card h-100" style ="border-left:6px solid #ffc107;">
-                     <span class="dot bg-warning"></span>
-                     <div class="h2 fw-bold mb-0" th:text="${cautionPatientCount}">0</div>
-                     <div class="text-muted small mt-1">주의</div>
-                  </div>
-               </div>
-               <div class="col-md-3">
-                  <div class="status-card h-100" style ="border-left:6px solid #dc3545; ">
-                     <span class="dot bg-danger"></span>
-                     <div class="h2 fw-bold mb-0" th:text="${dangerPatientCount}">0</div>
-                     <div class="text-muted small mt-1">위험</div>
-                  </div>
-               </div>
-            </div>
+   <div class="col-md-3">
+      <div class="status-card card-total h-100">
+         <div class="stat-label">전체 환자</div>
+         <div class="h2 fw-bold stat-value mb-0" th:text="${totalPatientCount}">0</div>
+      </div>
+   </div>
+   <div class="col-md-3">
+      <div class="status-card card-normal h-100">
+         <div class="stat-label">정상</div>
+         <div class="h2 fw-bold stat-value mb-0" th:text="${normalPatientCount}">0</div>
+      </div>
+   </div>
+   <div class="col-md-3">
+      <div class="status-card card-caution h-100">
+         <div class="stat-label">주의</div>
+         <div class="h2 fw-bold stat-value mb-0" th:text="${cautionPatientCount}">0</div>
+      </div>
+   </div>
+   <div class="col-md-3">
+      <div class="status-card card-danger h-100">
+         <div class="stat-label">위험</div>
+         <div class="h2 fw-bold stat-value mb-0" th:text="${dangerPatientCount}">0</div>
+      </div>
+   </div>
+</div>
 
             <!-- Alerts Section -->
             <div class="row g-4">
@@ -446,6 +482,38 @@
     let remainingSeconds = 15; // 남은 시간
     const modal = new bootstrap.Modal(document.getElementById("fallModal"));
 
+    // 음성 안내 함수
+    function playFallAlert(roomId) {
+      const speechMessage = `긴급 상황입니다. ${roomId} 환자의 낙상 위험이 감지되었습니다. 즉시 확인이 필요합니다.`;
+      
+      if ('speechSynthesis' in window) {
+        // 기존 음성 중지
+        window.speechSynthesis.cancel();
+        
+        const utterance = new SpeechSynthesisUtterance(speechMessage);
+        utterance.lang = 'ko-KR';
+        utterance.rate = 0.95;     // 약간 느리게 (명확하게)
+        utterance.pitch = 1.0;     // 중립 톤 (긴급 상황)
+        utterance.volume = 1.0;
+        
+        // 한국어 음성 선택
+        const voices = window.speechSynthesis.getVoices();
+        const koreanVoice = voices.find(voice => 
+          voice.lang.includes('ko') && 
+          (voice.name.includes('Google') || voice.name.includes('Microsoft'))
+        ) || voices.find(voice => voice.lang.includes('ko'));
+        
+        if (koreanVoice) {
+          utterance.voice = koreanVoice;
+        }
+        
+        setTimeout(() => {
+          window.speechSynthesis.speak(utterance);
+          console.log('🔊 낙상 알림 음성 재생:', speechMessage);
+        }, 100);
+      }
+    }
+
     async function checkFallStatus() {
       try {
         const res = await fetch("http://localhost:8001/fall_status");
@@ -495,12 +563,18 @@
                 modal.show();
                 console.log("🔄 Modal updated with new fall!");
                 
+                // 음성 안내
+                playFallAlert(data.room);
+                
                 // 카운트다운 시작
                 startCountdown();
               }, 300);
             } else {
               modal.show();
               console.log("✅ Modal shown!");
+              
+              // 음성 안내
+              playFallAlert(data.room);
               
               // 카운트다운 시작
               startCountdown();
@@ -584,3 +658,4 @@
     });
   </script>
 </html>
+

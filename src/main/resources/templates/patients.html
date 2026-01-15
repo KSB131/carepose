@@ -14,6 +14,374 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     />
     <link rel="stylesheet" th:href="@{/css/style.css}" />
+    
+    <style>
+      /* 페이지 전용 현대적 스타일 */
+      .search-card {
+        background: var(--gradient-card);
+        border: 1px solid var(--dark-border);
+        border-radius: 8px;
+        padding: 24px;
+        margin-bottom: 24px;
+        position: relative;
+      }
+      
+      /* 검색 카드 모서리 브래킷 */
+      .search-card::before,
+      .search-card::after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--dark-border);
+      }
+      
+      .search-card::before {
+        top: -1px;
+        left: -1px;
+        border-right: none;
+        border-bottom: none;
+      }
+      
+      .search-card::after {
+        top: -1px;
+        right: -1px;
+        border-left: none;
+        border-bottom: none;
+      }
+      
+      .search-input-group {
+        position: relative;
+      }
+      
+      .search-input-group input {
+        background: var(--dark-card);
+        border: 1px solid #00d4ff !important;
+        color: var(--text-primary);
+        padding: 14px 20px 14px 50px;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: all 0.3s;
+      }
+      
+      .search-input-group input:focus {
+        outline: none;
+        border-color: var(--cyber-blue);
+        box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        background: var(--dark-card-hover);
+      }
+      
+      .search-input-group .search-icon {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+        font-size: 18px;
+        pointer-events: none;
+      }
+      
+      .search-input-group input::placeholder {
+        color: var(--text-muted);
+      }
+      
+      /* 테이블 컨테이너 */
+      .modern-table-container {
+        background: var(--gradient-card);
+        border: 1px solid var(--dark-border);
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+      }
+      
+      /* 테이블 컨테이너 모서리 브래킷 */
+      .modern-table-container::before,
+      .modern-table-container::after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--dark-border);
+        z-index: 10;
+      }
+      
+      .modern-table-container::before {
+        top: -1px;
+        left: -1px;
+        border-right: none;
+        border-bottom: none;
+      }
+      
+      .modern-table-container::after {
+        top: -1px;
+        right: -1px;
+        border-left: none;
+        border-bottom: none;
+      }
+      
+      /* 테이블 스타일 */
+      .modern-table {
+        width: 100%;
+        margin: 0;
+      }
+      
+      .modern-table thead {
+        background: rgba(0, 212, 255, 0.05);
+        border-bottom: 2px solid var(--dark-border);
+      }
+      
+      .modern-table thead th {
+        padding: 16px 20px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: none;
+      }
+      
+      .modern-table tbody tr {
+        border-bottom: 1px solid var(--dark-border);
+        transition: all 0.2s;
+      }
+      
+      .modern-table tbody tr:hover {
+        background: rgba(0, 212, 255, 0.05);
+      }
+      
+      .modern-table tbody tr:last-child {
+        border-bottom: none;
+      }
+      
+      .modern-table tbody td {
+        padding: 16px 20px;
+        color: var(--text-primary);
+        vertical-align: middle;
+        border: none;
+      }
+      
+      .modern-table tbody td:first-child {
+        font-weight: 600;
+        color: var(--cyber-blue);
+        font-family: monospace;
+      }
+      
+      /* 배지 스타일 */
+      .modern-badge {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        border: 1px solid;
+      }
+      
+      .badge-none {
+        background: rgba(107, 114, 128, 0.1);
+        border-color: #6b7280;
+        color: #9ca3af;
+      }
+      
+      .badge-stage1 {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: var(--success);
+        color: var(--success);
+      }
+      
+      .badge-stage2 {
+        background: rgba(245, 158, 11, 0.1);
+        border-color: var(--warning);
+        color: var(--warning);
+      }
+      
+      .badge-stage3,
+      .badge-stage4 {
+        background: rgba(239, 68, 68, 0.1);
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+      
+      /* 버튼 스타일 */
+      .modern-btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid;
+        transition: all 0.3s;
+        cursor: pointer;
+      }
+      
+      .modern-btn-view {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: var(--success);
+        color: var(--success);
+      }
+      
+      .modern-btn-view:hover {
+        background: var(--success);
+        color: white;
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+      }
+      
+      .modern-btn-edit {
+        background: rgba(0, 212, 255, 0.1);
+        border-color: var(--cyber-blue);
+        color: var(--cyber-blue);
+      }
+      
+      .modern-btn-edit:hover {
+        background: var(--cyber-blue);
+        color: var(--dark-bg);
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+      }
+      
+      .modern-btn-delete {
+        background: rgba(239, 68, 68, 0.1);
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+      
+      .modern-btn-delete:hover {
+        background: var(--danger);
+        color: white;
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+      }
+      
+      .modern-btn-add {
+        background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+        color: white;
+        border: none;
+        padding: 14px 28px;
+        font-size: 15px;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+      }
+      
+      .modern-btn-add:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+      }
+      
+      /* 페이지네이션 */
+      .modern-pagination {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        margin-top: 24px;
+      }
+      
+      .modern-pagination .page-btn {
+        padding: 8px 14px;
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        color: var(--text-primary);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+      }
+      
+      .modern-pagination .page-btn:hover {
+        background: var(--dark-card-hover);
+        border-color: var(--cyber-blue);
+        color: var(--cyber-blue);
+      }
+      
+      .modern-pagination .page-btn.active {
+        background: var(--cyber-blue);
+        border-color: var(--cyber-blue);
+        color: var(--dark-bg);
+      }
+      
+      .modern-pagination .page-btn.disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+      
+      /* 빈 결과 메시지 */
+      .empty-state {
+        padding: 60px 20px;
+        text-align: center;
+        color: var(--text-secondary);
+      }
+      
+      .empty-state i {
+        font-size: 48px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+      }
+      
+      /* 모달 다크 테마 */
+      .modal-content {
+  background-color: #1e293b !important; /* 확실한 다크 네이비 색상 지정 */
+  border: 1px solid var(--dark-border);
+  color: var(--text-primary);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* 그림자 추가로 입체감 부여 */
+}
+
+.modal-backdrop {
+  background-color: #000 !important; /* 배경 어두움을 확실하게 */
+  opacity: 0.7 !important;
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--dark-border);
+  background-color: rgba(255, 255, 255, 0.03);
+  color: #ffffff !important;
+}
+
+.modal-footer {
+  border-top: 1px solid var(--dark-border);
+  display: flex;
+  flex-direction: column; /* 사진처럼 버튼을 세로로 배치하고 싶을 경우 */
+  gap: 10px;
+}
+
+.modal-footer .btn {
+  width: 100%; /* 버튼을 가득 채우기 */
+  margin: 0 !important;
+  padding: 12px;
+  font-weight: 600;
+}
+
+/* 사진에 나온 버튼 스타일 재현 */
+#submitBtn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+}
+
+.modal .btn-secondary {
+  background-color: #ffffff;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+/* 모달 내부의 모든 라벨(제목) 글자색 흰색으로 고정 */
+.modal .form-label {
+  color: #ffffff !important;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.modal .form-control,
+.modal .form-select {
+  background-color: #0f172a !important; /* 입력창 배경을 더 어둡게 */
+  border: 1px solid var(--dark-border);
+  color: #ffffff !important;
+}
+      
+      .modal .form-control:focus,
+      .modal .form-select:focus {
+        background: var(--dark-bg);
+        border-color: var(--cyber-blue);
+        color: var(--text-primary);
+        box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+      }
+      
+      .modal .btn-close {
+        filter: invert(1);
+      }
+    </style>
   </head>
 
   <body class="bg-light">
@@ -22,240 +390,169 @@
         <!-- Sidebar -->
         <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse p-0">
           <div class="position-sticky">
-               <div class="sidebar-logo">
-               		<img src="/css/logo.png" alt="SMHRD 요양병원 로고">
-                  <div class="sidebar-title">SMHRD 요양병원</div>
-                  <div class="sidebar-subtitle">안전 관제시스템</div>
-               </div>
-               <ul class="nav flex-column px-3">
+            <div class="sidebar-logo">
+              <img src="/css/logo.png" alt="SMHRD 요양병원 로고">
+              <div class="sidebar-title">SMHRD 요양병원</div>
+              <div class="sidebar-subtitle">안전 관제시스템</div>
+            </div>
+            <ul class="nav flex-column px-3">
               <li class="nav-item">
-                <a
-                  class="nav-link"
-                  th:href="@{/dashboard}"
-                  th:classappend="${requestURI.contains('/dashboard')} ? 'active' : ''"
-                >
+                <a class="nav-link" th:href="@{/dashboard}" 
+                   th:classappend="${requestURI.contains('/dashboard')} ? 'active' : ''">
                   <i class="bi bi-speedometer2 me-2"></i>대시보드
                 </a>
               </li>
               <li class="nav-item">
-                <a
-                  class="nav-link"
-                  th:href="@{/patients}"
-                  th:classappend="${requestURI.contains('/patients')} ? 'active' : ''"
-                >
+                <a class="nav-link" th:href="@{/patients}" 
+                   th:classappend="${requestURI.contains('/patients')} ? 'active' : ''">
                   <i class="bi bi-hospital me-2"></i>침상 관리
                 </a>
               </li>
               <li class="nav-item">
-                <a
-                  class="nav-link"
-                  th:href="@{/rooms}"
-                  th:classappend="${requestURI.contains('/rooms')} ? 'active' : ''"
-                >
+                <a class="nav-link" th:href="@{/rooms}" 
+                   th:classappend="${requestURI.contains('/rooms')} ? 'active' : ''">
                   <i class="bi bi-camera-video me-2"></i>실시간 모니터링
                 </a>
               </li>
-              <li class="nav-item"><a class="nav-link" th:href="@{alerts}"
-                     th:classappend="${requestURI.contains('/alerts')} ? 'active'">
-                        <i class="bi bi-bell me-2"></i>알림 센터
-                  </a></li>
-              <li class="nav-item"
-                  	  th:if="${session.role == 'manager'}">
-                  	  <a class="nav-link" th:href="@{/manager}"
-                     th:classappend="${requestURI.contains('/manager')} ? 'active'">
-                        <i class="bi bi-people-fill me-2"></i>관리자
-                  </a></li>
-                  <li class="nav-item">
-    <a class="nav-link text-danger" th:href="@{/logout}">
-        <i class="bi bi-box-arrow-right me-2"></i>로그아웃
-    </a>
-</li>
+              <li class="nav-item">
+                <a class="nav-link" th:href="@{alerts}"
+                   th:classappend="${requestURI.contains('/alerts')} ? 'active'">
+                  <i class="bi bi-bell me-2"></i>알림 센터
+                </a>
+              </li>
+              <li class="nav-item" th:if="${session.role == 'manager'}">
+                <a class="nav-link" th:href="@{/manager}"
+                   th:classappend="${requestURI.contains('/manager')} ? 'active'">
+                  <i class="bi bi-people-fill me-2"></i>관리자
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-danger" th:href="@{/logout}">
+                  <i class="bi bi-box-arrow-right me-2"></i>로그아웃
+                </a>
+              </li>
             </ul>
-
             <div class="mt-5 px-3">
-              <span class="small text-muted" style="color: silver !important"
-                >carepose 1.0.0</span
-              >
+              <span class="small text-muted" style="color: silver !important">carepose 1.0.0</span>
             </div>
           </div>
         </nav>
 
         <!-- Main Content -->
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-          <div class="page-header d-flex align-items-center">
+          <div class="page-header d-flex align-items-center justify-content-between">
             <div>
               <h1 class="page-title mb-1">침상 관리</h1>
-              <p class="text-muted mb-0">디바이스-환자 매핑 관리</p>
+              <p class="page-description mb-0">디바이스-환자 매핑 관리</p>
             </div>
-            <div class="ms-auto">
-              <button
-                type="button"
-                class="btn btn-success btn-lg px-4 py-3"
-                onclick="openModal('register')"
-                style="font-size: 1.1rem; font-weight: 600"
-              >
-                + 신규 환자 등록
+            <div>
+              <button type="button" class="modern-btn modern-btn-add" onclick="openModal('register')">
+                <i class="bi bi-plus-lg me-2"></i>신규 환자 등록
               </button>
             </div>
           </div>
 
           <!-- Search & Filter -->
-          <div class="card shadow-sm mb-4">
-            <div class="card-body">
-              <form
-                th:action="@{/patients}"
-                method="get"
-                class="row g-3 align-items-center"
-              >
-                <div class="col-md-9">
-                  <input
-                    type="text"
-                    name="keyword"
-                    class="form-control form-control-lg"
-                    placeholder="🔍 환자 성명 또는 병실 검색..."
-                    th:value="${keyword}"
-                  />
-                </div>
-
-                <div class="col-md-3">
-                  <button type="submit" class="btn btn-dark btn-lg w-100">
-                    검색
-                  </button>
-                </div>
-              </form>
+          <div class="search-card">
+            <div class="search-input-group">
+              <i class="bi bi-search search-icon"></i>
+              <input
+                type="text"
+                id="patientSearch"
+                class="w-100"
+                placeholder="환자 성명 또는 침상 ID 검색..."
+                onkeyup="filterPatients()"
+              />
             </div>
           </div>
 
           <!-- Patients Table -->
-          <div class="card shadow-sm">
-            <div class="card-body p-0">
-              <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                  <thead class="table-light">
-                    <tr>
-                      <th>침상 ID</th>
-                      <th>환자명</th>
-                      <th class="text-center">욕창 단계</th>
-                      <th class="text-center">욕창 부위</th>
-                      <th class="text-center">개인별 실시간 화면</th>
-                      <th class="text-center">관리</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr th:each="patient : ${patients}">
-                      <td class="fw-bold" th:text="${patient.patientId}">
-                        101-A
-                      </td>
-                      <td th:text="${patient.name}">환자명</td>
-                      <td class="text-center">
-                        <span th:switch="${patient.grade}">
-                          <span th:case="0" class="badge bg-secondary"
-                            >없음</span
-                          >
-                          <span th:case="1" class="badge bg-success"
-                            >1단계</span
-                          >
-                          <span th:case="2" class="badge bg-warning text-dark"
-                            >2단계</span
-                          >
-                          <span th:case="3" class="badge bg-danger">3단계</span>
-                          <span th:case="4" class="badge bg-danger">4단계</span>
-                          <span th:case="*" class="badge bg-secondary"
-                            >미입력</span
-                          >
-                        </span>
-                      </td>
-                      <td
-                        class="text-center"
-                        th:text="${patient.ulcerLocation != null ? patient.ulcerLocation : '-'}"
-                      >
-                        부위
-                      </td>
-                      <td class="text-center">
-                        <button
-                          class="btn btn-sm btn-outline-success me-1"
-                          th:attr="data-id=${patient.patientId}"
-                          onclick="openCameraPopup()"
-                        >
-                          화면 보러가기
-                        </button>
-                      </td>
-                      <td class="text-center">
-                        <button
-                          class="btn btn-sm btn-outline-primary me-1"
-                          th:attr="data-id=${patient.patientId}, 
-                 data-name=${patient.name}, 
-                 data-grade=${patient.grade}, 
-                 data-location=${patient.ulcerLocation}, 
-                 data-patientid=${patient.patientId}"
-                          onclick="openModal('edit', this)"
-                        >
-                          수정
-                        </button>
-                        <button
-                          class="btn btn-sm btn-outline-danger"
-                          th:attr="data-id=${patient.patientId}"
-                          onclick="deletePatient(this)"
-                        >
-                          삭제
-                        </button>
-                      </td>
-                    </tr>
+          <div class="modern-table-container">
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th>침상 ID</th>
+                  <th>환자명</th>
+                  <th class="text-center">욕창 단계</th>
+                  <th class="text-center">욕창 부위</th>
+                  <th class="text-center">개인별 실시간 화면</th>
+                  <th class="text-center">관리</th>
+                </tr>
+              </thead>
+              <tbody id="patientTableBody">
+                <tr th:each="patient : ${patients}" class="patient-row">
+                  <td class="patient-id" th:text="${patient.patientId}">101-A</td>
+                  <td class="patient-name" th:text="${patient.name}">환자명</td>
+                  <td class="text-center">
+                    <span th:switch="${patient.grade}">
+                      <span th:case="0" class="modern-badge badge-none">없음</span>
+                      <span th:case="1" class="modern-badge badge-stage1">1단계</span>
+                      <span th:case="2" class="modern-badge badge-stage2">2단계</span>
+                      <span th:case="3" class="modern-badge badge-stage3">3단계</span>
+                      <span th:case="4" class="modern-badge badge-stage4">4단계</span>
+                      <span th:case="*" class="modern-badge badge-none">미입력</span>
+                    </span>
+                  </td>
+                  <td class="text-center" 
+                      th:text="${patient.ulcerLocation != null ? patient.ulcerLocation : '-'}">
+                    부위
+                  </td>
+                  <td class="text-center">
+                    <button class="modern-btn modern-btn-view" 
+                            th:attr="data-id=${patient.patientId}"
+                            onclick="openCameraPopup()">
+                      <i class="bi bi-camera-video me-1"></i>화면 보기
+                    </button>
+                  </td>
+                  <td class="text-center">
+                    <button class="modern-btn modern-btn-edit me-2" 
+                            th:attr="data-id=${patient.patientId}, 
+                                     data-name=${patient.name}, 
+                                     data-grade=${patient.grade}, 
+                                     data-location=${patient.ulcerLocation}, 
+                                     data-patientid=${patient.patientId}"
+                            onclick="openModal('edit', this)">
+                      <i class="bi bi-pencil me-1"></i>수정
+                    </button>
+                    <button class="modern-btn modern-btn-delete" 
+                            th:attr="data-id=${patient.patientId}"
+                            onclick="deletePatient(this)">
+                      <i class="bi bi-trash me-1"></i>삭제
+                    </button>
+                  </td>
+                </tr>
 
-                    <!-- Empty State / Sample (Optional: Only show if list empty) -->
-                    <tr th:if="${#lists.isEmpty(patients)}">
-                      <td colspan="6" class="text-center py-4 text-muted">
-                        등록된 환자가 없습니다.
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                <tr id="noResult" style="display: none;">
+                  <td colspan="6" class="empty-state">
+                    <i class="bi bi-search"></i>
+                    <div>검색 결과가 없습니다.</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <!-- Pagination -->
-          <nav
-            aria-label="Page navigation"
-            class="mt-4"
-            th:if="${totalPages > 1}"
-          >
-            <ul class="pagination justify-content-center">
-              <li
-                class="page-item"
-                th:classappend="${currentPage == 0} ? 'disabled': ''"
-              >
-                <a
-                  class="page-link"
-                  th:href="@{/patients(page=${currentPage - 1})}"
-                  tabindex="-1"
-                  >이전</a
-                >
-              </li>
-              <li
-                class="page-item"
-                th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                th:classappend="${i == currentPage} ? 'active' : ''"
-              >
-                <a
-                  class="page-link"
-                  th:href="@{/patients(page=${i})}"
-                  th:text="${i + 1}"
-                  >1</a
-                >
-              </li>
-              <li
-                class="page-item"
-                th:classappend="${currentPage == totalPages - 1} ? 'disabled': ''"
-              >
-                <a
-                  class="page-link"
-                  th:href="@{/patients(page=${currentPage + 1})}"
-                  >다음</a
-                >
-              </li>
-            </ul>
-          </nav>
+          <div class="modern-pagination" th:if="${totalPages > 1}">
+            <a class="page-btn" 
+               th:classappend="${currentPage == 0} ? 'disabled': ''"
+               th:href="@{/patients(page=${currentPage - 1})}"
+               tabindex="-1">
+              <i class="bi bi-chevron-left"></i>
+            </a>
+            
+            <a class="page-btn"
+               th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+               th:classappend="${i == currentPage} ? 'active' : ''"
+               th:href="@{/patients(page=${i})}"
+               th:text="${i + 1}">1</a>
+            
+            <a class="page-btn"
+               th:classappend="${currentPage == totalPages - 1} ? 'disabled': ''"
+               th:href="@{/patients(page=${currentPage + 1})}">
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </div>
         </main>
       </div>
     </div>
@@ -267,33 +564,19 @@
           <form id="patientForm" method="post">
             <div class="modal-header">
               <h5 class="modal-title" id="modalTitle">신규 환자 등록</h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-              ></button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
               <div class="mb-3">
                 <label class="form-label">침상 ID *</label>
-                <input
-                  type="text"
-                  id="m_patientId"
-                  name="patientId"
-                  class="form-control"
-                  required
-                />
+                <input type="text" id="m_patientId" name="patientId" 
+                       class="form-control" required />
               </div>
               <div class="mb-3">
                 <label class="form-label">환자명 *</label>
-                <input
-                  type="text"
-                  id="m_name"
-                  name="name"
-                  class="form-control"
-                  required
-                />
+                <input type="text" id="m_name" name="name" 
+                       class="form-control" required />
               </div>
               <div class="mb-3">
                 <label class="form-label">욕창 단계</label>
@@ -307,24 +590,13 @@
               </div>
               <div class="mb-3">
                 <label class="form-label">욕창 부위</label>
-                <input
-                  type="text"
-                  id="m_location"
-                  name="ulcerLocation"
-                  class="form-control"
-                  placeholder="천골, 발꿈치 등"
-                />
+                <input type="text" id="m_location" name="ulcerLocation" 
+                       class="form-control" placeholder="천골, 발꿈치 등" />
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" id="submitBtn" class="btn btn-primary">
-                등록
-              </button>
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
+              <button type="submit" id="submitBtn" class="btn btn-primary">등록</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                 취소
               </button>
             </div>
@@ -333,19 +605,39 @@
       </div>
     </div>
 
-    <!-- Bootstrap 5 JS Bundle -->
+	<!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+      function filterPatients() {
+        const searchValue = document.getElementById('patientSearch').value.toLowerCase();
+        const rows = document.querySelectorAll('.patient-row');
+        let hasResult = false;
+
+        rows.forEach(row => {
+          const patientId = row.querySelector('.patient-id').textContent.toLowerCase();
+          const patientName = row.querySelector('.patient-name').textContent.toLowerCase();
+
+          if (patientId.includes(searchValue) || patientName.includes(searchValue)) {
+            row.style.display = "";
+            hasResult = true;
+          } else {
+            row.style.display = "none";
+          }
+        });
+
+        const noResultMsg = document.getElementById('noResult');
+        if (noResultMsg) {
+          noResultMsg.style.display = hasResult ? "none" : "";
+        }
+      }
+    
       function openModal(mode, btn) {
-        const modal = new bootstrap.Modal(
-          document.getElementById("patientModal")
-        );
+        const modal = new bootstrap.Modal(document.getElementById("patientModal"));
         const form = document.getElementById("patientForm");
         const title = document.getElementById("modalTitle");
         const submitBtn = document.getElementById("submitBtn");
 
-        // 필드들
         const patientIdInput = document.getElementById("m_patientId");
         const nameInput = document.getElementById("m_name");
         const gradeInput = document.getElementById("m_grade");
@@ -356,44 +648,32 @@
           oldIdInput = document.createElement("input");
           oldIdInput.type = "hidden";
           oldIdInput.id = "oldPatientId";
-          oldIdInput.name = "oldPatientId"; // Controller의 @RequestParam 이름과 일치
+          oldIdInput.name = "oldPatientId";
           form.appendChild(oldIdInput);
         }
 
         if (mode === "register") {
           title.innerText = "신규 환자 등록";
           submitBtn.innerText = "등록";
-          form.action = "/patients/register"; // 등록용 엔드포인트
-
-          // 필드 초기화
+          form.action = "/patients/register";
           form.reset();
           patientIdInput.readOnly = false;
-
-          oldIdInput.value = ""; // 등록 시엔 비움
+          oldIdInput.value = "";
         } else {
           title.innerText = "환자 정보 수정";
           submitBtn.innerText = "수정 완료";
-          form.action = "/patients/update"; // 수정용 엔드포인트
+          form.action = "/patients/update";
 
           const currentId = btn.getAttribute("data-patientid");
           patientIdInput.value = currentId;
-          oldIdInput.value = currentId; // ★ 기존 ID를 확실히 세팅
-
-          // 버튼의 dataset에서 값 가져와서 세팅
+          oldIdInput.value = currentId;
           nameInput.value = btn.getAttribute("data-name");
           gradeInput.value = btn.getAttribute("data-grade");
           locationInput.value = btn.getAttribute("data-location");
-
-          // 침상 ID(PK)는 수정 못하게 막기
           patientIdInput.readOnly = false;
         }
 
         modal.show();
-      }
-
-      function editPatient(btn) {
-        const id = btn.getAttribute("data-id");
-        location.href = "/patients/" + id;
       }
 
       function deletePatient(btn) {
@@ -404,196 +684,196 @@
       }
 
       function openCameraPopup() {
-        const width = 1024;
-        const height = 768;
-        const left = (screen.width - width) / 2;
-        const top = (screen.height - height) / 2;
+          const width = 1024;
+          const height = 768;
+          const left = (screen.width - width) / 2;
+          const top = (screen.height - height) / 2;
 
-        const popup = window.open(
-          "",
-          "Pose_Classification_Stream",
-          `width=${width},height=${height},left=${left},top=${top},resizable=yes`
-        );
+          const popup = window.open(
+            "",
+            "Pose_Classification_Stream",
+            `width=${width},height=${height},left=${left},top=${top},resizable=yes`
+          );
 
-        popup.document.write(`
-               <!DOCTYPE html>
-               <html>
-               <head>
-                   <meta charset="UTF-8">
-                   <title>실시간 자세 분류 모니터링</title>
-                   <style>
-                       * {
-                           margin: 0;
-                           padding: 0;
-                           box-sizing: border-box;
-                       }
-                       body {
-                           background: #1a1a1a;
-                           display: flex;
-                           flex-direction: column;
-                           height: 100vh;
-                           font-family: 'Segoe UI', Arial, sans-serif;
-                       }
-                       .header {
-                           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                           color: white;
-                           padding: 20px 30px;
-                           box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-                       }
-                       .header h1 {
-                           font-size: 24px;
-                           margin: 0 0 5px 0;
-                       }
-                       .header p {
-                           font-size: 14px;
-                           opacity: 0.9;
-                           margin: 0;
-                       }
-                       .status-bar {
-                           background: #2a2a2a;
-                           padding: 10px 30px;
-                           display: flex;
-                           justify-content: space-between;
-                           align-items: center;
-                           border-bottom: 2px solid #667eea;
-                       }
-                       .status-item {
-                           display: flex;
-                           align-items: center;
-                           gap: 10px;
-                           color: white;
-                           font-size: 14px;
-                       }
-                       .status-dot {
-                           width: 10px;
-                           height: 10px;
-                           background: #4CAF50;
-                           border-radius: 50%;
-                           animation: pulse 2s infinite;
-                       }
-                       @keyframes pulse {
-                           0%, 100% { opacity: 1; transform: scale(1); }
-                           50% { opacity: 0.5; transform: scale(1.1); }
-                       }
-                       .video-container {
-                           flex: 1;
-                           display: flex;
-                           justify-content: center;
-                           align-items: center;
-                           padding: 20px;
-                           background: #000;
-                       }
-                       #videoStream {
-                           max-width: 100%;
-                           max-height: 100%;
-                           border-radius: 10px;
-                           box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
-                       }
-                       .info-panel {
-                           background: #2a2a2a;
-                           color: white;
-                           padding: 15px 30px;
-                           display: flex;
-                           gap: 30px;
-                           flex-wrap: wrap;
-                       }
-                       .info-item {
-                           display: flex;
-                           flex-direction: column;
-                       }
-                       .info-label {
-                           font-size: 12px;
-                           color: #999;
-                           margin-bottom: 5px;
-                       }
-                       .info-value {
-                           font-size: 18px;
-                           font-weight: bold;
-                           color: #4CAF50;
-                       }
-                       .controls {
-                           background: #1a1a1a;
-                           padding: 20px;
-                           display: flex;
-                           justify-content: center;
-                           gap: 15px;
-                       }
-                       button {
-                           padding: 12px 30px;
-                           border: none;
-                           border-radius: 8px;
-                           cursor: pointer;
-                           font-size: 15px;
-                           font-weight: bold;
-                           transition: all 0.3s;
-                       }
-                       .btn-close {
-                           background: #f44336;
-                           color: white;
-                       }
-                       .btn-close:hover {
-                           background: #d32f2f;
-                           transform: translateY(-2px);
-                           box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
-                       }
-                   </style>
-               </head>
-               <body>
-                   <div class="header">
-                       <h1>🎥 실시간 자세 분류 모니터링</h1>
-                       <p>YOLO11n-Pose + Custom Classification Model</p>
-                   </div>
-                   
-                   <div class="status-bar">
-                       <div class="status-item">
-                           <div class="status-dot"></div>
-                           <span>실시간 스트리밍 활성화</span>
-                       </div>
-                       <div class="status-item">
-                           <span>분류: supine / left / right</span>
-                       </div>
-                   </div>
-                   
-                   <div class="video-container">
-                       <img id="videoStream" src="http://192.168.219.208:8000/video_feed" alt="Loading...">
-                   </div>
-                   
-                   <div class="info-panel">
-                       <div class="info-item">
-                           <div class="info-label">모델 상태</div>
-                           <div class="info-value">✓ 정상</div>
-                       </div>
-                       <div class="info-item">
-                           <div class="info-label">FPS</div>
-                           <div class="info-value">~30</div>
-                       </div>
-                       <div class="info-item">
-                           <div class="info-label">해상도</div>
-                           <div class="info-value">640x480</div>
-                       </div>
-                   </div>
-                   
-                   <div class="controls">
-                       <button class="btn-close" onclick="window.close()">
-                           ❌ 창 닫기
-                       </button>
-                   </div>
-                   
-                   <script>
-                       const img = document.getElementById('videoStream');
-                       
-                       img.onerror = function() {
-                           alert('카메라 연결 실패! FastAPI 서버가 실행 중인지 확인하세요.\\n\\n서버 주소: http://192.168.219.208:8000');
-                       };
-                       
-                       img.onload = function() {
-                           console.log('✓ 스트리밍 연결 성공');
-                       };
-                   <\/script>
-               </body>
-               </html>
-           `);
+          popup.document.write(`
+                 <!DOCTYPE html>
+                 <html>
+                 <head>
+                     <meta charset="UTF-8">
+                     <title>실시간 자세 분류 모니터링</title>
+                     <style>
+                         * {
+                             margin: 0;
+                             padding: 0;
+                             box-sizing: border-box;
+                         }
+                         body {
+                             background: #1a1a1a;
+                             display: flex;
+                             flex-direction: column;
+                             height: 100vh;
+                             font-family: 'Segoe UI', Arial, sans-serif;
+                         }
+                         .header {
+                             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                             color: white;
+                             padding: 20px 30px;
+                             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+                         }
+                         .header h1 {
+                             font-size: 24px;
+                             margin: 0 0 5px 0;
+                         }
+                         .header p {
+                             font-size: 14px;
+                             opacity: 0.9;
+                             margin: 0;
+                         }
+                         .status-bar {
+                             background: #2a2a2a;
+                             padding: 10px 30px;
+                             display: flex;
+                             justify-content: space-between;
+                             align-items: center;
+                             border-bottom: 2px solid #667eea;
+                         }
+                         .status-item {
+                             display: flex;
+                             align-items: center;
+                             gap: 10px;
+                             color: white;
+                             font-size: 14px;
+                         }
+                         .status-dot {
+                             width: 10px;
+                             height: 10px;
+                             background: #4CAF50;
+                             border-radius: 50%;
+                             animation: pulse 2s infinite;
+                         }
+                         @keyframes pulse {
+                             0%, 100% { opacity: 1; transform: scale(1); }
+                             50% { opacity: 0.5; transform: scale(1.1); }
+                         }
+                         .video-container {
+                             flex: 1;
+                             display: flex;
+                             justify-content: center;
+                             align-items: center;
+                             padding: 20px;
+                             background: #000;
+                         }
+                         #videoStream {
+                             max-width: 100%;
+                             max-height: 100%;
+                             border-radius: 10px;
+                             box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+                         }
+                         .info-panel {
+                             background: #2a2a2a;
+                             color: white;
+                             padding: 15px 30px;
+                             display: flex;
+                             gap: 30px;
+                             flex-wrap: wrap;
+                         }
+                         .info-item {
+                             display: flex;
+                             flex-direction: column;
+                         }
+                         .info-label {
+                             font-size: 12px;
+                             color: #999;
+                             margin-bottom: 5px;
+                         }
+                         .info-value {
+                             font-size: 18px;
+                             font-weight: bold;
+                             color: #4CAF50;
+                         }
+                         .controls {
+                             background: #1a1a1a;
+                             padding: 20px;
+                             display: flex;
+                             justify-content: center;
+                             gap: 15px;
+                         }
+                         button {
+                             padding: 12px 30px;
+                             border: none;
+                             border-radius: 8px;
+                             cursor: pointer;
+                             font-size: 15px;
+                             font-weight: bold;
+                             transition: all 0.3s;
+                         }
+                         .btn-close {
+                             background: #f44336;
+                             color: white;
+                         }
+                         .btn-close:hover {
+                             background: #d32f2f;
+                             transform: translateY(-2px);
+                             box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+                         }
+                     </style>
+                 </head>
+                 <body>
+                     <div class="header">
+                         <h1>🎥 실시간 자세 분류 모니터링</h1>
+                         <p>YOLO11n-Pose + Custom Classification Model</p>
+                     </div>
+                     
+                     <div class="status-bar">
+                         <div class="status-item">
+                             <div class="status-dot"></div>
+                             <span>실시간 스트리밍 활성화</span>
+                         </div>
+                         <div class="status-item">
+                             <span>분류: supine / left / right</span>
+                         </div>
+                     </div>
+                     
+                     <div class="video-container">
+                         <img id="videoStream" src="http://192.168.219.206:8002/video_feed" alt="Loading...">
+                     </div>
+                     
+                     <div class="info-panel">
+                         <div class="info-item">
+                             <div class="info-label">모델 상태</div>
+                             <div class="info-value">✓ 정상</div>
+                         </div>
+                         <div class="info-item">
+                             <div class="info-label">FPS</div>
+                             <div class="info-value">~30</div>
+                         </div>
+                         <div class="info-item">
+                             <div class="info-label">해상도</div>
+                             <div class="info-value">640x480</div>
+                         </div>
+                     </div>
+                     
+                     <div class="controls">
+                         <button class="btn-close" onclick="window.close()">
+                             ❌ 창 닫기
+                         </button>
+                     </div>
+                     
+                     <script>
+                         const img = document.getElementById('videoStream');
+                         
+                         img.onerror = function() {
+                             alert('카메라 연결 실패! FastAPI 서버가 실행 중인지 확인하세요.\\n\\n서버 주소: http://192.168.219.208:8002');
+                         };
+                         
+                         img.onload = function() {
+                             console.log('✓ 스트리밍 연결 성공');
+                         };
+                     <\/script>
+  </html>`);
+  
+  popup.document.close();
       }
     </script>
-  </body>
-</html>
+    </body>
+    </html>

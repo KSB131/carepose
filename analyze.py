@@ -11,6 +11,9 @@ from fastapi import FastAPI, UploadFile, Form
 from ultralytics import YOLO
 import torch.nn as nn
 import re
+from fastapi.responses import StreamingResponse
+import asyncio
+from fastapi.middleware.cors import CORSMiddleware
 
 IMAGE_ROOT = r"C:\carepose-images\images"
 
@@ -32,6 +35,17 @@ os.makedirs(FALL_DIR, exist_ok=True)
 FALL_STATUS_FILE = os.path.join(BASE_DIR, "fall_status.json")
 
 app = FastAPI()
+
+# [추가] 브라우저에서 스트리밍에 접근할 수 있도록 허용
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# 2. 전역 변수 추가 (최신 프레임을 저장할 변수)
+current_frame = None
 
 # ==================== 설정 ====================
 FRAME_W, FRAME_H = 640, 480
@@ -65,6 +79,8 @@ DB_CONFIG = {
     'database': 'carepose123',
     'charset': 'utf8mb4'
 }
+
+
 
 # ==================== 모델 ====================
 class PoseClassifier(nn.Module):
@@ -212,7 +228,7 @@ def get_next_pose_filename(bed_dir: str, pose: str):
 # ==================== API ====================
 @app.post("/analyze")
 async def analyze(image: UploadFile, bed_id: str = Form(...)):
-    global last_fall_time, last_fall_alert, last_pose_time, stable_pose
+    global last_fall_time, last_fall_alert, last_pose_time, stable_pose, current_frame
 
     frame = cv2.imdecode(
         np.frombuffer(await image.read(), np.uint8),
@@ -328,7 +344,22 @@ async def analyze(image: UploadFile, bed_id: str = Form(...)):
     if ENABLE_DISPLAY:
         cv2.imshow(f"Bed {bed_id} - Analysis", annotated)
         cv2.waitKey(1)
+        
+    _, buffer = cv2.imencode('.jpg', annotated) # 'frame' 대신 'annotated'를 사용하여 분석 내용 노출
+    current_frame = buffer.tobytes()
 
     return {"status": "ok"}
-    
+
+# 4. 스트리밍 엔드포인트 추가 (기존 stream.py 내용)
+async def generate_frames():
+    global current_frame
+    while True:
+        if current_frame is not None:
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + current_frame + b'\r\n')
+        await asyncio.sleep(0.04) # 약 25 FPS 유지
+
+@app.get("/video_feed")
+async def video_feed():
+    return StreamingResponse(generate_frames(), media_type="multipart/x-mixed-replace; boundary=frame")
     

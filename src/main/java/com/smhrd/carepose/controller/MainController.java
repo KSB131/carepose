@@ -37,16 +37,41 @@ public class MainController {
    @GetMapping("/rooms")
    public String roomSelect(Model model, HttpServletRequest request) {
 
-       // 모든 환자 조회
+       // 1. 모든 환자 조회
        List<PatientEntity> patients = patientRepository.findAll();
        model.addAttribute("patients", patients);
 
-       Map<Integer, List<Integer>> roomMap = new LinkedHashMap<>();
+       // 2. 동적으로 병실 번호를 추출하여 저장할 Map (층별로 리스트 관리)
+       // TreeMap을 사용하면 key(층수)를 기준으로 자동 정렬됩니다.
+       Map<Integer, List<Integer>> roomMap = new java.util.TreeMap<>();
 
-       roomMap.put(2, List.of(201, 202, 203));
-       roomMap.put(3, List.of(301, 302, 303));
-       roomMap.put(5, List.of(501, 502, 503));
-       roomMap.put(6, List.of(601, 602, 603));
+       for (PatientEntity p : patients) {
+           String pid = p.getPatientId(); // 예: "801A"
+           
+           if (pid != null && pid.length() >= 3) {
+               try {
+                   // 앞 3자리 숫자 추출 (예: "801A" -> 801)
+                   int roomNum = Integer.parseInt(pid.substring(0, 3));
+                   int floor = roomNum / 100; // 층수 추출 (예: 801 / 100 = 8)
+
+                   // 해당 층의 리스트가 없으면 새로 만들고, 병실 번호 추가
+                   roomMap.computeIfAbsent(floor, k -> new java.util.ArrayList<>()).add(roomNum);
+               } catch (NumberFormatException e) {
+                   // 숫자가 아닌 ID 형식은 건너뜁니다.
+               }
+           }
+       }
+
+       // 3. 각 층별 병실 번호 중복 제거 및 정렬
+       for (Integer floor : roomMap.keySet()) {
+           List<Integer> rooms = roomMap.get(floor);
+           // 중복 제거 및 정렬
+           List<Integer> sortedRooms = rooms.stream()
+                                            .distinct()
+                                            .sorted()
+                                            .toList();
+           roomMap.put(floor, sortedRooms);
+       }
 
        model.addAttribute("roomMap", roomMap);
        model.addAttribute("requestURI", request.getRequestURI());

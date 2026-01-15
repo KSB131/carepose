@@ -67,8 +67,8 @@
                 </a>
               </li>
               <li class="nav-item"
-                  	  th:if="${session.role == 'manager'}">
-                  	  <a class="nav-link" th:href="@{/manager}"
+                       th:if="${session.role == 'manager'}">
+                       <a class="nav-link" th:href="@{/manager}"
                      th:classappend="${requestURI.contains('/manager')} ? 'active'">
                         <i class="bi bi-people-fill me-2"></i>관리자
                   </a></li>
@@ -109,6 +109,7 @@
          
     <script type="text/javascript">
     var today = new Date(); // 전역 변수로 설정
+    var selectedDate = null; // 선택된 날짜 저장
 
     function buildCalendar() {
       var calendarTableBody = document.querySelector("#calendar tbody");
@@ -126,7 +127,10 @@
       var row = calendarTableBody.insertRow();
       var cnt = 0;
 
-      // 1. 시작 요일까지 빈 칸 채우기 (2026년 1월 1일은 목요일이므로 4칸)
+      // 현재 실제 날짜 (오늘)
+      var realToday = new Date();
+
+      // 1. 시작 요일까지 빈 칸 채우기
       for (var i = 0; i < firstDate.getDay(); i++) {
         row.insertCell();
         cnt++;
@@ -139,7 +143,21 @@
         cell.style.textAlign = "center";
         cell.style.cursor = "pointer";
         
-        // 클릭 시 날짜 선택 이벤트 (부모창 id="date"에 값 전달)
+        // 오늘 날짜인지 체크
+        var isToday = (realToday.getFullYear() === today.getFullYear() && 
+                       realToday.getMonth() === today.getMonth() && 
+                       realToday.getDate() === i);
+        
+        // 오늘 날짜에 active 클래스 추가
+        if (isToday) {
+          cell.classList.add('active');
+          cell.style.backgroundColor = "#8ac4eb";
+          cell.style.color = "#ffffff";
+          cell.style.fontWeight = "bold";
+          cell.style.borderRadius = "6px";
+        }
+        
+        // 클릭 시 날짜 선택 이벤트
         cell.onclick = (function(n) {
           return function() {
             var year = today.getFullYear();
@@ -147,15 +165,53 @@
             var day = ("0" + n).slice(-2);
             var selectedYMD = year + "-" + month + "-" + day;
             
+            // 이전 선택 해제
+            var allCells = document.querySelectorAll("#calendar tbody td");
+            allCells.forEach(function(td) {
+              if (!td.classList.contains('active') || td.innerHTML != realToday.getDate() || 
+                  today.getFullYear() !== realToday.getFullYear() || 
+                  today.getMonth() !== realToday.getMonth()) {
+                td.style.backgroundColor = "";
+                td.style.color = "";
+                td.style.fontWeight = "";
+                td.style.borderRadius = "";
+              }
+            });
+            
+            // 새로운 선택 표시
+            this.style.backgroundColor = "#ebaca4";
+            this.style.color = "#ffffff";
+            this.style.fontWeight = "bold";
+            this.style.borderRadius = "6px";
+            
+            // 오늘 날짜는 파란색 유지
+            var todayCells = document.querySelectorAll("#calendar tbody td.active");
+            todayCells.forEach(function(td) {
+              var cellDate = parseInt(td.innerHTML);
+              if (cellDate === realToday.getDate() && 
+                  today.getFullYear() === realToday.getFullYear() && 
+                  today.getMonth() === realToday.getMonth()) {
+                td.style.backgroundColor = "#8ac4eb";
+                td.style.color = "#ffffff";
+              }
+            });
+            
+            // 해당 날짜의 이벤트 로드
+            selectedDate = selectedYMD;
+            updateDateBadge(selectedYMD); // 날짜 배지 업데이트
+            loadFallEventsByDate(selectedYMD);
+            
             // input 요소가 있다면 값 입력
             var dateInput = document.getElementById("date") || opener.document.getElementById("date");
             if(dateInput) dateInput.value = selectedYMD;
           };
         })(i);
 
-        // 요일별 색상 및 줄바꿈 처리
-        if (cnt % 7 == 0) cell.style.color = "#F79DC2"; // 일요일
-        if (cnt % 7 == 6) cell.style.color = "skyblue"; // 토요일
+        // 요일별 색상 (오늘이 아닐 때만)
+        if (!isToday) {
+          if (cnt % 7 == 0) cell.style.color = "#F79DC2"; // 일요일
+          if (cnt % 7 == 6) cell.style.color = "skyblue"; // 토요일
+        }
 
         cnt++;
 
@@ -277,33 +333,54 @@
                      </div>
                   </div>
                </div>
-               <script>  document.addEventListener("DOMContentLoaded", function () {
-                   const today = new Date();
-
-                   const year = today.getFullYear();
-                   const month = String(today.getMonth() + 1).padStart(2, '0');
-                   const day = String(today.getDate()).padStart(2, '0');
+               <script>  
+               // 날짜 배지 업데이트 함수
+               function updateDateBadge(dateStr = null) {
+                   const targetDate = dateStr ? new Date(dateStr) : new Date();
+                   
+                   const year = targetDate.getFullYear();
+                   const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+                   const day = String(targetDate.getDate()).padStart(2, '0');
 
                    const days = ['일', '월', '화', '수', '목', '금', '토'];
-                   const dayOfWeek = days[today.getDay()];
+                   const dayOfWeek = days[targetDate.getDay()];
 
                    const formattedDate = `${year}.${month}.${day} (${dayOfWeek})`;
 
                    document.getElementById("todayBadge").textContent = formattedDate;
+               }
+               
+               document.addEventListener("DOMContentLoaded", function () {
+                   updateDateBadge(); // 초기에는 오늘 날짜 표시
                });
                
-               // 낙상 이벤트 목록 로드
-               async function loadFallEvents() {
+               // 낙상 이벤트 목록 로드 (전체 또는 날짜 필터)
+               async function loadFallEvents(dateFilter = null) {
                  try {
-                   const response = await fetch("/api/fall/recent?limit=10");
-                   const falls = await response.json();
+                   let url = "/api/fall/recent?limit=50";
+                   const response = await fetch(url);
+                   let falls = await response.json();
+                   
+                   // 날짜 필터가 있으면 해당 날짜만 필터링
+                   if (dateFilter) {
+                     falls = falls.filter(fall => {
+                       const fallDate = new Date(fall.fallAt);
+                       const filterDate = new Date(dateFilter);
+                       return fallDate.getFullYear() === filterDate.getFullYear() &&
+                              fallDate.getMonth() === filterDate.getMonth() &&
+                              fallDate.getDate() === filterDate.getDate();
+                     });
+                   }
                    
                    const listContainer = document.getElementById("fallEventList");
                    
                    if (falls.length === 0) {
+                     const message = dateFilter ? 
+                       `${dateFilter} 날짜의 낙상 기록이 없습니다.` : 
+                       "낙상 기록이 없습니다.";
                      listContainer.innerHTML = `
                        <div class="list-group-item text-center text-muted">
-                         낙상 기록이 없습니다.
+                         ${message}
                        </div>
                      `;
                      return;
@@ -347,6 +424,12 @@
                  }
                }
                
+               // 특정 날짜의 이벤트만 로드
+               function loadFallEventsByDate(dateStr) {
+                 console.log("📅 선택된 날짜:", dateStr);
+                 loadFallEvents(dateStr);
+               }
+               
                // 기록 확인 버튼 클릭
                async function viewFallDetail(fallNum) {
                  const button = document.getElementById(`fallBtn${fallNum}`);
@@ -380,8 +463,14 @@
                // 페이지 로드 시 목록 로드
                loadFallEvents();
                
-               // 10초마다 목록 업데이트
-               setInterval(loadFallEvents, 10000);
+               // 10초마다 목록 업데이트 (선택된 날짜가 있으면 그 날짜로)
+               setInterval(function() {
+                 if (selectedDate) {
+                   loadFallEvents(selectedDate);
+                 } else {
+                   loadFallEvents();
+                 }
+               }, 10000);
                
 </script>
   </body>

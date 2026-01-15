@@ -17,6 +17,7 @@
   background: linear-gradient(135deg, #667eea, #566dd4);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
 }
 
 :root {
@@ -396,6 +397,7 @@ nav li {
   font-weight: bold;
   color: #334155;
   margin-bottom: 5px;
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
 }
 
 .sidebar-subtitle {
