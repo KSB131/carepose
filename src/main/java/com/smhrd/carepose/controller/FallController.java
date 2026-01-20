@@ -26,7 +26,7 @@ public class FallController {
     @Autowired
     private FallRepository fallRepository;
     
-    private static final String FALL_IMAGE_DIR = "src/main/resources/static/device/fall";
+    private static final String FALL_IMAGE_DIR = "/home/ec2-user/carepose/fall/";
     private static final String FALL_STATUS_FILE = "fall_status.json";
     
     /**
@@ -206,21 +206,24 @@ public class FallController {
             // 간단한 JSON 파싱 (정규식 사용)
             Map<String, Object> fallStatus = new HashMap<>();
             
-            // "fall": true 또는 false
-            if (jsonString.contains("\"fall\": true")) {
-                fallStatus.put("fall", true);
-            } else {
-                fallStatus.put("fall", false);
-            }
-            
+            Integer currentFallNum = 0;
             // "fall_num": 숫자
             String fallNumPattern = "\"fall_num\":\\s*(\\d+)";
             java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(fallNumPattern);
             java.util.regex.Matcher matcher = pattern.matcher(jsonString);
             if (matcher.find()) {
                 fallStatus.put("fall_num", Integer.parseInt(matcher.group(1)));
+                currentFallNum = Integer.parseInt(matcher.group(1));
             } else {
                 fallStatus.put("fall_num", 0);
+            }
+            fallStatus.put("fall_num", currentFallNum);
+            
+            // "fall": true 또는 false
+            if (jsonString.contains("\"fall\": true")) {
+                fallStatus.put("fall", true);
+            } else {
+                fallStatus.put("fall", false);
             }
             
             // "room": "값"
@@ -252,6 +255,16 @@ public class FallController {
             } else {
                 fallStatus.put("timestamp", "");
             }
+            
+            // 개발을 위해 설정 off
+			/*
+			 * if (currentFallNum > 0) { FallEntity fallEntity =
+			 * fallRepository.findById(currentFallNum).orElse(null); if (fallEntity != null
+			 * && fallEntity.getHandledAt() != null) { // DB에 조치 시간(handledAt)이 기록되어 있다면 이미
+			 * 확인된 상황임 // 프론트엔드 팝업이 뜨지 않도록 fall 값을 false로 강제 변경 fallStatus.put("fall",
+			 * false); System.out.println("🚩 이미 조치된 낙상 건입니다 (fall_num: " + currentFallNum +
+			 * "). 팝업을 띄우지 않습니다."); } }
+			 */
             
             return ResponseEntity.ok()
                 .header("Cache-Control", "no-cache, no-store, must-revalidate")

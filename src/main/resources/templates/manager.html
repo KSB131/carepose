@@ -24,7 +24,8 @@
   background: var(--gradient-main);
   min-height: 100vh;
   color: var(--text-primary);
-  display: flex;
+  display: block !important;
+  min-height: 100vh;
 }
 
 body {
@@ -32,15 +33,23 @@ body {
   font-family: 'Pretendard', -apple-system, sans-serif;
 }
    
-   
+main {
+    /* 사이드바(col-md-3)를 제외한 나머지 공간을 완벽히 차지하게 합니다 */
+    width: 100%;
+    padding: 40px 50px !important;
+    background-color: transparent !important;
+    /* 왼쪽 쏠림 방지: Bootstrap 클래스와 충돌하지 않도록 보정 */
+    margin-left: auto;
+}  
+ 
 .main-layout {
-  display: flex;
+
   min-height: 100vh;
   width: 100%;
 }
 
 .main-wrapper {
-  display: flex;
+
   align-items: flex-start;
   width: 100%;
   min-height: 100vh;
@@ -54,9 +63,13 @@ body {
    
 main,
 .main-content {
-  flex: 1;
+
   padding: 40px 50px;
   overflow: auto;
+}
+
+.container-fluid {
+    width: 100%;
 }
    
    
@@ -101,13 +114,6 @@ main,
       color: white !important;
    }
    
-   /* 검색창 포커스 효과 */
-   #roleSearchInput:focus {
-      border-color: #0d6efd !important;
-      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
-      outline: none;
-   }
-   
    .input-group-text {
       border-top-left-radius: 10px;
       border-bottom-left-radius: 10px;
@@ -121,6 +127,130 @@ main,
    /* 요양보호사, 간호사 박스 */
    .bg-info-subtle { background-color: #e0f2fe !important; color: #0369a1 !important; }
    .bg-success-subtle { background-color: #dcfce7 !important; color: #15803d !important; }
+   
+   
+   /* 테이블 컨테이너 */
+.modern-table {
+    width: 100% !important;
+    table-layout: fixed; /* 열 너비를 일정하게 유지하면서 꽉 채움 */
+    border-collapse: collapse;
+}   
+   
+.modern-table-container {
+    background: #ffffff;
+    border: 2px solid #cbd5e1;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.03); /* 아주 연한 그림자 */
+    overflow: hidden;
+}
+
+
+/* 브래킷 제거 (사진에는 브래킷이 없으므로 투명 처리) */
+.modern-table-container::before, .modern-table-container::after {
+    display: none;
+}
+
+/* 3. 테이블 헤더: 사진의 핵심인 '연한 하늘색' 배경 */
+.modern-table thead {
+    background-color: #94a3b8 !important; 
+    border-bottom: 2px solid #cbd5e1;
+}
+
+.modern-table thead th {
+    padding: 18px 20px;
+    font-size: 22px;
+    font-weight: 800;
+    color: #ffffff !important;/* 차분한 네이비 그레이 */
+    text-transform: none;
+    letter-spacing: 0;
+    text-align: center; /* 전체 중앙 정렬로 깔끔하게 */
+}
+
+/* 4. 테이블 본문 */
+.modern-table tbody tr {
+    border-bottom: 1px solid #f1f5f9;
+    background: #fff;
+    text-align: center; /* 전체 중앙 정렬로 깔끔하게 */
+}
+
+.modern-table tbody tr:hover {
+    background-color: #f8fafc; /* 마우스 올렸을 때 살짝 변함 */
+}
+
+.modern-table tbody td {
+    font-size: 20px;
+    padding: 16px 20px;
+    color: #334155 !important;
+    vertical-align: middle;
+}
+
+/* 5. 사용자명(ID) 열: 사진처럼 일반 텍스트 느낌 (파란색 제거) */
+.modern-table tbody td:first-child {
+    font-weight: 500 !important;
+    color: #1e293b !important;
+    font-family: inherit;
+}
+
+/* --- 4. 배지 스타일 (중요: 누락되었던 부분) --- */
+.badge-nurse {
+    background: #f0f9ff;
+    border: 1px solid #0ea5e9;
+    color: #0ea5e9;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.badge-caregiver {
+    background: #f0fdf4;
+    border: 1px solid #22c55e;
+    color: #22c55e;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.badge-manager {
+    background: #f8fafc;
+    border: 1px solid #64748b;
+    color: #64748b;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+/* --- 버튼 스타일 (사진의 수정/삭제 버튼 느낌) --- */
+.btn-custom-size {
+    padding: 8px 18px !important;
+    font-weight: 600;
+    border-radius: 8px !important;
+}
+
+.btn-approve {
+    background: #ffffff !important;
+    border: 1px solid #0ea5e9 !important;
+    color: #0ea5e9 !important;
+}
+
+.btn-approve:hover {
+    background: #0ea5e9 !important;
+    color: #fff !important;
+}
+
+.btn-delete {
+    background: #ffffff !important;
+    border: 1px solid #f43f5e !important;
+    color: #f43f5e !important;
+}
+
+.btn-delete:hover {
+    background: #f43f5e !important;
+    color: #fff !important;
+}
+
 </style>
 
 </head>
@@ -196,27 +326,37 @@ main,
         </h5>
     </div>
     
-    <div class="card-body p-0">
-        <div class="search-box px-4 py-3" style="width: 100%; max-width: 500px;">
-            <div class="input-group">
-                <span class="input-group-text bg-white border-end-0" style="border: 2px solid #dee2e6;">
-                    <i class="bi bi-search text-muted"></i>
-                </span>
-                <input type="text" id="roleSearchInput" class="form-control form-control-lg border-start-0" 
-                       placeholder="권한 입력 (예: 간호사, 요양보호사)" 
-                       style="font-size: 1.2rem; border: 2px solid #dee2e6; border-left: none; height: 60px;">
-            </div>
-        </div>
-						            
-						            
-						         </div>
+    
 						         
 						         <div class="card-body p-0">
 						         	
 						         
-						            <div class="table-responsive">
-						               <table class="table table-hover align-middle mb-0">
-						                  <thead class="table-light">
+						            <div class="modern-table-container">
+   									   
+						            </div>
+						         </div>
+						      </div>
+						   </div>
+						</div>
+                     </div>
+
+<div class="card-body p-0">
+    <div class="search-card">
+    <div class="search-input-group">
+        <i class="bi bi-search search-icon"></i>
+        <input
+            type="text"
+            id="roleSearchInput"
+            class="w-100"
+            placeholder="ID/권한 입력 (예: qwe, 요양보호사)..."
+        />
+    </div>
+</div>
+				            
+						         </div>
+
+<table class="modern-table">
+						                  <thead>
 						                     <tr>
 						                        <th class="ps-4">사용자명(ID)</th>
 						                        <th>신청 권한</th>
@@ -225,34 +365,28 @@ main,
 						                  </thead>
 						                  <tbody>
 						                     <tr th:each="member : ${pendingMembers}">
-						                        <td class="ps-4">
-						                           <span class="fw-bold" th:text="${member.username}">username</span>
-						                        </td>
-						                        <td>
-						                           <span th:if="${member.roomAuthority == 'nurse'}" class="badge bg-info-subtle text-info px-3">간호사</span>
-						                           <span th:if="${member.roomAuthority == 'caregiver'}" class="badge bg-success-subtle text-success px-3">요양보호사</span>
-						                           <span th:if="${member.roomAuthority == 'manager'}"
-      class="badge bg-secondary-subtle text-success px-3 
-             border border-3 border-dark fw-bold">
-						                           		관리자</span>
-						                        </td>
-						                        <td class="text-center">
-    <div class="d-flex justify-content-center gap-2">
-        
-        <button type="button" class="btn btn-primary btn-approve btn-custom-size" 
-                th:data-username="${member.username}" 
-                th:data-auth="${member.roomAuthority}">
-            <i class="bi bi-check-lg me-1"></i> 승인
-        </button>
-
-        <button type="button" class="btn btn-outline-danger btn-delete btn-custom-size" 
-                th:data-username="${member.username}">
-            <i class="bi bi-trash me-1"></i> 삭제
-        </button>
-        
-    </div>
-</td>
-						                     </tr>
+   <td class="ps-4">
+      <span th:text="${member.username}">username</span>
+   </td>
+   <td>
+      <span th:if="${member.roomAuthority == 'nurse'}" class="badge-nurse">간호사</span>
+      <span th:if="${member.roomAuthority == 'caregiver'}" class="badge-caregiver">요양보호사</span>
+      <span th:if="${member.roomAuthority == 'manager'}" class="badge-manager">관리자</span>
+   </td>
+   <td class="text-center">
+      <div class="d-flex justify-content-center gap-2">
+         <button type="button" class="btn btn-approve btn-custom-size" 
+                 th:data-username="${member.username}" 
+                 th:data-auth="${member.roomAuthority}">
+             <i class="bi bi-check-lg"></i> 승인
+         </button>
+         <button type="button" class="btn btn-delete btn-custom-size" 
+                 th:data-username="${member.username}">
+             <i class="bi bi-trash"></i> 삭제
+         </button>
+      </div>
+   </td>
+</tr>
 						                     <tr th:if="${#lists.isEmpty(pendingMembers)}">
 						                        <td colspan="3" class="text-center py-5 text-muted">
 						                           승인 대기 중인 인원이 없습니다.
@@ -260,13 +394,6 @@ main,
 						                     </tr>
 						                  </tbody>
 						               </table>
-						            </div>
-						         </div>
-						      </div>
-						   </div>
-						</div>
-                     </div>
-
          </main>
          
     </div>

@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -103,6 +104,38 @@ public class MonitoringController {
        return ResponseEntity.ok(result);
    }
    
+   @GetMapping("/api/latest-image/local")
+   @ResponseBody
+   public String getLocalLatestImage(
+           @RequestParam String folder,
+           @RequestParam String sub,
+           @RequestParam String prefix) {
+
+       File dir = new File("C:/carepose-images/images/" + folder + "/" + sub);
+
+       if (!dir.exists() || !dir.isDirectory()) {
+           return "";
+       }
+
+       Pattern pattern = Pattern.compile(prefix + "(\\d+)\\.jpg");
+
+       return Arrays.stream(dir.listFiles())
+               .map(File::getName)
+               .map(name -> {
+                   Matcher m = pattern.matcher(name);
+                   return m.matches()
+                           ? new AbstractMap.SimpleEntry<>(name, Integer.parseInt(m.group(1)))
+                           : null;
+               })
+               .filter(Objects::nonNull)
+               .max(Comparator.comparingInt(Map.Entry::getValue))
+               .map(Map.Entry::getKey)
+               .orElse("");
+   }
+   
+   @Value("${carepose.image-path}")
+   private String imageBasePath;
+   
    @GetMapping("/api/latest-image")
    @ResponseBody
    public String getLatestImage(
@@ -110,7 +143,7 @@ public class MonitoringController {
            @RequestParam String sub,
            @RequestParam String prefix) {
 
-       File dir = new File("C:/carepose-images/images/" + folder + "/" + sub);
+	   File dir = new File(imageBasePath + File.separator + folder + File.separator + sub);
 
        if (!dir.exists() || !dir.isDirectory()) {
            return "";

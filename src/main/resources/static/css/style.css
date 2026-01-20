@@ -1,60 +1,54 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap");
-/* ---------------------------------------------- */
-/* 1. 전체 공통 & 색상 변수                          */
-/* ---------------------------------------------- */
 
-.page-header {
-  background: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
-  border-radius: 20px;
-  padding: 28px;
-  margin-bottom: 32px;
-  box-shadow: 0 6px 25px rgba(100, 148, 237, 0.15);
-}
-
-.page-title {
-  font-size: 40px;
-  font-weight: 900;
-  background: linear-gradient(135deg, #667eea, #566dd4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+/* ================================================== */
+/* 1. 색상 변수 - 병원 시스템 클린 테마                    */
+/* ================================================== */
 
 :root {
-  /* 파스텔 메인 컬러 */
-  --orange-100: #fff5ed;
-  --orange-200: #ffdecb;
-  --orange-300: #ffb088;
-  --orange-400: #ff8c00;
-
-  /* 뉴트럴 화이트 계열 (기존 blue/sky 대체) */
-  --white-100: #ffffff;
-  --white-200: #fafafa;
-  --white-300: #f5f5f5;
-
-  /* 핵심 변경: 배경 그라데이션 (깔끔한 화이트-웜톤) */
-  --gradient-main: linear-gradient(135deg, #fffaf7 0%, #fff0e5 100%);
-  --gradient-card: linear-gradient(145deg, #ffffff 0%, #fffcfb 100%);
-
-  /* 배경 및 카드 기본 설정 */
-  --bg-color: #fffaf7; /* 전체 배경을 따뜻한 미색으로 */
-  --sidebar-color: #ffffff;
-  --card-bg: #ffffff;
-
-  /* 텍스트 색상도 조금 더 부드럽게 */
-  --text-main: #454545;
-  --border-color: #e0e0e0;
-  --text-muted: #64748b;
+  /* 메인 컬러 - 부드러운 하늘색/민트 */
+  --primary-50: #f0f9ff;
+  --primary-100: #e0f2fe;
+  --primary-200: #bae6fd;
+  --primary-300: #7dd3fc;
+  --primary-400: #38bdf8;
+  --primary-500: #0ea5e9;
+  --primary-600: #0284c7;
+  
+  /* 민트 포인트 */
+  --mint-50: #f0fdfa;
+  --mint-100: #ccfbf1;
+  --mint-200: #99f6e4;
+  --mint-300: #5eead4;
+  --mint-400: #66e1a4;
+  --mint-500: #14b8a6;
+  
+  /* 배경 */
+  --bg-main: #f8fafb;
+  --bg-card: #ffffff;
+  --bg-sidebar: #ffffff;
+  
+  /* 텍스트 */
+  --text-primary: #1e293b;
   --text-secondary: #64748b;
-  --text-primary: #2c3e50;
-  --blue: #4285f4;
-  --green: #34a853;
-  --yellow: #fbbc05;
-  --red: #ea4335;
+  --text-muted: #94a3b8;
+  
+  /* 시맨틱 컬러 */
   --success: #10b981;
   --warning: #f59e0b;
   --danger: #ef4444;
   --info: #3b82f6;
+  
+  /* 보더 & 그림자 */
+  --border-color: #e2e8f0;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
+  --shadow-card: 0 2px 8px rgba(148, 163, 184, 0.1);
 }
+
+/* ================================================== */
+/* 2. 전체 레이아웃                                     */
+/* ================================================== */
 
 * {
   margin: 0;
@@ -65,26 +59,32 @@
 body {
   overflow-y: scroll;
   margin: 0;
-  font-family: sans-serif;
-  background: var(--gradient-main);
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-main) !important;
   min-height: 100vh;
   color: var(--text-primary);
-  display: flex;
+  line-height: 1.6;
+}
+
+/* Bootstrap bg-light 오버라이드 */
+body.bg-light {
+  background: var(--bg-main) !important;
 }
 
 .hidden {
   display: none !important;
 }
 
-/* ---------------------------------------------- */
-/* 2. Body 모드별 스타일                            */
-/* ---------------------------------------------- */
+/* ================================================== */
+/* 3. Body 모드                                        */
+/* ================================================== */
 
 body.auth-mode {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
 }
 
 body.monitoring-mode {
@@ -106,9 +106,9 @@ body.auth-mode main {
   align-items: center;
 }
 
-/* ---------------------------------------------- */
-/* 3. 로그인 페이지                                */
-/* ---------------------------------------------- */
+/* ================================================== */
+/* 4. 로그인 페이지                                     */
+/* ================================================== */
 
 .login-page {
   display: flex;
@@ -116,17 +116,17 @@ body.auth-mode main {
   justify-content: center;
   min-height: 100vh;
   padding: 16px;
-  background: var(--gradient-main);
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
 }
 
 .login-card {
-  background: var(--gradient-card);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
   border-radius: 24px;
-  box-shadow: 0 20px 60px rgba(100, 148, 237, 0.15);
+  box-shadow: 0 20px 60px rgba(14, 165, 233, 0.15);
   width: 100%;
   max-width: 420px;
   padding: 48px 40px;
-  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
@@ -144,7 +144,9 @@ body.auth-mode main {
 .login-title {
   font-size: 28px;
   font-weight: 700;
-  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--primary-500), var(--mint-500));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin-bottom: 8px;
 }
 
@@ -167,9 +169,9 @@ body.auth-mode main {
   margin-top: 32px;
 }
 
-/* ---------------------------------------------- */
-/* 4. 입력 필드                                    */
-/* ---------------------------------------------- */
+/* ================================================== */
+/* 5. 입력 필드                                        */
+/* ================================================== */
 
 .form-group {
   margin-bottom: 20px;
@@ -187,17 +189,18 @@ body.auth-mode main {
   width: 100%;
   height: 52px;
   padding: 0 16px;
-  border: 2px solid #e1e8f0;
+  border: 2px solid var(--border-color);
   border-radius: 12px;
   font-size: 15px;
   background: white;
   transition: all 0.3s ease;
+  color: var(--text-primary);
 }
 
 .input-field:focus {
   outline: none;
-  border-color: var(--blue-300);
-  box-shadow: 0 0 0 4px rgba(100, 181, 246, 0.1);
+  border-color: var(--primary-400);
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
 }
 
 .input-field::placeholder {
@@ -206,19 +209,19 @@ body.auth-mode main {
 
 .input-placeholder-box {
   height: 48px;
-  background-color: #f3f4f6;
-  border: 2px dashed #d1d5db;
+  background-color: var(--primary-50);
+  border: 2px dashed var(--primary-200);
   border-radius: 12px;
   display: flex;
   align-items: center;
   padding: 0 12px;
-  color: #9ca3af;
+  color: var(--text-muted);
   font-size: 14px;
 }
 
-/* ---------------------------------------------- */
-/* 5. 버튼                                         */
-/* ---------------------------------------------- */
+/* ================================================== */
+/* 6. 버튼                                             */
+/* ================================================== */
 
 .btn {
   display: inline-flex;
@@ -235,14 +238,14 @@ body.auth-mode main {
 .btn-primary {
   width: 100%;
   height: 52px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #9cbdeb 0%, #97bee0e5 100%);
   color: white;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
 }
 
 .btn-secondary {
@@ -250,36 +253,42 @@ body.auth-mode main {
   height: 58px;
   background: white;
   color: var(--text-primary);
-  border: 2px solid #e1e8f0;
+  border: 2px solid var(--border-color);
 }
 
 .btn-secondary:hover {
-  background-color: #f8fafc;
-  border-color: var(--blue-200);
+  background-color: var(--primary-50);
+  border-color: var(--primary-300);
 }
 
 .btn-small {
   justify-content: space-between;
   padding: 8px 16px;
-  background: var(--mint-100);
+  background: var(--primary-50);
   color: var(--text-primary);
   border-radius: 8px;
 }
 
 .btn-small:hover {
-  background: var(--mint-200);
+  background: var(--primary-100);
 }
 
 .btn-danger {
-  background: linear-gradient(135deg, #f5b29a 0%, #fecaca 100%);
-  color: var(--danger);
+  background-color: #cc2215;
+  color: #ffffff;
+  
 }
 
 .btn-success {
-  padding: 6px 12px;
-  background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+  padding: 5px 12px;
+  background-color: #edfff0 80%;
   color: white;
   box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-outline-primary{
+	padding: 5px 12px;
+	
 }
 
 .btn-success:hover {
@@ -292,7 +301,7 @@ body.auth-mode main {
   width: 100%;
   margin-top: 48px;
   padding: 12px 16px;
-  color: #64748b;
+  color: var(--text-secondary);
   text-align: left;
   background: none;
   border: none;
@@ -303,8 +312,8 @@ body.auth-mode main {
 }
 
 .btn-logout:hover {
-  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-  color: #ef4444;
+  background: #fee2e2;
+  color: var(--danger);
 }
 
 .btn-group {
@@ -313,9 +322,24 @@ body.auth-mode main {
   margin-top: 16px;
 }
 
-/* ---------------------------------------------- */
-/* 6. 메인 레이아웃                                */
-/* ---------------------------------------------- */
+.btn-warning {
+    background-color: #e6d21a !important; /* 선명한 오렌지색 */
+    border-color: #FF8C00 !important;
+    color: #ffffff !important;            /* 글자는 하얀색으로 깔끔하게 */
+    font-weight: bold;
+}
+
+
+#todayBadge{
+	background-color:#80a6e7 !important;
+}
+
+
+
+
+/* ================================================== */
+/* 7. 메인 레이아웃 (Bootstrap 호환)                     */
+/* ================================================== */
 
 .main-layout {
   display: flex;
@@ -330,21 +354,104 @@ body.auth-mode main {
   min-height: 100vh;
 }
 
+/* Bootstrap container-fluid 스타일 보완 */
+.container-fluid {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.container-fluid > .row {
+  margin: 0 !important;
+}
+
+/* Bootstrap의 main 콘텐츠 영역 */
+main.col-md-9,
+main.col-lg-10 {
+  background: var(--bg-main);
+  min-height: 100vh;
+}
+
 .content-area {
   flex-grow: 1;
-  padding: 20px;
+  padding: 24px;
   overflow-x: hidden;
 }
 
-/* ---------------------------------------------- */
-/* 7. 사이드바                                     */
-/* ---------------------------------------------- */
+/* ================================================== */
+/* 8. 사이드바 (Bootstrap 호환)                         */
+/* ================================================== */
+
+/* Bootstrap col 클래스 오버라이드 */
+nav.sidebar,
+.sidebar {
+  background: var(--bg-sidebar);
+  min-height: 100vh;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.04);
+  border-right: 1px solid var(--border-color);
+  padding: 32px 20px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+/* Bootstrap이 없는 경우를 위한 fallback */
+nav:not([class*="col-"]),
+.sidebar:not([class*="col-"]) {
+  width: 280px;
+  min-width: 280px;
+  flex-shrink: 0;
+}
+
+.sidebar-logo {
+  padding: 0;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.sidebar-logo img {
+  width: 140px;
+  max-width: 100%;
+  height: auto;
+}
+
+.sidebar-logo-image {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, var(--primary-100) 0%, var(--mint-100) 100%);
+  border-radius: 16px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--primary-200);
+}
+
+.sidebar-logo-image img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.sidebar-title {
+  font-size: 24px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary-500), var(--mint-500));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 4px;
+}
+
+.sidebar-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
 
 nav h1 {
-  font-size: 1.75rem;
-  margin-bottom: 40px;
+  font-size: 1.5rem;
+  margin-bottom: 32px;
   font-weight: 700;
-  background: linear-gradient(135deg, #ff8c00 0%, #ff6b35 100%);
+  background: linear-gradient(135deg, var(--primary-500), var(--mint-500));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -355,172 +462,98 @@ nav ul {
 }
 
 nav li {
-  margin-bottom: 25px;
-  color: #2c3e50;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.sidebar-logo {
-  background-color: linear-gradient(
-    180deg,
-    #ffffff 0%,
-    #fafafa 100%
-  ); /* 1. 선 윗부분에 칠할 배경색 (원하는 색상으로 변경 가능) */
-  padding: 20px 15px; /* 상하좌우 여백 */
-  margin-bottom: 20px; /* 아래 메뉴와의 간격 */
-  text-align: center; /* 텍스트 중앙 정렬 */
-}
-
-.sidebar-logo-image {
-  width: 56px;
-  height: 56px;
-  background: linear-gradient(135deg, #fff5ed 0%, #ffe4d6 100%);
-  border-radius: 12px;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  border: 1px solid #ffdecb;
-}
-
-.sidebar-logo-image img {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-}
-
-.sidebar-title {
-  font-size: 32px;
-  font-weight: bold;
-  color: #334155;
-  margin-bottom: 5px;
-}
-
-.sidebar-subtitle {
-  font-size: 15px;
-  color: #64748b;
+  margin-bottom: 8px;
 }
 
 .sidebar-menu {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
-.menu-item {
+.menu-item,
+.sidebar .nav-link {
   display: block;
   width: 100%;
   text-align: left;
   padding: 14px 16px;
   border-radius: 12px;
-  color: #64748b;
+  color: var(--text-secondary);
   text-decoration: none;
-  transition: all 0.3s;
-}
-.sidebar-logo img {
-  width: 140px;
-  max-width: 100%;
-  height: auto;
+  transition: all 0.2s ease;
+  font-size: 15px;
+  font-weight: 500;
 }
 
-.menu-item:hover {
-  background: linear-gradient(135deg, #fff5ed 0%, #f7eadf 100%);
-
-  transform: translateX(4px);
+.menu-item:hover,
+.sidebar .nav-link:hover {
+  background: var(--primary-50);
+  color: var(--primary-600);
+  transform: translateX(2px);
 }
 
-.menu-item.active {
-  background: linear-gradient(135deg, #ddd79b 0%, #ff6b35 100%);
+.menu-item.active,
+.sidebar .nav-link.active {
+  background: linear-gradient(135deg, #9cbdeb 0%, #97bee0e5 100%);
   color: white;
-  box-shadow: 0 4px 15px rgba(255, 140, 0, 0.25);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+  font-weight: 600;
 }
 
 .menu-text {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
 }
 
 .menu-desc {
-  font-size: 13px;
-  color: #94a3b8;
-  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
 }
 
-.sidebar {
-  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
-  min-height: 100vh;
-  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.05);
-  border-right: 1px solid #e5e7eb;
-}
-
-.sidebar .nav-link {
-  font-size: 22px;
-  font-family: "Noto Sans KR", sans-serif;
-  color: #64748b;
-  padding: 14px 20px;
-  border-radius: 12px;
-  margin-bottom: 8px;
-  font-weight: 600;
-  transition: all 0.3s;
-}
-
-.sidebar .nav-link:hover {
-  background: linear-gradient(135deg, #fdfdfd 0%, #f0d3c3 100%);
-  transform: translateX(2px);
-}
-
-.sidebar .nav-link.active {
-  color: #e75a50;
-  background: rgba(234, 88, 12, 0.08);
-  border-left: 4px solid #d3401b;
-  box-shadow: 0 4px 15px rgba(104, 101, 98, 0.25);
-}
-
-/* ---------------------------------------------- */
-/* 8. 메인 콘텐츠                                  */
-/* ---------------------------------------------- */
+/* ================================================== */
+/* 9. 메인 콘텐츠                                       */
+/* ================================================== */
 
 main,
 .main-content {
   flex: 1;
-  padding: 40px 50px;
+  padding: 32px 40px;
   overflow: auto;
 }
 
-/* ---------------------------------------------- */
-/* 9. 페이지 헤더                                  */
-/* ---------------------------------------------- */
+/* ================================================== */
+/* 10. 페이지 헤더                                      */
+/* ================================================== */
 
-header {
+header,
+.page-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 32px;
-  background: var(--gradient-card);
-  padding: 32px;
-  border-radius: 20px;
-  box-shadow: 0 4px 20px rgba(100, 148, 237, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: white;
+  padding: 28px 32px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
 }
 
-.header-title h2 {
+.header-title h2,
+.page-title {
   margin: 0;
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
-  color: var(--text-primary);
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-600), var(--mint-500));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .header-title p,
 .page-description {
   margin: 8px 0 0;
   color: var(--text-secondary);
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .header-info,
@@ -528,53 +561,53 @@ header {
   text-align: right;
   display: flex;
   gap: 12px;
+  align-items: center;
 }
 
 .time-box {
-  padding: 12px 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  font-size: 14px;
+  padding: 10px 18px;
+  background: var(--primary-50);
+  border-radius: 10px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--primary-600);
+  border: 1px solid var(--primary-200);
 }
 
 .alarm-badge,
 .alert-badge {
-  padding: 12px 20px;
-  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  padding: 10px 18px;
+  background: #fee2e2;
   color: var(--danger);
-  border-radius: 12px;
-  font-size: 14px;
+  border-radius: 10px;
+  font-size: 13px;
   font-weight: 700;
-  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.2);
-  border: 1px solid #ffcdd2;
+  border: 1px solid #fecaca;
 }
 
-/* ---------------------------------------------- */
-/* 10. 카드                                        */
-/* ---------------------------------------------- */
+/* ================================================== */
+/* 11. 카드                                            */
+/* ================================================== */
 
 .card {
-  background: var(--gradient-card);
-  border-radius: 20px;
-  box-shadow: 0 4px 20px rgba(100, 148, 237, 0.08);
-  padding: 32px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  padding: 28px;
   margin-bottom: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--border-color);
 }
 
 .card-title {
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 24px;
-  font-size: 24px;
+  margin-bottom: 20px;
+  font-size: 20px;
 }
 
-/* ---------------------------------------------- */
-/* 11. 통계 카드                                   */
-/* ---------------------------------------------- */
+/* ================================================== */
+/* 12. 통계 카드                                        */
+/* ================================================== */
 
 .status-grid,
 .stats-grid {
@@ -586,11 +619,11 @@ header {
 
 .status-card,
 .stat-card {
-  background: var(--gradient-card);
-  border-radius: 20px;
-  box-shadow: 0 4px 20px rgba(100, 148, 237, 0.08);
-  padding: 28px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: white;
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  padding: 24px 20px;
+  border: 1px solid var(--border-color);
   transition: all 0.3s ease;
   position: relative;
 }
@@ -598,36 +631,44 @@ header {
 .status-card:hover,
 .stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(100, 148, 237, 0.15);
+  box-shadow: var(--shadow-md);
 }
 
-.dot .stat-icon {
-  width: 16px;
-  height: 16px;
+.dot,
+.stat-icon {
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   display: block;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .stat-icon-blue {
-  background: linear-gradient(135deg, #64b5f6 0%, #42a5f5 100%);
+  background-color: #334155; /* 그라데이션 제거 */
+  box-shadow: 0 2px 6px rgba(51, 65, 85, 0.2); 
 }
 
+/* 정상 (Green -> 요청하신 #3a6bc6은 블루 계열인데, 그린으로 쓰시려면 #10b981 추천) */
 .stat-icon-green {
-  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  background-color: #75c690; /* 요청하신 색상 적용 */
+  box-shadow: 0 2px 6px rgba(58, 107, 198, 0.2);
 }
 
+/* 주의 (Yellow) */
 .stat-icon-yellow {
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  background-color: #ebd450; 
+  box-shadow: 0 2px 6px rgba(235, 212, 80, 0.3);
 }
 
+/* 위험 (Red) */
 .stat-icon-red {
-  background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+  background-color: #b15252;
+  box-shadow: 0 2px 6px rgba(233, 83, 83, 0.3);
 }
 
 .status-card .count,
 .stat-number {
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 800;
   color: var(--text-primary);
   margin: 8px 0;
@@ -636,31 +677,31 @@ header {
 .status-card .label,
 .stat-label {
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
 }
 
-/* ---------------------------------------------- */
-/* 12. 섹션 박스                                   */
-/* ---------------------------------------------- */
+/* ================================================== */
+/* 13. 섹션 박스                                        */
+/* ================================================== */
 
 .section-box {
-  background: linear-gradient(135deg, var(--blue-100) 0%, var(--mint-100) 100%);
-  border: 2px solid var(--blue-200);
-  border-radius: 20px;
-  padding: 32px;
+  background: var(--primary-50);
+  border: 1px solid var(--primary-200);
+  border-radius: 16px;
+  padding: 28px;
   margin-bottom: 32px;
 }
 
 .section-title {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
-  margin: 0 0 24px 0;
+  margin: 0 0 20px 0;
   color: var(--text-primary);
 }
 
 .alert-container {
-  background: rgba(227, 242, 253, 0.5);
+  background: white;
   border-radius: 12px;
   padding: 20px;
   display: flex;
@@ -669,9 +710,9 @@ header {
   gap: 16px;
 }
 
-/* ---------------------------------------------- */
-/* 13. 알림 리스트                                 */
-/* ---------------------------------------------- */
+/* ================================================== */
+/* 14. 알림 리스트                                      */
+/* ================================================== */
 
 .alert-list {
   width: 47%;
@@ -690,23 +731,24 @@ header {
   font-size: 14px;
   border-left: 4px solid;
   transition: all 0.3s;
+  box-shadow: var(--shadow-sm);
 }
 
 .alert-item:hover {
   transform: translateX(4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .alert-item.red,
 .alert-item-danger {
   border-left-color: var(--danger);
-  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  background: #f6cfcb;
 }
 
 .alert-item.yellow,
 .alert-item-warning {
   border-left-color: var(--warning);
-  background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+  background: #fffbeb;
 }
 
 .alert-content {
@@ -717,12 +759,13 @@ header {
 
 .alert-time {
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
 }
 
 .alert-location {
   font-weight: 600;
+  color: var(--text-primary);
 }
 
 .alert-message {
@@ -731,7 +774,7 @@ header {
 
 .confirm-btn {
   background: white;
-  border: 2px solid #e1e8f0;
+  border: 2px solid var(--border-color);
   padding: 6px 16px;
   border-radius: 8px;
   font-size: 13px;
@@ -741,8 +784,9 @@ header {
 }
 
 .confirm-btn:hover {
-  background: var(--blue-100);
-  border-color: var(--blue-300);
+  background: var(--primary-50);
+  border-color: var(--primary-300);
+  color: var(--primary-600);
 }
 
 .alert-grid {
@@ -751,15 +795,16 @@ header {
   gap: 12px;
 }
 
-/* ---------------------------------------------- */
-/* 14. 병실/침대 상태                              */
-/* ---------------------------------------------- */
+/* ================================================== */
+/* 15. 병실/침대 상태                                   */
+/* ================================================== */
 
 .bed-status-container {
   background: white;
   border: 1px solid var(--border-color);
-  padding: 20px;
-  border-radius: 20px;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
 }
 
 .room-grid {
@@ -769,7 +814,7 @@ header {
 }
 
 .room-card {
-  border: 2px solid var(--blue-200);
+  border: 2px solid var(--border-color);
   border-radius: 16px;
   padding: 20px;
   background: white;
@@ -806,7 +851,7 @@ header {
 
 .bed-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .bed-name {
@@ -824,17 +869,20 @@ header {
 .status-normal {
   background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
   border-color: #6ee7b7;
+  color: #059669;
 }
 
 .bed-red,
 .status-danger {
   background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
   border-color: #fca5a5;
+  color: #dc2626;
 }
 
 .status-warning {
   background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
   border-color: #fcd34d;
+  color: #d97706;
 }
 
 .blink {
@@ -842,45 +890,43 @@ header {
 }
 
 @keyframes blink {
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.6;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
 
-/*달력*/
+/* ================================================== */
+/* 16. 달력                                            */
+/* ================================================== */
 
 .calendar-table {
   width: 100%;
   border-collapse: collapse;
   text-align: center;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .calendar-table th {
-  padding: 10px 0;
+  padding: 12px 0;
   font-weight: 600;
-  color: #64748b;
+  color: var(--text-secondary);
+  background: var(--primary-50);
 }
 
 .calendar-table td {
-  padding: 10px 0;
+  padding: 12px 0;
   cursor: pointer;
   border-radius: 8px;
   transition: all 0.2s ease;
 }
 
 .calendar-table td:hover {
-  background-color: rgba(234, 88, 12, 0.12);
+  background-color: var(--primary-100);
+  color: var(--primary-600);
 }
 
 .calendar-table td.selected {
-  background-color: #ea580c;
-  color: #fff;
+  background: linear-gradient(135deg, var(--primary-500), var(--mint-500));
+  color: white;
   font-weight: 600;
 }
 
@@ -889,18 +935,18 @@ header {
 }
 
 .calendar-table .sat {
-  color: #60a5fa;
+  color: var(--primary-500);
 }
 
-/* ---------------------------------------------- */
-/* 21. 연결 상태                                   */
-/* ---------------------------------------------- */
+/* ================================================== */
+/* 17. 연결 상태                                        */
+/* ================================================== */
 
 .connection-status {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .connection-dot {
@@ -910,40 +956,46 @@ header {
 }
 
 .connection-dot-green {
-  background-color: #22c55e;
+  background-color: var(--success);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
 }
 
 .connection-dot-red {
-  background-color: #ef4444;
+  background-color: var(--danger);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
 }
 
 .connection-dot-yellow {
-  background-color: #eab308;
+  background-color: var(--warning);
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
 }
 
 .text-green {
-  color: #16a34a;
+  color: var(--success);
+  font-weight: 600;
 }
 
 .text-red {
-  color: #dc2626;
+  color: var(--danger);
+  font-weight: 600;
 }
 
 .text-yellow {
-  color: #a16207;
+  color: var(--warning);
+  font-weight: 600;
 }
 
-/* ---------------------------------------------- */
-/* 22. 테이블                                      */
-/* ---------------------------------------------- */
+/* ================================================== */
+/* 18. 테이블                                          */
+/* ================================================== */
 
 .table-container {
   background-color: white;
-  border-radius: 20px;
-  box-shadow: 0 4px 20px rgba(100, 148, 237, 0.08);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
   overflow: hidden;
   margin-bottom: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--border-color);
 }
 
 .data-table {
@@ -952,48 +1004,50 @@ header {
 }
 
 .data-table thead {
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  background: var(--primary-50);
 }
 
 .data-table th {
-  padding: 12px 16px;
+  padding: 14px 20px;
   text-align: left;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
 }
 
 .data-table tbody tr {
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border-color);
   transition: all 0.2s;
 }
 
 .data-table tbody tr:hover {
-  background-color: #f9fafb;
+  background-color: var(--primary-50);
 }
 
 .data-table td {
-  padding: 12px 16px;
+  padding: 14px 20px;
   font-size: 14px;
+  color: var(--text-primary);
 }
 
-/* ---------------------------------------------- */
-/* 23. 체위 가이드                                 */
-/* ---------------------------------------------- */
+/* ================================================== */
+/* 19. 체위 가이드                                      */
+/* ================================================== */
 
 .alert-patient-card {
-  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  background: #fee2e2;
   border: 2px solid #fca5a5;
-  border-radius: 20px;
+  border-radius: 16px;
   padding: 24px;
   margin-bottom: 24px;
 }
 
 .guide-container {
   background: white;
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 4px 20px rgba(100, 148, 237, 0.08);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
 }
 
 .guide-grid {
@@ -1019,31 +1073,33 @@ header {
 }
 
 .pose-image-current {
-  background-color: #f3f4f6;
-  border: 2px dashed #d1d5db;
+  background-color: #f9fafb;
+  border: 2px dashed var(--border-color);
 }
 
 .pose-image-recommend {
-  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-  border: 2px solid #86efac;
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  border: 2px solid #6ee7b7;
 }
 
 .guide-arrow {
   font-size: 48px;
-  color: #9ca3af;
+  color: var(--text-muted);
 }
 
 .guide-steps {
   margin-top: 24px;
-  padding: 16px;
-  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  padding: 20px;
+  background: var(--primary-50);
   border-radius: 12px;
+  border: 1px solid var(--primary-200);
 }
 
 .guide-steps-title {
-  font-weight: bold;
+  font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  font-size: 16px;
 }
 
 .guide-steps-grid {
@@ -1055,7 +1111,7 @@ header {
 .guide-step {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
+  gap: 10px;
   font-size: 14px;
   color: var(--text-primary);
 }
@@ -1063,36 +1119,41 @@ header {
 .guide-step-number {
   width: 24px;
   height: 24px;
-  background-color: #d1d5db;
+  background: linear-gradient(135deg, var(--primary-400), var(--mint-400));
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
+  font-weight: 700;
+  color: white;
   flex-shrink: 0;
 }
 
 .warning-box {
-  margin-top: 16px;
-  padding: 16px;
-  background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+  margin-top: 20px;
+  padding: 16px 20px;
+  background: #fffbeb;
   border-radius: 12px;
+  border-left: 4px solid var(--warning);
 }
 
 .warning-title {
-  font-weight: bold;
-  color: #a16207;
+  font-weight: 700;
+  color: var(--warning);
   margin-bottom: 8px;
+  font-size: 14px;
 }
 
 .warning-text {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-primary);
+  line-height: 1.6;
 }
 
-/* ---------------------------------------------- */
-/* 24. 설정                                        */
-/* ---------------------------------------------- */
+/* ================================================== */
+/* 20. 설정                                            */
+/* ================================================== */
 
 .settings-list {
   display: flex;
@@ -1104,18 +1165,27 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
-  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  padding: 18px 20px;
+  background: white;
   border-radius: 12px;
+  border: 1px solid var(--border-color);
+  transition: all 0.2s;
+}
+
+.setting-item:hover {
+  box-shadow: var(--shadow-sm);
 }
 
 .setting-title {
   font-weight: 600;
+  color: var(--text-primary);
+  font-size: 15px;
 }
 
 .setting-desc {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-secondary);
+  margin-top: 4px;
 }
 
 .settings-grid {
@@ -1127,15 +1197,15 @@ header {
 .toggle-switch {
   width: 48px;
   height: 24px;
-  background-color: #d1d5db;
+  background-color: #cbd5e1;
   border-radius: 12px;
   position: relative;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s;
 }
 
 .toggle-switch.active {
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  background: linear-gradient(135deg, #9cbdeb 0%, #97bee0e5 100%);
 }
 
 .toggle-handle {
@@ -1146,7 +1216,7 @@ header {
   position: absolute;
   top: 2px;
   left: 2px;
-  transition: all 0.2s;
+  transition: all 0.3s;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -1154,9 +1224,9 @@ header {
   left: 26px;
 }
 
-/* ---------------------------------------------- */
-/* 25. 보고서                                      */
-/* ---------------------------------------------- */
+/* ================================================== */
+/* 21. 보고서                                          */
+/* ================================================== */
 
 .options-grid {
   display: grid;
@@ -1172,42 +1242,218 @@ header {
 }
 
 .summary-item {
-  padding: 16px;
-  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  padding: 20px;
+  background: white;
   border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
 }
 
 .summary-label {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-secondary);
-  margin-bottom: 4px;
+  margin-bottom: 8px;
+  font-weight: 500;
 }
 
 .summary-value {
-  font-weight: bold;
-  font-size: 18px;
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--text-primary);
 }
 
 .chart-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  gap: 20px;
 }
 
 .chart-placeholder {
   aspect-ratio: 16/9;
-  background-color: #f3f4f6;
-  border: 2px dashed #d1d5db;
+  background: var(--primary-50);
+  border: 2px dashed var(--primary-200);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #9ca3af;
+  color: var(--text-muted);
+  font-size: 14px;
 }
 
-/* ---------------------------------------------- */
-/* 26. 유틸리티                                    */
-/* ---------------------------------------------- */
+/* ================================================== */
+/* 22. 모니터링 카메라                                  */
+/* ================================================== */
+
+.camera-card {
+  border: 2px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  background: white;
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+.camera-card-warning {
+  border-color: var(--warning);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+}
+
+.camera-card-danger {
+  border-color: var(--danger);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+  animation: pulse-border 2s infinite;
+}
+
+.camera-view {
+  position: relative;
+  aspect-ratio: 16/9;
+  background: #000;
+  overflow: hidden;
+}
+
+.camera-status-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  color: white;
+  font-weight: 700;
+  font-size: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.camera-status-normal {
+  background-color: rgba(16, 185, 129, 0.9);
+}
+
+.camera-status-warning {
+  background-color: rgba(245, 158, 11, 0.9);
+}
+
+.camera-status-danger {
+  background-color: rgba(239, 68, 68, 0.9);
+}
+
+.monitor-card {
+  display: flex;
+  height: 100%;
+  flex-direction: row;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.monitor-left {
+  flex: 1;
+  background: #f8fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.monitor-right {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+  align-self: flex-start;
+}
+
+.status-normal {
+  background: linear-gradient(135deg, var(--success), #059669);
+}
+
+.pose-change-box {
+  background-color: var(--primary-50);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0;
+  border: 1px solid var(--primary-200);
+}
+
+.pose-column {
+  text-align: center;
+  min-width: 0;
+}
+
+.pose-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.pose-value {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.pose-arrow {
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.pose-column.next .pose-value {
+  color: var(--primary-600);
+}
+
+.timer-box {
+  text-align: right;
+  min-width: 0;
+}
+
+.timer-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-right: 6px;
+  font-weight: 600;
+}
+
+.timer {
+  font-family: 'Courier New', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary-600);
+}
+
+.room-info {
+  min-width: 0;
+}
+
+@keyframes pulse-border {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+/* ================================================== */
+/* 23. 유틸리티 클래스                                  */
+/* ================================================== */
 
 .text-center {
   text-align: center;
@@ -1255,15 +1501,9 @@ header {
   gap: 16px;
 }
 
-.pose-column,
-.room-info,
-.timer-box {
-  min-width: 0;
-}
-
-/* ---------------------------------------------- */
-/* 27. 반응형                                      */
-/* ---------------------------------------------- */
+/* ================================================== */
+/* 24. 반응형                                          */
+/* ================================================== */
 
 @media (max-width: 1024px) {
   .stats-grid,
@@ -1289,6 +1529,10 @@ header {
 
   .chart-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .sidebar {
+    width: 240px;
   }
 }
 
@@ -1326,7 +1570,7 @@ header {
 
   header,
   .page-header {
-    padding: 24px;
+    padding: 20px;
     flex-direction: column;
     gap: 16px;
   }
@@ -1334,6 +1578,12 @@ header {
   .header-actions {
     width: 100%;
     justify-content: space-between;
+  }
+  
+  .alert-item-danger{
+  backgroung-color: #e09993;
+  color : #991b1b;
+  
   }
 
   .alert-container {
@@ -1347,262 +1597,79 @@ header {
   .guide-grid {
     grid-template-columns: 1fr;
   }
+  
+  .guide-steps-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-/* ========================================= */
-/*  Bootstrap Conversion Overrides           */
-/*  Added during refactoring                 */
-/* ========================================= */
+/* ================================================== */
+/* 25. Bootstrap Override (기존 클래스 호환)            */
+/* ================================================== */
 
-/* Sidebar Navigation - 중복 제거됨 (위 섹션 참조) */
-
-/* Auth Pages (Login/Register) overrides */
 .auth-mode {
-  background-color: #f8f9fa;
+  background: linear-gradient(135deg, var(--primary-50) 0%, var(--mint-50) 100%);
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.login-card {
-  /* Overriding previous style.css to match Bootstrap card look */
-  max-width: 450px;
-  width: 100%;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  background: white;
-  padding: 30px;
-  border: none;
-  /* Reset potential border from previous CSS */
+.camera-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
-.login-logo img {
-  max-height: 60px;
-  margin-bottom: 15px;
+
+/* --- 공통 검색창 스타일 --- */
+.search-card {
+    background: white;
+    border-radius: 20px;
+    padding: 12px 20px;
+    box-shadow: 0 8px 25px rgba(100, 148, 237, 0.1);
+    border: 1px solid rgba(100, 148, 237, 0.15);
+    margin-bottom: 25px;
+    transition: all 0.3s ease;
 }
 
-/* Dashboard & Status Cards */
-.status-card {
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  background: white;
-  text-align: center;
+.search-card:focus-within {
+    box-shadow: 0 10px 30px rgba(100, 148, 237, 0.2);
+    border-color: #6494ed;
+    transform: translateY(-2px);
 }
 
-.dot {
-  height: 12px;
-  width: 12px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-bottom: 5px;
+.search-input-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
-/* Bed Status Cards (Dashboard) */
-.bed-card {
-  height: 150px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 1.5rem;
-  font-weight: bold;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: transform 0.2s;
-  background-color: #fff;
-  /* Reset base */
+.search-icon {
+    font-size: 1.4rem;
+    color: #6494ed;
+    display: flex;
+    align-items: center;
 }
 
-.bed-card:hover {
-  transform: scale(1.02);
+/* input 태그 공통 (ID가 다르므로 input 타입으로 지정) */
+.search-input-group input {
+    border: none;
+    outline: none;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: #334155;
+    background: transparent;
+    padding: 8px 0;
+    width: 100%;
 }
 
-.bed-green {
-  background-color: #198754 !important;
+.search-input-group input::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
 }
 
-.bed-red {
-  background-color: #dc3545 !important;
-}
-
-/* Connection Dots (Patients) */
-.connection-dot {
-  height: 10px;
-  width: 10px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 5px;
-}
-
-.connection-dot-green {
-  background-color: #198754;
-}
-
-.connection-dot-red {
-  background-color: #dc3545;
-}
-
-.text-green {
-  color: #198754;
-}
-
-.text-red {
-  color: #dc3545;
-}
-
-/* Monitoring Camera Grid */
-.camera-card {
-  border: 2px solid #dee2e6;
-  height: 100%;
-  transition: all 0.3s ease;
-}
-
-.camera-card-warning {
-  border-color: #ffc107;
-  box-shadow: 0 0 10px rgba(255, 193, 7, 0.4);
-}
-
-.camera-card-danger {
-  border-color: #dc3545;
-  box-shadow: 0 0 10px rgba(220, 53, 69, 0.4);
-  animation: pulse-border 2s infinite;
-}
-
-.camera-view {
-  position: relative;
-  aspect-ratio: 16/9;
-  background: #000;
-  overflow: hidden;
-  border-radius: 5px 5px 0 0;
-}
-
-.camera-status-badge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 5px 10px;
-  border-radius: 20px;
-  color: white;
-  font-weight: bold;
-  font-size: 0.8rem;
-}
-
-.camera-status-normal {
-  background-color: rgba(25, 135, 84, 0.8);
-}
-
-.camera-status-warning {
-  background-color: rgba(255, 193, 7, 0.9);
-  color: black;
-}
-
-.camera-status-danger {
-  background-color: rgba(220, 53, 69, 0.9);
-}
-
-/* Monitoring Patient Info Card */
-.monitor-card {
-  display: flex;
-  height: 100%;
-  flex-direction: row;
-  background: white;
-}
-
-.monitor-left {
-  flex: 1;
-  background: #f8f9fa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.monitor-right {
-  flex: 1;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.status-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 15px;
-  font-size: 0.85rem;
-  font-weight: bold;
-  color: white;
-  align-self: flex-start;
-}
-
-.status-normal {
-  background-color: #198754;
-}
-
-.pose-change-box {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 10px 0;
-}
-
-.pose-column {
-  text-align: center;
-}
-
-.pose-label {
-  font-size: 0.75rem;
-  color: #6c757d;
-  display: block;
-}
-
-.pose-value {
-  font-weight: bold;
-  font-size: 1rem;
-  color: #212529;
-}
-
-.pose-arrow {
-  color: #adb5bd;
-  font-weight: bold;
-}
-
-.pose-column.next .pose-value {
-  color: #0d6efd;
-}
-
-.timer-box {
-  text-align: right;
-}
-
-.timer-label {
-  font-size: 0.75rem;
-  color: #6c757d;
-  margin-right: 5px;
-}
-
-.timer {
-  font-family: monospace;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #212529;
-}
-
-@keyframes pulse-border {
-  0% {
-    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
-  }
-
-  70% {
-    box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
-  }
-
-  100% {
-    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
-  }
+/* 검색 결과가 없을 때의 애니메이션을 위한 스타일 */
+.room-group {
+    transition: all 0.4s ease-in-out;
 }

@@ -31,3 +31,26 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Eclipse / STS
+.metadata/
+.recommenders/
+.settings/
+.project
+.classpath
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Node / Docker (있다면)
+node_modules/

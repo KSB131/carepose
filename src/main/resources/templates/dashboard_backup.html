@@ -21,17 +21,51 @@
    margin-left: 5px;
 }
 /* 박스와 박스 간격 */
-.sensor-widget {
-   margin-bottom: -40px;
+/* 시계 폰트 설정 */
+#clock {
+   font-family: "Courier New", Courier, monospace;
+   font-weight: bold;
+   margin-left: 5px;
 }
 
-.sensor-card {
-   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-   color: white;
+/* 박스와 박스 간격 */
+.sensor-widget {
+   margin-top: -10px !important;
+   margin-bottom: -30px !important;
+}
 
+/* 카드 공통 스타일 */
+.sensor-card {
    border: none;
    transition: transform 0.2s;
    height: 80px;
+   box-shadow: 0 2px 8px rgba(148, 163, 184, 0.08); /* 은은한 그림자 추가 */
+}
+
+/* 온도 카드 스타일 (Red 계열) */
+.sensor-card.temp {
+   background: #FEE2E2 !important; /* 연한 레드 */
+   border: 1px solid #FECACA !important;
+}
+.sensor-card.temp .sensor-title, 
+.sensor-card.temp .sensor-unit {
+   color: #B91C1C; /* 진한 레드 */
+}
+.sensor-card.temp .sensor-value {
+   color: #EF4444; /* 강조 레드 */
+}
+
+/* 습도 카드 스타일 (Blue 계열) */
+.sensor-card.humid {
+   background: #E0F2FE !important; /* 연한 블루 (Primary-100 계열) */
+   border: 1px solid #BAE6FD !important;
+}
+.sensor-card.humid .sensor-title, 
+.sensor-card.humid .sensor-unit {
+   color: #075985; /* 진한 블루 */
+}
+.sensor-card.humid .sensor-value {
+   color: #0EA5E9; /* 강조 블루 (Primary-500) */
 }
 
 .sensor-card * {
@@ -39,7 +73,7 @@
 }
 
 .sensor-card .card-body {
-   padding: 0.05rem 0.4rem; /* 위아래 / 좌우 */
+   padding: 0.05rem 0.4rem;
    height: 100%;
    display: flex;
    flex-direction: column;
@@ -47,9 +81,15 @@
    align-items: center;
 }
 
-.sensor-title, .sensor-unit {
-   margin: 0;
-   padding: 0;
+.sensor-title {
+   font-size: 0.75rem;
+   font-weight: 600;
+   margin-bottom: 4px;
+}
+
+.sensor-unit {
+   font-size: 0.8rem;
+   margin-left: 2px;
 }
 
 .sensor-card:hover {
@@ -57,9 +97,16 @@
 }
 
 .sensor-value {
-   font-size: 1.5rem;
+   font-size: 1.6rem;
    font-weight: bold;
 }
+/* 텍스트가 절대 아래로 내려가지 않도록 설정 */
+.page-header p.text-muted {
+   white-space: nowrap !important; /* 한 줄로 강제 고정 */
+   margin-bottom: 0;
+}
+
+
 </style>
 
 <body class="bg-light">
@@ -67,12 +114,13 @@
       <div class="row">
          <!-- Sidebar -->
          <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse p-0">
-            <div class="position-sticky pt-4 px-3">
+            <div class="position-sticky">
                <div class="sidebar-logo">
+                     <img src="/css/logo.png" alt="SMHRD 요양병원 로고">
                   <div class="sidebar-title">SMHRD 요양병원</div>
                   <div class="sidebar-subtitle">안전 관제시스템</div>
                </div>
-               <ul class="nav flex-column">
+               <ul class="nav flex-column px-3">
                   <li class="nav-item"><a class="nav-link"
                      th:href="@{/dashboard}"
                      th:classappend="${requestURI.contains('/dashboard')} ? 'active'">
@@ -93,8 +141,13 @@
                   </a></li>
                   <li class="nav-item"><a class="nav-link" th:href="@{/manager}"
                      th:classappend="${requestURI.contains('/manager')} ? 'active'">
-                        <i class="bi bi-bell me-2"></i>관리자
+                        <i class="bi bi-people-fill me-2"></i>관리자
                   </a></li>
+                  <li class="nav-item">
+    <a class="nav-link text-danger" th:href="@{/logout}">
+        <i class="bi bi-box-arrow-right me-2"></i>로그아웃
+    </a>
+</li>
                </ul>
                <div class="mt-5 px-3">
                   <span class="small text-muted" style="color: silver !important">carepose
@@ -110,36 +163,35 @@
                   <h1 class="page-title mb-1">6병동</h1>
                   <p class="text-muted mb-0">환자 모니터링 현황</p>
                </div>
-               <div class="container">
+               <div class="container m-0">
                   <!-- 온습도 박스 -->
-                  <div class="sensor-widget">
-                     <div class="d-flex gap-2 justify-content-end">
-                        <!-- 온도 박스 -->
-                        <div style="width: 140px">
-                           <div class="card sensor-card"
-                              style="background: linear-gradient(135deg,  #d87f74 0%,#f2d383 100%);">
-                              <div class="card-body text-center">
-                                 <div class="sensor-title">온도</div>
-                                 <div class="sensor-value" id="temperature">--</div>
-                                 <span class="sensor-unit">°C</span>
-                              </div>
-                           </div>
-                        </div>
+                 <div class="sensor-widget">
+   <div class="d-flex gap-2 justify-content-end">
+      <div style="width: 140px">
+         <div class="card sensor-card temp">
+            <div class="card-body text-center">
+               <div class="sensor-title">온도</div>
+               <div>
+                  <span class="sensor-value" id="temperature">--</span>
+                  <span class="sensor-unit">°C</span>
+               </div>
+            </div>
+         </div>
+      </div>
 
-                        <!-- 습도 박스 -->
-                        <div style="width: 140px">
-                           <div class="card sensor-card"
-                              style="background: linear-gradient(135deg, rgb(116, 180, 245) 0%, rgb(87, 153, 207) 100%);">
-                              <div class="card-body text-center">
-                                 <div class="sensor-title">습도</div>
-                                 <div class="sensor-value" id="humidity">--</div>
-                                 <span class="sensor-unit">%</span>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-
+      <div style="width: 140px">
+         <div class="card sensor-card humid">
+            <div class="card-body text-center">
+               <div class="sensor-title">습도</div>
+               <div>
+                  <span class="sensor-value" id="humidity">--</span>
+                  <span class="sensor-unit">%</span>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
                   <div class="last-update">
                      <span class="status"></span> <span id="status"></span>
                   </div>
@@ -147,8 +199,10 @@
 
                <div class="btn-toolbar mb-2 mb-md-0">
                   <div class="btn-group me-6">
-                     <button type="button" class="btn btn-sm btn-secondary">
-                        현재 시간 <span id="clock"> </span>
+                     <button type="button" class="btn btn-sm btn-secondary d-flex flex-column align-items-center" 
+                             onclick="location.href='/patients'" style="cursor: pointer;">
+                        현재 시간 <br>
+                        <span id="clock"> </span>
                      </button>
                   </div>
                </div>
@@ -157,29 +211,29 @@
             <!-- Status Cards -->
             <div class="row g-4 mb-4">
                <div class="col-md-3">
-                  <div class="status-card h-100"  style="border-left:6px solid #0d6efd;">
-                     <span class="dot bg-primary"></span>
+                  <div class="status-card h-100"  style="border: 6px solid rgba(51, 65, 85, 0.5);">
+                     <span class="dot stat-icon-blue"></span>
                      <div class="h2 fw-bold mb-0" th:text="${totalPatientCount}">0</div>
 <div class="text-muted small mt-1">전체 환자</div>
                   </div>
                </div>
                <div class="col-md-3">
-                  <div class="status-card h-100" style = "border-left:6px solid #198754;">
-                     <span class="dot bg-success"></span>
+                  <div class="status-card h-100" style = "border: 6px solid rgba(94, 159, 107, 0.5);">
+                     <span class="dot stat-icon-green"></span>
                      <div class="h2 fw-bold mb-0" th:text="${normalPatientCount}">0</div>
 <div class="text-muted small mt-1">정상</div>
                   </div>
                </div>
                <div class="col-md-3">
-                  <div class="status-card h-100" style ="border-left:6px solid #ffc107;">
-                     <span class="dot bg-warning"></span>
+                  <div class="status-card h-100" style = "border: 6px solid rgba(203, 198, 129, 0.4)">
+                     <span class="dot stat-icon-yellow"></span>
                      <div class="h2 fw-bold mb-0" th:text="${cautionPatientCount}">0</div>
                      <div class="text-muted small mt-1">주의</div>
                   </div>
                </div>
                <div class="col-md-3">
-                  <div class="status-card h-100" style ="border-left:6px solid #dc3545; ">
-                     <span class="dot bg-danger"></span>
+                  <div class="status-card h-100" style ="border: 6px solid rgba(205, 85, 85, 0.5); ">
+                     <span class="dot stat-icon-red"></span>
                      <div class="h2 fw-bold mb-0" th:text="${dangerPatientCount}">0</div>
                      <div class="text-muted small mt-1">위험</div>
                   </div>
@@ -213,21 +267,21 @@
                         class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                         <h5 class="mb-0 text-secondary">자세 변경 알림</h5>
                         <a href="#" class="btn btn-sm btn-outline-primary">🔔
-                           새로운 알림 0건</a>
+                           새로운 알림 3건</a>
                      </div>
                      <div class="card-body p-0">
                         <div class="list-group list-group-flush">
                            <!-- Example Alert Items -->
 
                            <div
-                              class="list-group-item list-group-item-danger d-flex justify-content-between align-items-center">
+                              class="list-group-item alert-item-danger d-flex justify-content-between align-items-center">
                               <span>14:30 &nbsp; <b>103호
                                     B</b> &nbsp; 체위 변경 필요 (2시간 초과)
                               </span>
                               <button class="btn btn-sm btn-danger">처리 완료</button>
                            </div>
                            <div
-                              class="list-group-item list-group-item-danger d-flex justify-content-between align-items-center">
+                              class="list-group-item alert-item-danger d-flex justify-content-between align-items-center">
                               <span>14:30 &nbsp; <b>103호
                                     B</b> &nbsp; 체위 변경 필요 (2시간 초과)
                               </span>
@@ -374,7 +428,7 @@
           // handled_at이 있으면 확인 완료 버튼, 없으면 기록 확인 버튼
           const isHandled = fall.handledAt !== null;
           const buttonClass = isHandled ? "btn-success" : "btn-outline-primary";
-          const buttonText = isHandled ? "확인 완료" : "기록 확인";
+          const buttonText = isHandled ? "확인 완료" : " 처리 확인 ";
           const buttonDisabled = isHandled ? "disabled" : "";
           
           return `
@@ -446,6 +500,38 @@
     let remainingSeconds = 15; // 남은 시간
     const modal = new bootstrap.Modal(document.getElementById("fallModal"));
 
+    // 음성 안내 함수
+    function playFallAlert(roomId) {
+      const speechMessage = `긴급 상황입니다. ${roomId} 환자의 낙상 위험이 감지되었습니다. 즉시 확인이 필요합니다.`;
+      
+      if ('speechSynthesis' in window) {
+        // 기존 음성 중지
+        window.speechSynthesis.cancel();
+        
+        const utterance = new SpeechSynthesisUtterance(speechMessage);
+        utterance.lang = 'ko-KR';
+        utterance.rate = 0.95;     // 약간 느리게 (명확하게)
+        utterance.pitch = 1.0;     // 중립 톤 (긴급 상황)
+        utterance.volume = 1.0;
+        
+        // 한국어 음성 선택
+        const voices = window.speechSynthesis.getVoices();
+        const koreanVoice = voices.find(voice => 
+          voice.lang.includes('ko') && 
+          (voice.name.includes('Google') || voice.name.includes('Microsoft'))
+        ) || voices.find(voice => voice.lang.includes('ko'));
+        
+        if (koreanVoice) {
+          utterance.voice = koreanVoice;
+        }
+        
+        setTimeout(() => {
+          window.speechSynthesis.speak(utterance);
+          console.log('🔊 낙상 알림 음성 재생:', speechMessage);
+        }, 100);
+      }
+    }
+
     async function checkFallStatus() {
       try {
         const res = await fetch("http://localhost:8001/fall_status");
@@ -490,10 +576,13 @@
                 clearInterval(countdownInterval);
               }
               
-              modal.hide();
+              modal.hide();ㅁ
               setTimeout(() => {
                 modal.show();
                 console.log("🔄 Modal updated with new fall!");
+                
+                // 음성 안내
+                playFallAlert(data.room);
                 
                 // 카운트다운 시작
                 startCountdown();
@@ -501,6 +590,9 @@
             } else {
               modal.show();
               console.log("✅ Modal shown!");
+              
+              // 음성 안내
+              playFallAlert(data.room);
               
               // 카운트다운 시작
               startCountdown();
@@ -584,3 +676,4 @@
     });
   </script>
 </html>
+
