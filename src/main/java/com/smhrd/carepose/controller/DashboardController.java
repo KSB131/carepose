@@ -1,12 +1,14 @@
 package com.smhrd.carepose.controller;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.smhrd.carepose.entity.PositionEntity;
 import com.smhrd.carepose.repository.PatientRepository;
 import com.smhrd.carepose.repository.PositionRepository;
 
@@ -23,42 +25,54 @@ public class DashboardController {
 	private final PatientRepository patientRepository;
 	
 	@GetMapping({"/dashboard"})
-    public String dashboardPage(HttpServletRequest request, Model model) {
-        model.addAttribute("currentPage", "dashboard"); // 사이드바 플래그
-        model.addAttribute("requestURI", request.getRequestURI());
+	public String dashboardPage(HttpServletRequest request, Model model) {
+	    model.addAttribute("currentPage", "dashboard");
+	    model.addAttribute("requestURI", request.getRequestURI());
 
-        // 샘플 데이터
-        model.addAttribute("totalPatients", 24);
-        model.addAttribute("normalCount", 18);
-        model.addAttribute("warningCount", 4);
-        model.addAttribute("dangerCount", 2);
-        model.addAttribute("alertCount", 3);
-        
-        // DB에서 총 환자 수 조회
-        long totalPatientCount = patientRepository.count();
-        model.addAttribute("totalPatientCount", totalPatientCount);
+	    // 1. 전체 환자 수 조회
+	    List<PositionEntity> allPositions = positionRepository.findAllWithPatient();
+	    model.addAttribute("totalPatientCount", allPositions.size());
 
-        // DB에서 정상/주의/위험 시간 환자 수 조회
-        LocalDateTime now = LocalDateTime.now();
-        	
-        	// 정상 (남은시간 - 1 ~ 2시간)
-	        LocalDateTime normal = now.minusMinutes(60);
-	        // 주의 (남은시간 - 10분 ~ 1시간)
-	        LocalDateTime caution = now.minusMinutes(110);
-	        // 위험 (남은시간 - 0 ~ 10분)
-	        LocalDateTime danger = now.minusMinutes(120);
-	        
-	        long normalPatientCount = positionRepository.countByLastPositionTimeAfter(normal);
-	        long cautionPatientCount = positionRepository.countByLastPositionTimeBetween(caution, normal);
-	        long dangerPatientCount = positionRepository.countByLastPositionTimeBetween(danger, caution);
-	
-	        model.addAttribute("normalPatientCount", normalPatientCount);
-	        model.addAttribute("cautionPatientCount", cautionPatientCount);
-	        model.addAttribute("dangerPatientCount", dangerPatientCount);
+	    LocalDateTime now = LocalDateTime.now();
 
-        
-        return "dashboard";
-    }
+	    // 2. 남은 시간 기준 카운팅 (방법 2 로직)
+	    long normalCount = 0;
+	    long cautionCount = 0;
+	    long dangerCount = 0;
+
+	    for (PositionEntity pos : allPositions) {
+	        if (pos.getLastPositionTime() == null) continue;
+
+	        // 등급별 기준 시간(분) 설정
+	        int thresholdMinutes;
+	        switch (pos.getPatient().getGrade()) {
+	            case 1: thresholdMinutes = 105; break; // 1시간 45분
+	            case 2: thresholdMinutes = 90;  break; // 1시간 30분
+	            case 3: thresholdMinutes = 80;  break; // 1시간 20분
+	            default: thresholdMinutes = 120; break; // grade 0 또는 기타
+	        }
+
+	        // 경과 시간 계산
+	        long minutesElapsed = java.time.Duration.between(pos.getLastPositionTime(), now).toMinutes();
+	        // 남은 시간 계산
+	        long minutesRemaining = thresholdMinutes - minutesElapsed;
+
+	        // 방법 2 기준 적용
+	        if (minutesRemaining > 60) {
+	            normalCount++;    // 남은시간 1시간 초과 (정상)
+	        } else if (minutesRemaining > 10) {
+	            cautionCount++;   // 남은시간 10분 ~ 60분 (주의)
+	        } else {
+	            dangerCount++;    // 남은시간 10분 미만 (위험 - 0분 이하 포함)
+	        }
+	    }
+
+	    model.addAttribute("normalPatientCount", normalCount);
+	    model.addAttribute("cautionPatientCount", cautionCount);
+	    model.addAttribute("dangerPatientCount", dangerCount);
+
+	    return "dashboard";
+	}
 
 
 }
