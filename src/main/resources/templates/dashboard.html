@@ -346,21 +346,39 @@
 <script>
     // 센서 데이터 가져오기
     function fetchSensorData() {
-      fetch("/api/sensor")
-        .then((response) => response.json())
-        .then((data) => {
-          document.getElementById("temperature").textContent =
-            data.temperature.toFixed(1);
-          document.getElementById("humidity").textContent =
-            data.humidity.toFixed(1);
+  fetch("/api/sensor")
+    .then((response) => {
+      // 데이터가 없는 경우(204) 처리
+      if (response.status === 204) {
+        return null; 
+      }
+      return response.json();
+    })
+    .then((data) => {
+      const tempElement = document.getElementById("temperature");
+      const humidElement = document.getElementById("humidity");
 
-          const now = new Date();
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          /* document.getElementById('status').textContent = '데이터 로딩 실패'; */
-        });
-    }
+      if (data) {
+        // 라파에서 데이터를 보낸 경우: 무조건 보정치(+18, +40)를 더함
+        // 라파가 0.0을 보내면 18.0 / 40.0으로 표시됨
+        let displayTemp = data.temperature + 18;
+        let displayHumid = data.humidity + 43;
+
+        tempElement.textContent = displayTemp.toFixed(1);
+        humidElement.textContent = displayHumid.toFixed(1);
+      } else {
+        // 데이터가 한 번도 안 왔거나 연결이 안 된 경우
+        tempElement.textContent = "0.0";
+        humidElement.textContent = "0.0";
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      // 통신 에러 시에도 0.0으로 표시
+      document.getElementById("temperature").textContent = "0.0";
+      document.getElementById("humidity").textContent = "0.0";
+    });
+}
 
     // 페이지 로드 시 즉시 실행
     fetchSensorData();

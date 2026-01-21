@@ -15,13 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SensorController {
     
-	// 🔥 최근 센서값 하나만 보관
-    private static SensorData latestSensorData =
-        new SensorData("601A", 0, 0, 0);
-	
+    // 🔥 초기값을 null로 설정하여 데이터가 아직 한 번도 안 왔음을 표시
+    private static SensorData latestSensorData = null;
+    
     @PostMapping("/api/sensor")
     public ResponseEntity<Void> receiveSensor(@RequestBody SensorDto dto) {
-
         latestSensorData = new SensorData(
             dto.getBedId(),
             dto.getTemperature(),
@@ -30,17 +28,17 @@ public class SensorController {
         );
 
         log.info("🌡️ sensor update - bedId={}, temp={}, hum={}",
-            dto.getBedId(),
-            dto.getTemperature(),
-            dto.getHumidity()
-        );
+            dto.getBedId(), dto.getTemperature(), dto.getHumidity());
 
         return ResponseEntity.ok().build();
     }
 
-    // ⭐ 대시보드 → GET
     @GetMapping("/api/sensor")
     public ResponseEntity<SensorData> getSensor() {
+        // 데이터가 없으면 204 No Content 혹은 null 반환
+        if (latestSensorData == null) {
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok(latestSensorData);
     }
 }
