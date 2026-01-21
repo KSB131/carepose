@@ -1,13 +1,16 @@
-package com.smhrd.carepose.model;
+package com.smhrd.carepose.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
-public class SensorData {
+public class SensorDto {
+
     private String bedId;
     private double temperature;
     private double humidity;

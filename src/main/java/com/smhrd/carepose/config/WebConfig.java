@@ -21,7 +21,8 @@ public class WebConfig implements WebMvcConfigurer {
                     "/css/**", "/js/**", "/images/**", "/device/**", // 정적 리소스 제외
                     "/api/check-username", // 중복 체크 API 제외
                     "/api/ulcer/**",
-                    "/api/fall/**"
+                    "/api/fall/**",
+                    "/api/sensor/**"
                 );
     }
     
