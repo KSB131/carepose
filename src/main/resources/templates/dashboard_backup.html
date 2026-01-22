@@ -139,10 +139,12 @@
                      th:classappend="${requestURI.contains('/alerts')} ? 'active'">
                         <i class="bi bi-bell me-2"></i>알림 센터
                   </a></li>
-                  <li class="nav-item"><a class="nav-link" th:href="@{/manager}"
-                     th:classappend="${requestURI.contains('/manager')} ? 'active'">
-                        <i class="bi bi-people-fill me-2"></i>관리자
-                  </a></li>
+                  <li class="nav-item" th:if="${session.role == 'manager'}">
+                <a class="nav-link" th:href="@{/manager}"
+                   th:classappend="${requestURI.contains('/manager')} ? 'active'">
+                  <i class="bi bi-people-fill me-2"></i>관리자
+                </a>
+              </li>
                   <li class="nav-item">
     <a class="nav-link text-danger" th:href="@{/logout}">
         <i class="bi bi-box-arrow-right me-2"></i>로그아웃
@@ -163,6 +165,7 @@
                   <h1 class="page-title mb-1">6병동</h1>
                   <p class="text-muted mb-0">환자 모니터링 현황</p>
                </div>
+               
                <div class="container m-0">
                   <!-- 온습도 박스 -->
                  <div class="sensor-widget">
@@ -296,7 +299,13 @@
                            </div>
                         </div>
                      </div>
+                     
                   </div>
+                  <button class="modern-btn modern-btn-view" 
+                            th:attr="data-id=${patient.patientId}"
+                            onclick="openCameraPopup()">
+                      <i class="bi bi-camera-video me-1"></i>화면 보기
+                    </button>
                </div>
 
 
@@ -346,21 +355,39 @@
 <script>
     // 센서 데이터 가져오기
     function fetchSensorData() {
-      fetch("/api/sensor")
-        .then((response) => response.json())
-        .then((data) => {
-          document.getElementById("temperature").textContent =
-            data.temperature.toFixed(1);
-          document.getElementById("humidity").textContent =
-            data.humidity.toFixed(1);
+  fetch("/api/sensor")
+    .then((response) => {
+      // 데이터가 없는 경우(204) 처리
+      if (response.status === 204) {
+        return null; 
+      }
+      return response.json();
+    })
+    .then((data) => {
+      const tempElement = document.getElementById("temperature");
+      const humidElement = document.getElementById("humidity");
 
-          const now = new Date();
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          /* document.getElementById('status').textContent = '데이터 로딩 실패'; */
-        });
-    }
+      if (data) {
+        // 라파에서 데이터를 보낸 경우: 무조건 보정치(+18, +40)를 더함
+        // 라파가 0.0을 보내면 18.0 / 40.0으로 표시됨
+        let displayTemp = data.temperature + 18;
+        let displayHumid = data.humidity + 43;
+
+        tempElement.textContent = displayTemp.toFixed(1);
+        humidElement.textContent = displayHumid.toFixed(1);
+      } else {
+        // 데이터가 한 번도 안 왔거나 연결이 안 된 경우
+        tempElement.textContent = "0.0";
+        humidElement.textContent = "0.0";
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      // 통신 에러 시에도 0.0으로 표시
+      document.getElementById("temperature").textContent = "0.0";
+      document.getElementById("humidity").textContent = "0.0";
+    });
+}
 
     // 페이지 로드 시 즉시 실행
     fetchSensorData();
@@ -534,7 +561,7 @@
 
     async function checkFallStatus() {
       try {
-        const res = await fetch("http://localhost:8001/fall_status");
+        const res = await fetch("/api/fall/status");
         const data = await res.json();
         
         console.log("🔍 Fetched data:", data);
@@ -674,6 +701,198 @@
         modalShown = false;
       }
     });
+    
+    function openCameraPopup() {
+        const width = 1024;
+        const height = 768;
+        const left = (screen.width - width) / 2;
+        const top = (screen.height - height) / 2;
+
+        const popup = window.open(
+          "",
+          "Pose_Classification_Stream",
+          `width=${width},height=${height},left=${left},top=${top},resizable=yes`
+        );
+
+        popup.document.write(`
+               <!DOCTYPE html>
+               <html>
+               <head>
+                   <meta charset="UTF-8">
+                   <title>실시간 자세 분류 모니터링</title>
+                   <style>
+                       * {
+                           margin: 0;
+                           padding: 0;
+                           box-sizing: border-box;
+                       }
+                       body {
+                           background: #1a1a1a;
+                           display: flex;
+                           flex-direction: column;
+                           height: 100vh;
+                           font-family: 'Segoe UI', Arial, sans-serif;
+                       }
+                       .header {
+                           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                           color: white;
+                           padding: 20px 30px;
+                           box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+                       }
+                       .header h1 {
+                           font-size: 24px;
+                           margin: 0 0 5px 0;
+                       }
+                       .header p {
+                           font-size: 14px;
+                           opacity: 0.9;
+                           margin: 0;
+                       }
+                       .status-bar {
+                           background: #2a2a2a;
+                           padding: 10px 30px;
+                           display: flex;
+                           justify-content: space-between;
+                           align-items: center;
+                           border-bottom: 2px solid #667eea;
+                       }
+                       .status-item {
+                           display: flex;
+                           align-items: center;
+                           gap: 10px;
+                           color: white;
+                           font-size: 14px;
+                       }
+                       .status-dot {
+                           width: 10px;
+                           height: 10px;
+                           background: #4CAF50;
+                           border-radius: 50%;
+                           animation: pulse 2s infinite;
+                       }
+                       @keyframes pulse {
+                           0%, 100% { opacity: 1; transform: scale(1); }
+                           50% { opacity: 0.5; transform: scale(1.1); }
+                       }
+                       .video-container {
+                           flex: 1;
+                           display: flex;
+                           justify-content: center;
+                           align-items: center;
+                           padding: 20px;
+                           background: #000;
+                       }
+                       #videoStream {
+                           max-width: 100%;
+                           max-height: 100%;
+                           border-radius: 10px;
+                           box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+                       }
+                       .info-panel {
+                           background: #2a2a2a;
+                           color: white;
+                           padding: 15px 30px;
+                           display: flex;
+                           gap: 30px;
+                           flex-wrap: wrap;
+                       }
+                       .info-item {
+                           display: flex;
+                           flex-direction: column;
+                       }
+                       .info-label {
+                           font-size: 12px;
+                           color: #999;
+                           margin-bottom: 5px;
+                       }
+                       .info-value {
+                           font-size: 18px;
+                           font-weight: bold;
+                           color: #4CAF50;
+                       }
+                       .controls {
+                           background: #1a1a1a;
+                           padding: 20px;
+                           display: flex;
+                           justify-content: center;
+                           gap: 15px;
+                       }
+                       button {
+                           padding: 12px 30px;
+                           border: none;
+                           border-radius: 8px;
+                           cursor: pointer;
+                           font-size: 15px;
+                           font-weight: bold;
+                           transition: all 0.3s;
+                       }
+                       .btn-close {
+                           background: #f44336;
+                           color: white;
+                       }
+                       .btn-close:hover {
+                           background: #d32f2f;
+                           transform: translateY(-2px);
+                           box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+                       }
+                   </style>
+               </head>
+               <body>
+                   <div class="header">
+                       <h1>🎥 실시간 자세 분류 모니터링</h1>
+                       <p>YOLO11n-Pose + Custom Classification Model</p>
+                   </div>
+                   
+                   <div class="status-bar">
+                       <div class="status-item">
+                           <div class="status-dot"></div>
+                           <span>실시간 스트리밍 활성화</span>
+                       </div>
+                       <div class="status-item">
+                           <span>분류: supine / left / right</span>
+                       </div>
+                   </div>
+                   
+                   <div class="video-container">
+                       <img id="videoStream" src="/api/capture" alt="Loading...">
+                   </div>
+                   
+                   <div class="info-panel">
+                       <div class="info-item">
+                           <div class="info-label">모델 상태</div>
+                           <div class="info-value">✓ 정상</div>
+                       </div>
+                       <div class="info-item">
+                           <div class="info-label">FPS</div>
+                           <div class="info-value">~30</div>
+                       </div>
+                       <div class="info-item">
+                           <div class="info-label">해상도</div>
+                           <div class="info-value">640x480</div>
+                       </div>
+                   </div>
+                   
+                   <div class="controls">
+                       <button class="btn-close" onclick="window.close()">
+                           ❌ 창 닫기
+                       </button>
+                   </div>
+                   
+                   <script>
+                       const img = document.getElementById('videoStream');
+                       
+                       img.onerror = function() {
+                           alert('카메라 연결 실패! FastAPI 서버가 실행 중인지 확인하세요.\\n\\n서버 주소: http://192.168.219.208:8002');
+                       };
+                       
+                       img.onload = function() {
+                           console.log('✓ 스트리밍 연결 성공');
+                       };
+                   <\/script>
+</html>`);
+
+popup.document.close();
+    }
   </script>
 </html>
 
