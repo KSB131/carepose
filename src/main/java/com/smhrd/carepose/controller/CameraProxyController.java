@@ -17,8 +17,11 @@ import java.io.IOException;
 @RequestMapping("/api")
 public class CameraProxyController {
 
-    @Value("${raspi.base-url}")
-    private String raspiBaseUrl;
+	@Value("${raspi1.base-url}")
+    private String raspi1BaseUrl; // video용
+
+    @Value("${raspi2.base-url}")
+    private String raspi2BaseUrl; // capture용
 
     private final WebClient webClient;
 
@@ -29,36 +32,62 @@ public class CameraProxyController {
     @GetMapping(value = "/frame", produces = MediaType.IMAGE_JPEG_VALUE)
     public Mono<byte[]> getFrame() {
         return webClient.get()
-                .uri(raspiBaseUrl + "/frame")
+                .uri(raspi2BaseUrl + "/frame")
                 .retrieve()
                 .bodyToMono(byte[].class);
     }
     
-    @GetMapping(value = "/video")
-    public ResponseEntity<StreamingResponseBody> streamVideo() {
-        // MJPEG 스트림은 연결을 계속 유지해야 하므로 StreamingResponseBody를 사용합니다.
+    @GetMapping(value = "/capture")
+    public ResponseEntity<StreamingResponseBody> streamCapture() {
+
         StreamingResponseBody responseBody = outputStream -> {
             webClient.get()
-                    .uri(raspiBaseUrl + "/video_feed")
+                    .uri(raspi2BaseUrl + "/capture_feed")
                     .accept(MediaType.parseMediaType("multipart/x-mixed-replace; boundary=frame"))
                     .retrieve()
                     .bodyToFlux(DataBuffer.class)
                     .doOnNext(dataBuffer -> {
                         try {
-                            // DataBuffer의 내용을 바이트 배열로 읽어 outputStream에 직접 씁니다.
                             byte[] bytes = new byte[dataBuffer.readableByteCount()];
                             dataBuffer.read(bytes);
                             outputStream.write(bytes);
-                            outputStream.flush(); // 즉시 클라이언트로 전송
+                            outputStream.flush();
                         } catch (IOException e) {
-                            throw new RuntimeException("Stream writing failed", e);
+                            throw new RuntimeException(e);
                         } finally {
-                            // 메모리 누수 방지를 위해 release 합니다.
                             DataBufferUtils.release(dataBuffer);
                         }
                     })
-                    .doOnError(e -> System.err.println("WebClient Stream Error: " + e.getMessage()))
-                    .blockLast(); // 전체 스트림이 종료될 때까지 연결을 유지합니다.
+                    .blockLast();
+        };
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("multipart/x-mixed-replace; boundary=frame"))
+                .body(responseBody);
+    }
+    
+    @GetMapping(value = "/video")
+    public ResponseEntity<StreamingResponseBody> streamVideo() {
+
+        StreamingResponseBody responseBody = outputStream -> {
+            webClient.get()
+                    .uri(raspi1BaseUrl + "/video_feed")
+                    .accept(MediaType.parseMediaType("multipart/x-mixed-replace; boundary=frame"))
+                    .retrieve()
+                    .bodyToFlux(DataBuffer.class)
+                    .doOnNext(dataBuffer -> {
+                        try {
+                            byte[] bytes = new byte[dataBuffer.readableByteCount()];
+                            dataBuffer.read(bytes);
+                            outputStream.write(bytes);
+                            outputStream.flush();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        } finally {
+                            DataBufferUtils.release(dataBuffer);
+                        }
+                    })
+                    .blockLast();
         };
 
         return ResponseEntity.ok()

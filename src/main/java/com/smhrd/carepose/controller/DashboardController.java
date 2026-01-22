@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.smhrd.carepose.entity.PatientEntity;
 import com.smhrd.carepose.entity.PositionEntity;
 import com.smhrd.carepose.repository.PatientRepository;
 import com.smhrd.carepose.repository.PositionRepository;
@@ -29,6 +30,13 @@ public class DashboardController {
 	    model.addAttribute("currentPage", "dashboard");
 	    model.addAttribute("requestURI", request.getRequestURI());
 
+	    List<PatientEntity> patients = patientRepository.findAll();
+	    model.addAttribute("patients", patients);
+
+	    if (!patients.isEmpty()) {
+	        model.addAttribute("patient", patients.get(0));
+	    }
+	    
 	    // 1. 전체 환자 수 조회
 	    List<PositionEntity> allPositions = positionRepository.findAllWithPatient();
 	    model.addAttribute("totalPatientCount", allPositions.size());

@@ -33,12 +33,12 @@
     top: 50%;
     transform: translate(-50%, -50%);
 
-    font-size: 36px;
-    font-weight: 900;
+    font-size: 26px;
+    font-weight: 700;
     color: #1f2937;
     
     background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-    padding: 8px 20px;
+    padding: 6px 14px;
     border-radius: 14px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
@@ -73,47 +73,86 @@
 
    /* 온습도 박스 */
    /* 박스와 박스 간격 */
-    .sensor-widget {
-        margin-bottom: -40px;
-    }
-    
-    .sensor-card {
-       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-       color: white;
-       border: none;
-       transition: transform 0.2s;
-       height: 80px;
-       border-radius: 15px; /* 이 부분을 추가하여 모서리를 둥글게 만듭니다 */
-   }
-    
-    .sensor-card * {
-       line-height: 1;
-   }
-    
-    .sensor-card .card-body {
-       padding: 0.05rem 0.4rem;  /* 위아래 / 좌우 */
-       height: 100%;
-       
-       display: flex;
-       flex-direction: column;
-       justify-content: center;
-       align-items: center;
-   }
-   
-   .sensor-title,
-   .sensor-unit {
-       margin: 0;
-       padding: 0;
-   }
-    
-    .sensor-card:hover {
-        transform: translateY(-3px);
-    }
-    
-    .sensor-value {
-        font-size: 1.5rem;
-        font-weight: bold;
-    }
+ /* 시계 폰트 설정 */
+#clock {
+   font-family: "Courier New", Courier, monospace;
+   font-weight: bold;
+   margin-left: 5px;
+}
+
+/* 박스와 박스 간격 */
+.sensor-widget {
+   margin-top: -10px !important;
+   margin-bottom: -30px !important;
+}
+
+/* 카드 공통 스타일 */
+.sensor-card {
+   border: none;
+   transition: transform 0.2s;
+   height: 60px;
+   box-shadow: 0 2px 8px rgba(148, 163, 184, 0.08); /* 은은한 그림자 추가 */
+}
+
+/* 온도 카드 스타일 (Red 계열) */
+.sensor-card.temp {
+   background: #FEE2E2 !important; /* 연한 레드 */
+   border: 1px solid #FECACA !important;
+}
+.sensor-card.temp .sensor-title, 
+.sensor-card.temp .sensor-unit {
+   color: #B91C1C; /* 진한 레드 */
+}
+.sensor-card.temp .sensor-value {
+   color: #EF4444; /* 강조 레드 */
+}
+
+/* 습도 카드 스타일 (Blue 계열) */
+.sensor-card.humid {
+   background: #E0F2FE !important; /* 연한 블루 (Primary-100 계열) */
+   border: 1px solid #BAE6FD !important;
+}
+.sensor-card.humid .sensor-title, 
+.sensor-card.humid .sensor-unit {
+   color: #075985; /* 진한 블루 */
+}
+.sensor-card.humid .sensor-value {
+   color: #0EA5E9; /* 강조 블루 (Primary-500) */
+}
+
+.sensor-card * {
+   line-height: 1;
+}
+
+.sensor-card .card-body {
+   padding: 0.2rem 0.6rem;
+   height: 100%;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+}
+
+.sensor-title {
+   font-size: 0.75rem;
+   font-weight: 600;
+   margin-bottom: 0;
+   opacity: 0.8;
+}
+
+.sensor-unit {
+   font-size: 0.75rem;
+   margin-left: 1px;
+}
+
+.sensor-card:hover {
+   transform: translateY(-3px);
+}
+
+.sensor-value {
+   font-size: 1.3rem;
+   font-weight: bold;
+}
     
 
       
@@ -402,7 +441,7 @@
 
          <!-- 메인 콘텐츠 -->
          <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4" 
-      th:with="targetRoom=${param.room != null ? param.room[0] : '---'}"> 
+         		th:with="targetRoom=${param.room != null ? param.room[0] : '---'}"> 
 
    <div class="page-header mb-6 d-flex align-items-center position-relative" style="min-height: 120px;">
       
@@ -418,29 +457,33 @@
    
    <div class="d-flex align-items-center ms-auto gap-3">
       
-      <div class="sensor-widget" style="margin-bottom: 0 !important;">
-         <div class="d-flex gap-2"> 
-            <div style="width: 120px;"> 
-               <div class="card sensor-card" style="background: linear-gradient(135deg, #f2d383 0%, #ed966b 100%); margin-bottom: 0;">
-                  <div class="card-body text-center">
-                     <div class="sensor-title">온도</div>
-                     <div class="sensor-value" id="temperature">--</div>
-                     <span class="sensor-unit">°C</span>
-                  </div>
-               </div>
-            </div>
-            
-            <div style="width: 120px;">
-               <div class="card sensor-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); margin-bottom: 0;">
-                  <div class="card-body text-center">
-                     <div class="sensor-title">습도</div>
-                     <div class="sensor-value" id="humidity">--</div>
-                     <span class="sensor-unit">%</span>
-                  </div>
+    <div class="sensor-widget">
+   <div class="d-flex gap-2 justify-content-end">
+      <div style="width: 140px">
+         <div class="card sensor-card temp">
+            <div class="card-body text-center">
+               <div class="sensor-title">온도</div>
+               <div>
+                  <span class="sensor-value" id="temperature">--</span>
+                  <span class="sensor-unit">°C</span>
                </div>
             </div>
          </div>
       </div>
+
+      <div style="width: 140px">
+         <div class="card sensor-card humid">
+            <div class="card-body text-center">
+               <div class="sensor-title">습도</div>
+               <div>
+                  <span class="sensor-value" id="humidity">--</span>
+                  <span class="sensor-unit">%</span>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
 
    </div>
 </div>
@@ -719,59 +762,88 @@ function showAlert(bedInfo) {
   }, { once: true });
 }
 
+/* local 폴더 사용 */
+function loadLocalLatestImages() {
+    document.querySelectorAll('.camera-left').forEach(card => {
+        const folder = card.dataset.folder;
+        const sub = card.dataset.sub;
+        const pos = card.dataset.pos;
+        const img = card.querySelector('.dynamic-patient-img');
 
+        let prefix = "default";
+        if (pos === '앙와위') prefix = "face";
+        else if (pos === '좌측위') prefix = "left";
+        else if (pos === '우측위') prefix = "right";
 
-
-   function loadLatestImages() {
-       const cards = document.querySelectorAll('.camera-left');
-
-       cards.forEach(card => {
-          const folder = card.getAttribute('data-folder');
-          const sub = card.getAttribute('data-sub');
-          const pos = card.getAttribute('data-pos');
-          const imgTag = card.querySelector('.dynamic-patient-img');
-
-          let prefix = "default";
-          if (pos === '앙와위') prefix = "face";
-          else if (pos === '좌측위') prefix = "left";
-          else if (pos === '우측위') prefix = "right";
-
-          checkImageExists(imgTag, folder, sub, prefix, 30);
-       });
-    }
-
-    function checkImageExists(imgTag, folder, sub, prefix, num) {
-       if (num <= 0) return;
-
-       const path = `/images/${folder}/${sub}/${prefix}${num}.jpg`;
-       const img = new Image();
-
-       img.onload = () => imgTag.src = path + "?v=" + Date.now();
-       img.onerror = () => checkImageExists(imgTag, folder, sub, prefix, num - 1);
-       img.src = path;
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        loadLatestImages();
-        setInterval(loadLatestImages, 3000); // ✅ 3초마다 재확인
+        fetch(`/api/latest-image/local?folder=${folder}&sub=${sub}&prefix=${prefix}`)
+            .then(res => res.text())
+            .then(filename => {
+                if (!filename) return;
+                img.src = `/images/${folder}/${sub}/${filename}?v=${Date.now()}`;
+            });
     });
+}
+
+/* AWS 배포 - 상대경로 */
+function loadLatestImages() {
+    document.querySelectorAll('.camera-left').forEach(card => {
+        const folder = card.dataset.folder;
+        const sub = card.dataset.sub;
+        const pos = card.dataset.pos;
+        const img = card.querySelector('.dynamic-patient-img');
+
+        let prefix = "default";
+        if (pos === '앙와위') prefix = "face";
+        else if (pos === '좌측위') prefix = "left";
+        else if (pos === '우측위') prefix = "right";
+
+        fetch(`/api/latest-image?folder=${folder}&sub=${sub}&prefix=${prefix}`)
+            .then(res => res.text())
+            .then(filename => {
+                if (!filename) return;
+                img.src = `/images/${folder}/${sub}/${filename}?v=${Date.now()}`;
+            });
+    });
+}
+
+setInterval(loadLatestImages, 3000);
+
 
     // 센서 데이터 가져오기
     function fetchSensorData() {
-        fetch('/api/sensor')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('temperature').textContent = data.temperature.toFixed(1);
-                document.getElementById('humidity').textContent = data.humidity.toFixed(1);
+  fetch("/api/sensor")
+    .then((response) => {
+      // 데이터가 없는 경우(204) 처리
+      if (response.status === 204) {
+        return null; 
+      }
+      return response.json();
+    })
+    .then((data) => {
+      const tempElement = document.getElementById("temperature");
+      const humidElement = document.getElementById("humidity");
 
-                const now = new Date();
+      if (data) {
+        // 라파에서 데이터를 보낸 경우: 무조건 보정치(+18, +40)를 더함
+        // 라파가 0.0을 보내면 18.0 / 40.0으로 표시됨
+        let displayTemp = data.temperature + 18;
+        let displayHumid = data.humidity + 43;
 
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                /* document.getElementById('status').textContent = '데이터 로딩 실패'; */
-            });
-    }
+        tempElement.textContent = displayTemp.toFixed(1);
+        humidElement.textContent = displayHumid.toFixed(1);
+      } else {
+        // 데이터가 한 번도 안 왔거나 연결이 안 된 경우
+        tempElement.textContent = "0.0";
+        humidElement.textContent = "0.0";
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      // 통신 에러 시에도 0.0으로 표시
+      document.getElementById("temperature").textContent = "0.0";
+      document.getElementById("humidity").textContent = "0.0";
+    });
+}
 
     // 페이지 로드 시 즉시 실행
     fetchSensorData();
@@ -781,23 +853,23 @@ function showAlert(bedInfo) {
 
 
     function openCameraPopup() {
-        const width = 1024;
-        const height = 768;
-        const left = (screen.width - width) / 2;
-        const top = (screen.height - height) / 2;
+    const width = 1024;
+    const height = 768;
+    const left = (screen.width - width) / 2;
+    const top = (screen.height - height) / 2;
 
-        const popup = window.open(
-            '',
-            'Pose_Classification_Stream',
-            `width=${width},height=${height},left=${left},top=${top},resizable=yes`
-        );
+    const popup = window.open(
+        '',
+        'Pose_Classification_Stream',
+        `width=${width},height=${height},left=${left},top=${top},resizable=yes`
+    );
 
-        popup.document.write(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <title>실시간 자세 분류 모니터링</title>
+    popup.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>실시간 자세 분류 모니터링</title>
                 <style>
                     * {
                         margin: 0;
@@ -917,62 +989,62 @@ function showAlert(bedInfo) {
 </head>
 <body>
   <div class="header">
-    <h1>🎥 실시간 자세 분류 모니터링</h1>
-    <p>YOLO11n-Pose + Custom Classification Model</p>
-  </div>
+            <h1>🎥 실시간 자세 분류 모니터링</h1>
+            <p>YOLO11n-Pose + Custom Classification Model</p>
+          </div>
 
-  <div class="status-bar">
-    <div class="status-item">
-      <div class="status-dot"></div>
-      <span>실시간 스트리밍 활성화</span>
-    </div>
-    <div class="status-item">
-      <span>분류: supine / left / right</span>
-    </div>
-  </div>
+          <div class="status-bar">
+            <div class="status-item">
+              <div class="status-dot"></div>
+              <span>실시간 스트리밍 활성화</span>
+            </div>
+            <div class="status-item">
+              <span>분류: supine / left / right</span>
+            </div>
+          </div>
 
-  <div class="video-container">
-    <img
-      id="videoStream"
-      src="http://192.168.219.208:8000/video_feed"
-      alt="Loading..."
-    />
-  </div>
+          <div class="video-container">
+            <img
+              id="camera"
+              src="/video_feed"
+              alt="Loading..."
+            />
+          </div>
 
-  <div class="info-panel">
-    <div class="info-item">
-      <div class="info-label">모델 상태</div>
-      <div class="info-value">✓ 정상</div>
-    </div>
-    <div class="info-item">
-      <div class="info-label">FPS</div>
-      <div class="info-value">~30</div>
-    </div>
-    <div class="info-item">
-      <div class="info-label">해상도</div>
-      <div class="info-value">640x480</div>
-    </div>
-  </div>
+   <div class="info-panel">
+            <div class="info-item">
+              <div class="info-label">모델 상태</div>
+              <div class="info-value">✓ 정상</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">FPS</div>
+              <div class="info-value">~30</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">해상도</div>
+              <div class="info-value">640x480</div>
+            </div>
+          </div>
 
-  <div class="controls">
-    <button class="btn-close" onclick="window.close()">❌ 창 닫기</button>
-  </div>
+          <div class="controls">
+            <button class="btn-close" onclick="window.close()">❌ 창 닫기</button>
+          </div>
 
-  <script>
-                    const img = document.getElementById('videoStream');
+          <script>
+            const img = document.getElementById('videoStream');
 
-                    img.onerror = function() {
-                        alert('카메라 연결 실패! FastAPI 서버가 실행 중인지 확인하세요.\\n\\n서버 주소: http://192.168.219.208:8000');
-                    };
+            img.onerror = function() {
+                alert('카메라 연결 실패! 서버를 확인하세요.');
+            };
 
-                    img.onload = function() {
-                        console.log('✓ 스트리밍 연결 성공');
-                    };
-                <\/script>
-            </body>
-            </html>
-        `);
-    }
+            img.onload = function() {
+                console.log('✓ 스트리밍 연결 성공');
+            };
+          <\/script>
+        </body>
+        </html>
+    `);
+}
    </script>
 </body>
 </html>
