@@ -826,8 +826,8 @@ setInterval(loadLatestImages, 3000);
       if (data) {
         // 라파에서 데이터를 보낸 경우: 무조건 보정치(+18, +40)를 더함
         // 라파가 0.0을 보내면 18.0 / 40.0으로 표시됨
-        let displayTemp = data.temperature + 18;
-        let displayHumid = data.humidity + 43;
+        let displayTemp = data.temperature + 20.3;
+        let displayHumid = data.humidity + 43.2;
 
         tempElement.textContent = displayTemp.toFixed(1);
         humidElement.textContent = displayHumid.toFixed(1);
