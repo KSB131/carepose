@@ -178,20 +178,20 @@
          position: relative;
          background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
          display: flex;
-		 height: 260px;
+       height: 260px;
          overflow: hidden;
       }
 
       .camera-left {
          flex: 1;
          background: white;
-		 position: relative;
+       position: relative;
          display: flex;
          align-items: center;
          justify-content: center;
          padding: 0px;
          border-right: 2px dashed rgba(100, 181, 246, 0.3);
-		 height: 100%;
+       height: 100%;
       }
 
       .camera-right {
@@ -262,10 +262,10 @@
       }
       
       .patient-data-wrapper {
-		    display: flex;
-		    gap: 10px; /* 두 박스 사이의 간격 */
-		    align-items: stretch; /* 두 박스의 높이를 동일하게 */
-		}
+          display: flex;
+          gap: 10px; /* 두 박스 사이의 간격 */
+          align-items: stretch; /* 두 박스의 높이를 동일하게 */
+      }
       
       .patient-bed, .pose-display {
     flex: 1; /* 가로 공간을 동일하게 나눠 가짐 */
@@ -356,8 +356,8 @@
 
       /* 이미지 스타일 */
       .patient-image {
-      	 height: 100%;
-      	 width: 100%;
+          height: 100%;
+          width: 100%;
          max-width: none;
          min-width: unset;
          max-height: none;
@@ -394,7 +394,7 @@
          <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse p-0">
                   <div class="position-sticky">
                <div class="sidebar-logo">
-               		<img src="/css/logo.png" alt="SMHRD 요양병원 로고">
+                     <img src="/css/logo.png" alt="SMHRD 요양병원 로고">
                   <div class="sidebar-title">SMHRD 요양병원</div>
                   <div class="sidebar-subtitle">안전 관제시스템</div>
                </div>
@@ -422,8 +422,8 @@
                         <i class="bi bi-bell me-2"></i>알림 센터
                   </a></li>
                         <li class="nav-item"
-                  	  th:if="${session.role == 'manager'}">
-                  	  <a class="nav-link" th:href="@{/manager}"
+                       th:if="${session.role == 'manager'}">
+                       <a class="nav-link" th:href="@{/manager}"
                      th:classappend="${requestURI.contains('/manager')} ? 'active'">
                         <i class="bi bi-people-fill me-2"></i>관리자
                   </a></li>
@@ -441,7 +441,7 @@
 
          <!-- 메인 콘텐츠 -->
          <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4" 
-         		th:with="targetRoom=${param.room != null ? param.room[0] : '---'}"> 
+               th:with="targetRoom=${param.room != null ? param.room[0] : '---'}"> 
 
    <div class="page-header mb-6 d-flex align-items-center position-relative" style="min-height: 120px;">
       
@@ -553,11 +553,11 @@
                   <div class="patient-info">
                    <div class="patient-data-wrapper">
                      <div class="patient-bed text-center">
-					  <span class="bed-badge d-inline-block mb-1"
-					        th:text="${p.patientId}"></span>
-					  <h6 class="patient-name mb-0"
-					      th:text="${p.name}"></h6>
-					</div>
+                 <span class="bed-badge d-inline-block mb-1"
+                       th:text="${p.patientId}"></span>
+                 <h6 class="patient-name mb-0"
+                     th:text="${p.name}"></h6>
+               </div>
                   
 
                     </div>
@@ -656,46 +656,55 @@
    }
 
    function syncTimers() {
-	    fetch('/api/monitoringData')
-	        .then(res => res.json())
-	        .then(patients => {
-	            patients.forEach(p => {
+       fetch('/api/monitoringData')
+           .then(res => res.json())
+           .then(patients => {
+               patients.forEach(p => {
 
-	                // 1️⃣ 타이머 엘리먼트 찾기
-	                const timerEl = document.querySelector(
-	                    `.timer-value[data-patient-id="${p.patientId}"]`
-	                );
-	                if (!timerEl) return;
+                   // 1️⃣ 타이머 엘리먼트 찾기
+                   const timerEl = document.querySelector(
+                       `.timer-value[data-patient-id="${p.patientId}"]`
+                   );
+                   if (!timerEl) return;
+                   
+                   // 🔄 DB 시간 변경 감지 → done 초기화
+                   const prevStart = timerEl.dataset.startTime;
+                   const currentStart = p.lastPositionTime;
 
-	                // 2️⃣ DB 시간이 없으면 스킵
-	                if (!p.lastPositionTime) {
-	                    timerEl.textContent = "00:00:00";
-	                    return;
-	                }
+                   if (prevStart !== currentStart) {
+                       timerEl.dataset.done = "false";
+                       timerEl.dataset.startTime = currentStart;
+                   }
 
-	                // 3️⃣ 시간 계산
-	                const startTime = new Date(p.lastPositionTime);
-	                const now = new Date();
+                   // 2️⃣ DB 시간이 없으면 스킵
+                   if (!p.lastPositionTime) {
+                       timerEl.textContent = "00:00:00";
+                       return;
+                   }
 
-	                const totalSeconds = p.totalSeconds || 7200;
-	                
-	                let remaining =
-	                    totalSeconds - Math.floor((now - startTime) / 1000);
+                   // 3️⃣ 시간 계산
+                   const startTime = new Date(p.lastPositionTime);
+                   const now = new Date();
 
-	                if (remaining < 0) remaining = 0;
+                   const totalSeconds = p.totalSeconds || 7200;
+                   
+                   let remaining =
+                       totalSeconds - Math.floor((now - startTime) / 1000);
 
-	                // 4️⃣ 화면 출력
-	                const h = Math.floor(remaining / 3600);
-	                const m = Math.floor((remaining % 3600) / 60);
-	                const s = remaining % 60;
+                   if (remaining < 1) remaining = 0;
 
-	                timerEl.textContent =
-	                    `${String(h).padStart(2,'0')}:` +
-	                    `${String(m).padStart(2,'0')}:` +
-	                    `${String(s).padStart(2,'0')}`;
+                   // 4️⃣ 화면 출력
+                   const h = Math.floor(remaining / 3600);
+                   const m = Math.floor((remaining % 3600) / 60);
+                   const s = remaining % 60;
 
-	                // 5️⃣ 0초 알림
-	                if (remaining === 0 && timerEl.dataset.done !== "true") {
+                   timerEl.textContent =
+                       `${String(h).padStart(2,'0')}:` +
+                       `${String(m).padStart(2,'0')}:` +
+                       `${String(s).padStart(2,'0')}`;
+
+                   // 5️⃣ 0초 알림
+                   if (remaining <= 0 && timerEl.dataset.done !== "true") {
 
     timerEl.dataset.done = "true"; // 🔒 다시 실행 방지
 
@@ -720,9 +729,9 @@
     .then(msg => console.log('⏱ DB 갱신:', msg))
     .catch(err => console.error('DB 갱신 실패', err));
 }
-	            });
-	        })
-	        .catch(err => console.error('타이머 동기화 실패:', err));
+               });
+           })
+           .catch(err => console.error('타이머 동기화 실패:', err));
    }
 
    // 페이지 로드 시 즉시 실행

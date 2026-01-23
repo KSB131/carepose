@@ -67,8 +67,8 @@
                 </a>
               </li>
               <li class="nav-item"
-                  	  th:if="${session.role == 'manager'}">
-                  	  <a class="nav-link" th:href="@{/manager}"
+                       th:if="${session.role == 'manager'}">
+                       <a class="nav-link" th:href="@{/manager}"
                      th:classappend="${requestURI.contains('/manager')} ? 'active'">
                         <i class="bi bi-people-fill me-2"></i>관리자
                   </a></li>
@@ -179,7 +179,7 @@
             });
             
             // 새로운 선택 표시
-            this.style.backgroundColor = "#f5d7e2";
+            this.style.backgroundColor = "#ebaca4";
             this.style.color = "#ffffff";
             this.style.fontWeight = "bold";
             this.style.borderRadius = "6px";
@@ -201,9 +201,11 @@
             updateDateBadge(selectedYMD); // 날짜 배지 업데이트
             loadFallEventsByDate(selectedYMD);
             
-            // input 요소가 있다면 값 입력
-            var dateInput = document.getElementById("date") || opener.document.getElementById("date");
-            if(dateInput) dateInput.value = selectedYMD;
+            // input 요소가 있다면 값 입력 (에러 방지)
+            var dateInput = document.getElementById("date");
+            if (dateInput) {
+              dateInput.value = selectedYMD;
+            }
           };
         })(i);
 
@@ -357,7 +359,7 @@
                // 낙상 이벤트 목록 로드 (전체 또는 날짜 필터)
                async function loadFallEvents(dateFilter = null) {
                  try {
-                   let url = "/api/fall/recent?limit=50";
+                   let url = "/api/fall/recent?limit=500";
                    const response = await fetch(url);
                    let falls = await response.json();
                    

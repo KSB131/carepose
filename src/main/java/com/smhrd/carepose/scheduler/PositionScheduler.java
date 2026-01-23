@@ -16,19 +16,23 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Component
-@RequiredArgsConstructor
 public class PositionScheduler {
 
     private final PositionRepository positionRepository;
+    
+    @Autowired
+    public PositionScheduler(PositionRepository positionRepository) {
+        this.positionRepository = positionRepository;
+    }
 
     // ⏱ 1초마다 자동 실행
     @Transactional
     @Scheduled(fixedRate = 10000)
     public void autoUpdatePositionTime() {
-    	
-		/* System.out.println("⏰ Scheduler 실행됨: " + LocalDateTime.now()); */
+       
+      /* System.out.println("⏰ Scheduler 실행됨: " + LocalDateTime.now()); */
 
-    	List<PositionEntity> list = positionRepository.findAllWithPatient();
+       List<PositionEntity> list = positionRepository.findAllWithPatient();
         LocalDateTime now = LocalDateTime.now();
 
         for (PositionEntity pos : list) {
@@ -37,23 +41,25 @@ public class PositionScheduler {
             int grade = pos.getPatient().getGrade();
 
             // 등급별 기준 시간(분 단위)
-            int thresholdMinutes;
+            int thresholdSeconds;
             switch (grade) {
-                case 1: thresholdMinutes = 105; break; // 1시간 45분
-                case 2: thresholdMinutes = 90; break;  // 1시간 30분
-                case 3: thresholdMinutes = 80; break;  // 1시간 20분
-                default: thresholdMinutes = 120;      // grade 0 또는 null
+               case 1: thresholdSeconds = 105 * 60; break;  // 1시간45분
+               case 2: thresholdSeconds = 90 * 60; break;   // 1시간30분
+               case 3: thresholdSeconds = 80 * 60; break;   // 1시간20분
+               case 4: thresholdSeconds = 15; break;
+                default: thresholdSeconds = 120 * 60;      // grade 0 또는 null
             }
 
-            long minutesElapsed = ChronoUnit.MINUTES.between(pos.getLastPositionTime(), now);
-            
+            long secondsElapsed =
+                    ChronoUnit.SECONDS.between(pos.getLastPositionTime(), now);
+
             // 기준 시간 이상 경과 시 갱신
-            if (minutesElapsed >= thresholdMinutes) {
+            if (secondsElapsed >= thresholdSeconds) {
                 pos.setLastPositionTime(now);
                 positionRepository.save(pos);
-                System.out.println("⏱ 자동 갱신: " + pos.getPatient().getPatientId() + " (grade=" + grade + ")");
-            }
+                System.out.println("⏱ 자동 갱신: " +
+                    pos.getPatient().getPatientId() + " (grade=" + grade + ")");
+            }}
             
         }
     }
-}

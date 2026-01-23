@@ -144,7 +144,7 @@ public class MonitoringController {
            @RequestParam String sub,
            @RequestParam String prefix) {
 
-	   File dir = new File(imageBasePath + File.separator + folder + File.separator + sub);
+      File dir = new File(imageBasePath + File.separator + folder + File.separator + sub);
 
        if (!dir.exists() || !dir.isDirectory()) {
            return "";
