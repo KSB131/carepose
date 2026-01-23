@@ -748,10 +748,19 @@ function showAlert(bedInfo) {
   video.currentTime = 0;
   video.play().catch(() => {});
 
+  // ✅ 음성 알림 추가
+  const msg = new SpeechSynthesisUtterance(`${bedInfo} 환자분 자세 변경 시간입니다. 가이드라인을 참고하여 자세를 변경해 주세요.`);
+  msg.lang = 'ko-KR';
+  msg.rate = 1.0;
+  msg.pitch = 1.0;
+  msg.volume = 1.0;
+  speechSynthesis.speak(msg);
+
   // ✅ 모달이 완전히 닫히면 backdrop 정리
   modalEl.addEventListener('hidden.bs.modal', () => {
     modalOpen = false;
     video.pause();
+    speechSynthesis.cancel(); // 음성 중지
 
     document
       .querySelectorAll('.modal-backdrop')
