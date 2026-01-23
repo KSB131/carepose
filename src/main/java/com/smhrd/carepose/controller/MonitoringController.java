@@ -88,6 +88,7 @@ public class MonitoringController {
                    case 1: totalSeconds = 105 * 60; break;  // 1시간45분
                    case 2: totalSeconds = 90 * 60; break;   // 1시간30분
                    case 3: totalSeconds = 80 * 60; break;   // 1시간20분
+                   case 4: totalSeconds = 15; break;
                    default: totalSeconds = 120 * 60;        // grade 0
                }
                
