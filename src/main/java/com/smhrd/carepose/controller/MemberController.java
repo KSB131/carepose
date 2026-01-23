@@ -1,6 +1,9 @@
 package com.smhrd.carepose.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +19,9 @@ public class MemberController {
 
     @Autowired
     MemberRepository memberRepository;
+    
+    private final PasswordEncoder passwordEncoder;
+
 
     @GetMapping("/register")
     public String registerPage() {
@@ -33,10 +39,13 @@ public class MemberController {
             model.addAttribute("error","비밀번호 확인이 일치하지 않습니다.");
             return "register";
         }
+        
+    	// ⭐ BCrypt 암호화
+        String encodedPassword = passwordEncoder.encode(password);
 
         MemberEntity member = MemberEntity.builder()
                 .username(username)
-                .password(password)
+                .password(encodedPassword)
                 .roomAuthority(roomAuthority)
                 .build();
 
@@ -66,10 +75,19 @@ public class MemberController {
 	                           HttpSession session,
 	                           Model model) {
        // DB에서 사용자 정보 조회
-       MemberEntity member = memberRepository.findByUsernameAndPassword(username, password);
+    	Optional<MemberEntity> optMember =
+    	        memberRepository.findByUsername(username);
        
-       if (member == null) {
+       if (optMember.isEmpty()) {
            model.addAttribute("error", "사번 또는 비밀번호가 일치하지 않습니다.");
+           return "login";
+       }
+       
+       MemberEntity member = optMember.get();
+       
+       // ⭐ 비밀번호 비교 (복호화 X)
+       if (!passwordEncoder.matches(password, member.getPassword())) {
+           model.addAttribute("error", "비밀번호가 틀렸습니다.");
            return "login";
        }
        
