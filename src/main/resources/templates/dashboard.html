@@ -163,8 +163,8 @@
             <div class="page-header d-flex align-items-center">
                <div>
                   <h1 class="page-title mb-1 ward-title" onclick="openCameraPopup()">
-				    6병동
-				  </h1>
+                6병동
+              </h1>
                   <p class="text-muted mb-0">환자 모니터링 현황</p>
                </div>
                
@@ -665,40 +665,6 @@
       }, 15000);
     }
     
-    // 확인 버튼 클릭 시 handled_at 업데이트
-    document.getElementById("fallModal").addEventListener("hidden.bs.modal", async function() {
-      // 타이머와 인터벌 모두 취소
-      if (autoCloseTimer) {
-        clearTimeout(autoCloseTimer);
-        autoCloseTimer = null;
-      }
-      if (countdownInterval) {
-        clearInterval(countdownInterval);
-        countdownInterval = null;
-      }
-      
-      if (currentFallNum) {
-        try {
-          const response = await fetch(`/api/fall/handle/${currentFallNum}`, {
-            method: 'POST'
-          });
-          const result = await response.json();
-          
-          if (result.success) {
-            console.log("✅ 조치 완료 처리됨:", currentFallNum);
-            // 처리된 목록에 추가
-            handledFalls.push(currentFallNum);
-          } else {
-            console.error("❌ 조치 완료 처리 실패:", result.message);
-          }
-        } catch (e) {
-          console.error("❌ API 호출 실패:", e);
-        }
-        
-        currentFallNum = null;
-        modalShown = false;
-      }
-    });
     
     function openCameraPopup() {
         const width = 1024;
