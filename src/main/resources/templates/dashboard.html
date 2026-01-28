@@ -525,6 +525,8 @@
     let remainingSeconds = 15; // 남은 시간
     const modal = new bootstrap.Modal(document.getElementById("fallModal"));
 
+    let lastShownFallNum = null;
+    
     // 음성 안내 함수
     function playFallAlert(roomId) {
       const speechMessage = `긴급 상황입니다. ${roomId} 환자의 낙상 위험이 감지되었습니다. 즉시 확인이 필요합니다.`;
@@ -558,83 +560,38 @@
     }
 
     async function checkFallStatus() {
-      try {
-        const res = await fetch("/api/fall/status");
-        const data = await res.json();
-        
-        console.log("🔍 Fetched data:", data);
-        console.log("🔍 data.fall value:", data.fall, "type:", typeof data.fall);
-        console.log("🔍 modalShown:", modalShown);
+         try {
+           const res = await fetch("/api/fall/status", {
+             cache: "no-store"
+           });
+           const data = await res.json();
 
-        if (data.fall === true) {
-          console.log("✅ Fall detected! Showing modal...");
-          console.log("  Fall Num:", data.fall_num);
-          console.log("📍 Room:", data.room);
-          console.log("🖼️ Image:", data.image);
-          console.log("⏰ Timestamp:", data.timestamp);
-                    // 이미 처리된 낙상이면 무시
-          if (handledFalls.includes(data.fall_num)) {
-            console.log("✔️ Already handled fall, skipping...");
-            return;
-          }
-                    // 새로운 낙상이거나 아직 모달이 안 떴을 때
-          if (!modalShown || currentFallNum !== data.fall_num) {
-            // fall_num 저장
-            currentFallNum = data.fall_num;
-            
-            // 침상번호, 시간, 이미지 업데이트
-            document.getElementById("fallRoomNumber").textContent = data.room || "Unknown";
-            document.getElementById("fallTimestamp").textContent = data.timestamp || "";
-            
-            // 캐시 방지를 위해 타임스탬프 추가
-            const imagePath = `/device/fall/${data.image}?t=${Date.now()}`;
-            console.log("🔗 Image path:", imagePath);
-            document.getElementById("fallImage").src = imagePath;
+           if (data.fall === true) {
 
-            // 모달이 이미 열려있으면 닫았다가 다시 열기
-            if (modalShown) {
-              // 기존 타이머/인터벌 취소
-              if (autoCloseTimer) {
-                clearTimeout(autoCloseTimer);
-              }
-              if (countdownInterval) {
-                clearInterval(countdownInterval);
-              }
-              
-              modal.hide();ㅁ
-              setTimeout(() => {
-                modal.show();
-                console.log("🔄 Modal updated with new fall!");
-                
-                // 음성 안내
-                playFallAlert(data.room);
-                
-                // 카운트다운 시작
-                startCountdown();
-              }, 300);
-            } else {
-              modal.show();
-              console.log("✅ Modal shown!");
-              
-              // 음성 안내
-              playFallAlert(data.room);
-              
-              // 카운트다운 시작
-              startCountdown();
-            }
-            
-            modalShown = true;
-          } else {
-            console.log("⚠️ Same fall, modal already shown, skipping...");
-          }
-        } else {
-          modalShown = false;
-          console.log("❌ No fall detected (data.fall is false)");
-        }
-      } catch (e) {
-        console.error("❌ Error in checkFallStatus:", e);
-      }
-    }
+             // 🔑 이미 띄운 낙상이면 무시
+             if (lastShownFallNum === data.fall_num) {
+               return;
+             }
+
+             lastShownFallNum = data.fall_num;
+
+             document.getElementById("fallRoomNumber").textContent =
+               data.room || "Unknown";
+             document.getElementById("fallTimestamp").textContent =
+               data.timestamp || "";
+             document.getElementById("fallImage").src =
+               `/device/fall/${data.image}?t=${Date.now()}`;
+
+             modal.show();
+             playFallAlert(data.room);
+             startCountdown();
+           }
+
+         } catch (e) {
+           console.error("❌ Error in checkFallStatus:", e);
+         }
+       }
+
 
     setInterval(checkFallStatus, 1500);
     
